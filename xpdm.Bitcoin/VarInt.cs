@@ -49,7 +49,7 @@ namespace xpdm.Bitcoin
         {
             get
             {
-                Contract.Ensures(Contract.Result<int>() == 1 || Contract.Result<int>() == 3 || Contract.Result<int>() == 5 || Contract.Result<int>() == 9);
+                Contract.Ensures(Contract.Result<int>() > 0);
 
                 if (_value < 253)
                     return 1;
