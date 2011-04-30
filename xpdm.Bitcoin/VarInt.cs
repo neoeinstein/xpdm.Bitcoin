@@ -7,25 +7,14 @@ namespace xpdm.Bitcoin
     {
         private readonly ulong _value;
 
-        [CLSCompliant(false)]
         public ulong Value
         {
             get { return _value; }
         }
 
-        public long LongValue
-        {
-            get { return (long) _value; }
-        }
-
-        [CLSCompliant(false)]
         public VarInt(ulong value)
         {
             _value = value;
-        }
-
-        public VarInt(long value) : this((ulong) value)
-        {
         }
 
         public VarInt(byte[] buffer, int offset)
@@ -92,24 +81,12 @@ namespace xpdm.Bitcoin
             return new byte[] {};
         }
 
-        public static explicit operator VarInt(long value)
+        public static implicit operator VarInt(ulong value)
         {
             return new VarInt(value);
         }
 
-        public static explicit operator long(VarInt value)
-        {
-            return (long)value._value;
-        }
-
-        [CLSCompliant(false)]
-        public static explicit operator VarInt(ulong value)
-        {
-            return new VarInt(value);
-        }
-
-        [CLSCompliant(false)]
-        public static explicit operator ulong(VarInt value)
+        public static implicit operator ulong(VarInt value)
         {
             return value._value;
         }
