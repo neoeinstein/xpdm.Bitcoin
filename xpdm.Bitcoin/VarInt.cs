@@ -51,16 +51,24 @@ namespace xpdm.Bitcoin
             {
                 Contract.Ensures(Contract.Result<int>() > 0);
 
-                if (_value < 253)
-                    return 1;
-                if (_value < 65536)
-                    return 3;
-                if (_value < 4294967296L)
-                    return 5;
-                return 9;
+                return VarInt.GetByteSize(_value);
             }
         }
 
+        public static int GetByteSize(ulong value)
+        {
+            Contract.Ensures(Contract.Result<int>() > 0);
+
+            if (value < 253)
+                return 1;
+            if (value < 65536)
+                return 3;
+            if (value < 4294967296L)
+                return 5;
+            return 9;
+        }
+
+        [Pure]
         public byte[] ToBytes()
         {
             Contract.Ensures(Contract.Result<byte[]>() != null);
