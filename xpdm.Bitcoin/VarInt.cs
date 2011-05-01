@@ -20,7 +20,7 @@ namespace xpdm.Bitcoin
         public VarInt(byte[] buffer, int offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentNullException>(buffer.Length > 0, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length > 0, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
             Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length, "offset");
             Contract.EnsuresOnThrow<IndexOutOfRangeException>(Contract.ValueAtReturn(out this).Value == 0);
