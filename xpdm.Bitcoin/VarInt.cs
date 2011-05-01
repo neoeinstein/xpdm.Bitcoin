@@ -49,16 +49,12 @@ namespace xpdm.Bitcoin
         {
             get
             {
-                Contract.Ensures(Contract.Result<uint>() > 0);
-
                 return VarInt.GetByteSize(_value);
             }
         }
 
         public static uint GetByteSize(ulong value)
         {
-            Contract.Ensures(Contract.Result<uint>() > 0);
-
             if (value < 253)
                 return 1;
             if (value < 65536)
@@ -71,9 +67,6 @@ namespace xpdm.Bitcoin
         [Pure]
         public byte[] ToBytes()
         {
-            Contract.Ensures(Contract.Result<byte[]>() != null);
-            Contract.Ensures(Contract.Result<byte[]>().Length == ByteSize);
-
             switch(ByteSize)
             {
                 case 1:

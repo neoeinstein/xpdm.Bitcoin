@@ -45,25 +45,18 @@ namespace xpdm.Bitcoin
         {
             get
             {
-                Contract.Ensures(Contract.Result<uint>() > 0);
-
                 return (uint)_value.Length + _length.ByteSize;
             }
         }
 
         public static uint GetByteSize(string value)
         {
-            Contract.Ensures(Contract.Result<uint>() > 0);
-
             return (uint)value.Length + VarInt.GetByteSize((ulong)value.Length);
         }
 
         [Pure]
         public byte[] ToBytes()
         {
-            Contract.Ensures(Contract.Result<byte[]>() != null);
-            Contract.Ensures(Contract.Result<byte[]>().Length == ByteSize);
-
             var bytes = new byte[ByteSize];
 
             this.WriteToBitcoinBuffer(bytes, 0);

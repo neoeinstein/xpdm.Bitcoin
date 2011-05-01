@@ -28,6 +28,7 @@ namespace xpdm.Bitcoin
             return bytes;
         }
 
+        [Pure]
         public abstract void WriteToBitcoinBuffer(byte[] bytes, int offset);
     }
 }

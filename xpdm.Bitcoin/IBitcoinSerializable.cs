@@ -7,6 +7,8 @@ namespace xpdm.Bitcoin
     {
         uint ByteSize { get; }
         [Pure]
+        byte[] ToBytes();
+        [Pure]
         void WriteToBitcoinBuffer(byte[] buffer, int offset);
     }
 }

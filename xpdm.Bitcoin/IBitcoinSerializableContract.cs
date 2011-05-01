@@ -14,6 +14,16 @@ namespace xpdm.Bitcoin
             }
         }
 
+        [Pure]
+        public byte[] ToBytes()
+        {
+            Contract.Ensures(Contract.Result<byte[]>() != null);
+            Contract.Ensures(Contract.Result<byte[]>().Length == this.ByteSize);
+
+            return default(byte[]);
+        }
+
+        [Pure]
         public void WriteToBitcoinBuffer(byte[] buffer, int offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null);
