@@ -62,6 +62,15 @@ namespace xpdm.Bitcoin
             ((ushort)Endpoint.Port).WriteBytesBE(buffer, offset + PORT_OFFSET);
         }
 
+        private readonly static NetworkAddress s_IPv6Any = new NetworkAddress(0, new IPEndPoint(IPAddress.IPv6Any, 0));
+        public static NetworkAddress IPv6Any
+        {
+            get
+            {
+                return s_IPv6Any;
+            }
+        }
+
         [ContractInvariantMethod]
         private void __Invariant()
         {
