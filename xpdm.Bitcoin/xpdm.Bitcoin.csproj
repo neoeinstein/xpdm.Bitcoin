@@ -80,6 +80,7 @@
     <Compile Include="InventoryObjectType.cs" />
     <Compile Include="InventoryVector.cs" />
     <Compile Include="MessagePayloadBase.cs" />
+    <Compile Include="MessagePayloadFactory.cs" />
     <Compile Include="Services.cs" />
     <Compile Include="IBitcoinSerializable.cs" />
     <Compile Include="IBitcoinSerializableContract.cs" />
