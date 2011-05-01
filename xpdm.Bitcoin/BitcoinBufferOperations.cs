@@ -25,6 +25,22 @@ namespace xpdm.Bitcoin
             buffer[offset + 7] = (byte)(val >> 56);
         }
 
+        public static void WriteBytesBE(this ulong val, byte[] buffer, int offset)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null);
+            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
+            Contract.Requires<ArgumentOutOfRangeException>(buffer.Length >= offset + UINT64_SIZE);
+
+            buffer[offset] = (byte)(val >> 56);
+            buffer[offset + 1] = (byte)(val >> 48);
+            buffer[offset + 2] = (byte)(val >> 40);
+            buffer[offset + 3] = (byte)(val >> 32);
+            buffer[offset + 4] = (byte)(val >> 24);
+            buffer[offset + 5] = (byte)(val >> 16);
+            buffer[offset + 6] = (byte)(val >> 8);
+            buffer[offset + 7] = (byte)val;
+        }
+
         public static ulong ReadUInt64(this byte[] buffer, int offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null);
@@ -39,6 +55,24 @@ namespace xpdm.Bitcoin
             val |= ((ulong)buffer[offset + 5]) << 40;
             val |= ((ulong)buffer[offset + 6]) << 48;
             val |= ((ulong)buffer[offset + 7]) << 56;
+
+            return val;
+        }
+
+        public static ulong ReadUInt64BE(this byte[] buffer, int offset)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null);
+            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
+            Contract.Requires<ArgumentOutOfRangeException>(buffer.Length >= offset + UINT64_SIZE);
+
+            ulong val = ((ulong)buffer[offset]) << 56;
+            val |= ((ulong)buffer[offset + 1]) << 48;
+            val |= ((ulong)buffer[offset + 2]) << 40;
+            val |= ((ulong)buffer[offset + 3]) << 32;
+            val |= ((ulong)buffer[offset + 4]) << 24;
+            val |= ((ulong)buffer[offset + 5]) << 16;
+            val |= ((ulong)buffer[offset + 6]) << 8;
+            val |= buffer[offset + 7];
 
             return val;
         }
