@@ -17,6 +17,10 @@ namespace xpdm.Bitcoin
             {
                 return new VersionPayload(buffer, offset);
             }
+            if (command.Equals("verack", StringComparison.Ordinal))
+            {
+                return new VerAckPayload(buffer, offset);
+            }
 
             return null;
         }

@@ -74,6 +74,7 @@
     <Compile Include="BitcoinBufferOperations.cs" />
     <Compile Include="BitcoinSerializableBase.cs" />
     <Compile Include="BlockHeader.cs" />
+    <Compile Include="VerAckPayload.cs" />
     <Compile Include="Hash.cs" />
     <Compile Include="IMessagePayload.cs" />
     <Compile Include="IMessagePayloadContract.cs" />
