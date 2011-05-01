@@ -77,7 +77,7 @@ namespace xpdm.Bitcoin
             {
                 Checksum = buffer.ReadUInt32(offset + CHECKSUM_OFFSET);
             }
-            Payload = MessagePayloadFactory.ConstructMessagePayload(Command, buffer, offset + PayloadOffset);
+            Payload = MessagePayloadFactory.ConstructMessagePayload(Command, buffer, offset + PayloadOffset, PayloadLength);
         }
 
         public override uint ByteSize
@@ -106,6 +106,7 @@ namespace xpdm.Bitcoin
         {
             Contract.Invariant(!string.IsNullOrWhiteSpace(Command), "Command cannot be null");
             Contract.Invariant(PayloadLength <= uint.MaxValue - 24, "PayloadLength is too large");
+            Contract.Invariant(Payload != null);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace xpdm.Bitcoin
             return null;
         }
 
-        public static MessagePayloadBase ConstructMessagePayload(string command, byte[] buffer, int offset, int length)
+        public static MessagePayloadBase ConstructMessagePayload(string command, byte[] buffer, int offset, uint length)
         {
             Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(command), "command");
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
@@ -38,7 +38,7 @@ namespace xpdm.Bitcoin
 
             if (payload == null)
             {
-                //return new UnknownPayload(buffer, offset, length);
+                return new UnknownPayload(command, buffer, offset, length);
             }
             return payload;
         }
