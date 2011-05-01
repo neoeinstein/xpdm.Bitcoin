@@ -63,6 +63,7 @@ namespace xpdm.Bitcoin
         }
 
         public Message(byte[] buffer, int offset)
+            : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
             Contract.Requires<ArgumentException>(buffer.Length > 0, "buffer");

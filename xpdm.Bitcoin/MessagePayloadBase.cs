@@ -13,5 +13,12 @@ namespace xpdm.Bitcoin
         {
             get { return true; }
         }
+
+        protected MessagePayloadBase() { }
+
+        protected MessagePayloadBase(byte[] buffer, int offset)
+            : base(buffer, offset)
+        {
+        }
     }
 }

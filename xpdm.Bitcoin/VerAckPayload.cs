@@ -29,6 +29,7 @@ namespace xpdm.Bitcoin
         }
 
         public VerAckPayload(byte[] buffer, int offset)
+            : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
             Contract.Requires<ArgumentException>(buffer.Length >= BYTESIZE, "buffer");

@@ -60,6 +60,7 @@ namespace xpdm.Bitcoin
         }
 
         public VersionPayload(byte[] buffer, int offset)
+            : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
             Contract.Requires<ArgumentException>(buffer.Length >= BASIC_VERSION_LENGTH, "buffer");
