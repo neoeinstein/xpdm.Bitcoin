@@ -29,6 +29,8 @@ namespace xpdm.Bitcoin
 
         public VarString(byte[] buffer, int offset)
         {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Requires<ArgumentNullException>(buffer.Length > 0, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
             Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length, "offset");
             Contract.EnsuresOnThrow<IndexOutOfRangeException>(Contract.ValueAtReturn(out this).Length == 0);

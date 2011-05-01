@@ -11,6 +11,7 @@ namespace xpdm.Bitcoin
 
         protected BitcoinSerializableBase(byte[] buffer, int offset)
         {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
             Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length, "offset");
         }

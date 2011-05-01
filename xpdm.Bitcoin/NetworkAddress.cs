@@ -28,6 +28,8 @@ namespace xpdm.Bitcoin
         public NetworkAddress(byte[] buffer, int offset)
             : base(buffer, offset)
         {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Requires<ArgumentNullException>(buffer.Length >= BYTESIZE, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
             Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - BYTESIZE, "offset");
 
