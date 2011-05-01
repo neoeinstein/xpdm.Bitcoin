@@ -5,13 +5,13 @@ using System.Net.Sockets;
 
 namespace xpdm.Bitcoin
 {
-    public class NetworkAddress : IBitcoinSerializable
+    public class NetworkAddress : BitcoinSerializableBase
     {
         public Services Services { get; private set; }
         public IPEndPoint Endpoint { get; private set; }
 
         private const uint BYTESIZE = 26;
-        public uint ByteSize
+        public override uint ByteSize
         {
             get { return BYTESIZE; }
         }
@@ -26,6 +26,7 @@ namespace xpdm.Bitcoin
         }
 
         public NetworkAddress(byte[] buffer, int offset)
+            : base(buffer, offset)
         {
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
             Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - BYTESIZE, "offset");
@@ -43,7 +44,7 @@ namespace xpdm.Bitcoin
         private const int PORT_OFFSET = ADDRESS_IPV6_OFFSET + 16;
 
         [Pure]
-        public void WriteToBitcoinBuffer(byte[] buffer, int offset)
+        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
         {
             ((ulong)Services).WriteBytes(buffer, offset);
             switch(Endpoint.AddressFamily)

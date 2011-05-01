@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="Base58Convert.cs" />
     <Compile Include="BitcoinBufferOperations.cs" />
+    <Compile Include="BitcoinSerializableBase.cs" />
     <Compile Include="Services.cs" />
     <Compile Include="IBitcoinSerializable.cs" />
     <Compile Include="IBitcoinSerializableContract.cs" />
