@@ -6,7 +6,7 @@ namespace xpdm.Bitcoin
     public class InventoryVector : BitcoinSerializableBase
     {
         public InventoryObjectType Type { get; private set; }
-        public byte[] ObjectHash { get; private set; }
+        public Hash ObjectHash { get; private set; }
 
         private const int BYTESIZE = 36;
         public override uint ByteSize
@@ -14,14 +14,12 @@ namespace xpdm.Bitcoin
             get { return BYTESIZE; }
         }
 
-        public InventoryVector(InventoryObjectType type, byte[] objectHash)
+        public InventoryVector(InventoryObjectType type, Hash objectHash)
         {
             Contract.Requires<ArgumentNullException>(objectHash != null);
-            Contract.Requires<ArgumentException>(objectHash.Length >= OBJECTHASH_LENGTH);
 
             Type = type;
-            ObjectHash = new byte[OBJECTHASH_LENGTH];
-            Array.Copy(objectHash, ObjectHash, OBJECTHASH_LENGTH);
+            ObjectHash = objectHash;
         }
 
         public InventoryVector(byte[] buffer, int offset)
@@ -33,25 +31,22 @@ namespace xpdm.Bitcoin
             Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - BYTESIZE, "offset");
 
             Type = (InventoryObjectType)buffer.ReadUInt32(offset);
-            ObjectHash = new byte[OBJECTHASH_LENGTH];
-            Array.Copy(buffer, offset + OBJECTHASH_OFFSET, ObjectHash, 0, OBJECTHASH_LENGTH);
+            ObjectHash = new Hash(buffer, offset + OBJECTHASH_OFFSET);
         }
 
         private const int OBJECTHASH_OFFSET = 4;
-        private const int OBJECTHASH_LENGTH = 32;
 
         [Pure]
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
         {
             ((uint)Type).WriteBytes(buffer, offset);
-            Array.Copy(ObjectHash, 0, buffer, offset + OBJECTHASH_OFFSET, OBJECTHASH_LENGTH);
+            ObjectHash.WriteToBitcoinBuffer(buffer, offset + OBJECTHASH_OFFSET);
         }
 
         [ContractInvariantMethod]
         private void __Invariant()
         {
             Contract.Invariant(ObjectHash != null);
-            Contract.Invariant(ObjectHash.Length == OBJECTHASH_LENGTH, "Expected hash length is 32.");
         }
     }
 }
