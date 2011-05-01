@@ -63,12 +63,12 @@ namespace xpdm.Bitcoin
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
             Contract.Requires<ArgumentException>(buffer.Length >= BASIC_VERSION_LENGTH, "buffer");
-            Contract.Requires<ArgumentException>(buffer[offset] >= 106 && buffer.Length >= VERSION_106_LENGTH, "buffer");
-            Contract.Requires<ArgumentException>(buffer[offset] >= 209 && buffer.Length >= VERSION_209_LENGTH, "buffer");
+            //Contract.Requires<ArgumentException>(buffer[offset] >= 106 && buffer.Length >= VERSION_106_LENGTH, "buffer");
+            //Contract.Requires<ArgumentException>(buffer[offset] >= 209 && buffer.Length >= VERSION_209_LENGTH, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
             Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - BASIC_VERSION_LENGTH, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(buffer[offset] >= 106 && offset <= buffer.Length - VERSION_106_LENGTH, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(buffer[offset] >= 209 && offset <= buffer.Length - VERSION_209_LENGTH, "offset");
+            //Contract.Requires<ArgumentOutOfRangeException>(buffer[offset] >= 106 && offset <= buffer.Length - VERSION_106_LENGTH, "offset");
+            //Contract.Requires<ArgumentOutOfRangeException>(buffer[offset] >= 209 && offset <= buffer.Length - VERSION_209_LENGTH, "offset");
 
             Version = buffer.ReadUInt32(offset);
             Services = (Services)buffer.ReadUInt64(offset + SERVICES_OFFSET);
