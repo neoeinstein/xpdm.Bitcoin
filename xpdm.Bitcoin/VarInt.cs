@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin
 {
-    public struct VarInt
+    public struct VarInt : IBitcoinSerializable
     {
         private readonly ulong _value;
 
@@ -45,19 +45,19 @@ namespace xpdm.Bitcoin
             _value = val;
         }
 
-        public int ByteSize
+        public uint ByteSize
         {
             get
             {
-                Contract.Ensures(Contract.Result<int>() > 0);
+                Contract.Ensures(Contract.Result<uint>() > 0);
 
                 return VarInt.GetByteSize(_value);
             }
         }
 
-        public static int GetByteSize(ulong value)
+        public static uint GetByteSize(ulong value)
         {
-            Contract.Ensures(Contract.Result<int>() > 0);
+            Contract.Ensures(Contract.Result<uint>() > 0);
 
             if (value < 253)
                 return 1;
@@ -86,7 +86,44 @@ namespace xpdm.Bitcoin
                     return new [] { (byte)255, (byte) _value,        (byte)(_value >> 8 ), (byte)(_value >> 16), (byte)(_value >> 24),
                                                (byte)(_value >> 32), (byte)(_value >> 40), (byte)(_value >> 48), (byte)(_value >> 56)};
             }
-            return new byte[] {};
+            return new byte[] { 0 };
+        }
+
+        [Pure]
+        public void WriteToBitcoinBuffer(byte[] buffer, int offset)
+        {
+            switch(ByteSize)
+            {
+                case 1:
+                    buffer[offset] = (byte)_value;
+                    break;
+                case 3:
+                    buffer[offset] = (byte)253;
+                    buffer[offset + 1] = (byte)_value;
+                    buffer[offset + 2] = (byte)(_value >> 8);
+                    break;
+                case 5:
+                    buffer[offset] = (byte)254;
+                    buffer[offset + 1] = (byte)_value;
+                    buffer[offset + 2] = (byte)(_value >> 8);
+                    buffer[offset + 3] = (byte)(_value >> 16);
+                    buffer[offset + 4] = (byte)(_value >> 24);
+                    break;
+                case 9:
+                    buffer[offset] = (byte)254;
+                    buffer[offset + 1] = (byte)_value;
+                    buffer[offset + 2] = (byte)(_value >> 8);
+                    buffer[offset + 3] = (byte)(_value >> 16);
+                    buffer[offset + 4] = (byte)(_value >> 24);
+                    buffer[offset + 5] = (byte)(_value >> 32);
+                    buffer[offset + 6] = (byte)(_value >> 40);
+                    buffer[offset + 7] = (byte)(_value >> 48);
+                    buffer[offset + 8] = (byte)(_value >> 56);
+                    break;
+                default:
+                    buffer[offset] = (byte)0;
+                    break;
+            }
         }
 
         public static implicit operator VarInt(ulong value)

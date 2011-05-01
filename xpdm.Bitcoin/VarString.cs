@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin
 {
-    public struct VarString
+    public struct VarString : IBitcoinSerializable
     {
         private readonly VarInt _length;
         private readonly string _value;
@@ -35,27 +35,27 @@ namespace xpdm.Bitcoin
             Contract.EnsuresOnThrow<IndexOutOfRangeException>(Contract.ValueAtReturn(out this).Value.Length == 0);
 
             var l = new VarInt(buffer, offset);
-            var v = Encoding.ASCII.GetString(buffer, offset + l.ByteSize, (int)l.Value);
+            var v = Encoding.ASCII.GetString(buffer, (int)((uint)offset + l.ByteSize), (int)l.Value);
 
             _length = l;
             _value = v;
         }
 
-        public int ByteSize
+        public uint ByteSize
         {
             get
             {
-                Contract.Ensures(Contract.Result<int>() > 0);
+                Contract.Ensures(Contract.Result<uint>() > 0);
 
-                return _value.Length + _length.ByteSize;
+                return (uint)_value.Length + _length.ByteSize;
             }
         }
 
-        public static int GetByteSize(string value)
+        public static uint GetByteSize(string value)
         {
-            Contract.Ensures(Contract.Result<int>() > 0);
+            Contract.Ensures(Contract.Result<uint>() > 0);
 
-            return value.Length + VarInt.GetByteSize((ulong)value.Length);
+            return (uint)value.Length + VarInt.GetByteSize((ulong)value.Length);
         }
 
         [Pure]
@@ -66,10 +66,16 @@ namespace xpdm.Bitcoin
 
             var bytes = new byte[ByteSize];
 
-            Length.ToBytes().CopyTo(bytes, 0);
-            Encoding.ASCII.GetBytes(_value, 0, _value.Length, bytes, Length.ByteSize);
+            this.WriteToBitcoinBuffer(bytes, 0);
 
             return bytes;
+        }
+
+        [Pure]
+        public void WriteToBitcoinBuffer(byte[] buffer, int offset)
+        {
+            Length.WriteToBitcoinBuffer(buffer, offset);
+            Encoding.ASCII.GetBytes(_value, 0, (int)_value.Length, buffer, (int)((uint)offset + Length.ByteSize));
         }
 
         public static implicit operator VarString(string value)
