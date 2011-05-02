@@ -7,7 +7,7 @@ namespace xpdm.Bitcoin
     {
         public override string Command
         {
-            get { return "version"; }
+            get { return VersionPayload.CommandText; }
         }
 
         public override bool IncludeChecksum
@@ -118,10 +118,16 @@ namespace xpdm.Bitcoin
             }
         }
 
+        public static string CommandText
+        {
+            get { return "version"; }
+        }
+
         public static int MinimumByteSize
         {
             get { return BitcoinBufferOperations.UINT32_SIZE + BitcoinBufferOperations.UINT64_SIZE * 2 + NetworkAddress.MinimumByteSize; }
         }
+
         [ContractInvariantMethod]
         private void __Invariant()
         {

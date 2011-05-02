@@ -7,7 +7,7 @@ namespace xpdm.Bitcoin
     {
         public override string Command
         {
-            get { return "verack"; }
+            get { return VerAckPayload.CommandText; }
         }
 
         public override bool IncludeChecksum
@@ -34,6 +34,14 @@ namespace xpdm.Bitcoin
             Contract.Requires<ArgumentException>(buffer.Length >= VerAckPayload.MinimumByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
             Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - VerAckPayload.MinimumByteSize, "offset");
+        }
+
+        public static string CommandText
+        {
+            get
+            {
+                return "verack";
+            }
         }
 
         public static int MinimumByteSize
