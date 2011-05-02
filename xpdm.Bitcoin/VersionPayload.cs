@@ -15,22 +15,21 @@ namespace xpdm.Bitcoin
             get { return false; }
         }
 
-        private const uint BASIC_VERSION_LENGTH = 46;
-        private const uint VERSION_106_LENGTH = BASIC_VERSION_LENGTH + 34;
-        private const uint VERSION_209_LENGTH = VERSION_106_LENGTH + 4;
+        private static readonly int VERSION_106_LENGTH = VersionPayload.MinimumByteSize + NetworkAddress.MinimumByteSize + BitcoinBufferOperations.UINT64_SIZE;
+        private static readonly int VERSION_209_LENGTH = VERSION_106_LENGTH + BitcoinBufferOperations.UINT32_SIZE;
         public override uint ByteSize
         {
             get 
             {
                 if (Version >= 209)
                 {
-                    return VERSION_209_LENGTH + (uint)SubVersionNum.ByteSize;
+                    return (uint)(VERSION_209_LENGTH + SubVersionNum.ByteSize);
                 }
                 if (Version >= 106)
                 {
-                    return VERSION_106_LENGTH + (uint)SubVersionNum.ByteSize;
+                    return (uint)(VERSION_106_LENGTH + SubVersionNum.ByteSize);
                 }
-                return BASIC_VERSION_LENGTH;
+                return (uint)VersionPayload.MinimumByteSize;
             }
         }
 
@@ -63,13 +62,9 @@ namespace xpdm.Bitcoin
             : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= BASIC_VERSION_LENGTH, "buffer");
-            //Contract.Requires<ArgumentException>(buffer[offset] >= 106 && buffer.Length >= VERSION_106_LENGTH, "buffer");
-            //Contract.Requires<ArgumentException>(buffer[offset] >= 209 && buffer.Length >= VERSION_209_LENGTH, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length >= VersionPayload.MinimumByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - BASIC_VERSION_LENGTH, "offset");
-            //Contract.Requires<ArgumentOutOfRangeException>(buffer[offset] >= 106 && offset <= buffer.Length - VERSION_106_LENGTH, "offset");
-            //Contract.Requires<ArgumentOutOfRangeException>(buffer[offset] >= 209 && offset <= buffer.Length - VERSION_209_LENGTH, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - VersionPayload.MinimumByteSize, "offset");
 
             Version = buffer.ReadUInt32(offset);
             Services = (Services)buffer.ReadUInt64(offset + SERVICES_OFFSET);
@@ -91,13 +86,13 @@ namespace xpdm.Bitcoin
             }
         }
 
-        private const int SERVICES_OFFSET = 4;
-        private const int TIMESTAMP_OFFSET = SERVICES_OFFSET + 8;
-        private const int EMIT_ADDRESS_OFFSET = TIMESTAMP_OFFSET + 8;
-        private const int RECV_ADDRESS_OFFSET = EMIT_ADDRESS_OFFSET + 26;
-        private const int NONCE_OFFSET = RECV_ADDRESS_OFFSET + 26;
-        private const int SUBVER_OFFSET = NONCE_OFFSET + 8;
-        private const int STARTHEIGHT_OFFSET = SUBVER_OFFSET;
+        private const int SERVICES_OFFSET = BitcoinBufferOperations.UINT32_SIZE;
+        private const int TIMESTAMP_OFFSET = SERVICES_OFFSET + BitcoinBufferOperations.UINT64_SIZE;
+        private const int EMIT_ADDRESS_OFFSET = TIMESTAMP_OFFSET + BitcoinBufferOperations.UINT64_SIZE;
+        private static readonly int RECV_ADDRESS_OFFSET = EMIT_ADDRESS_OFFSET + NetworkAddress.MinimumByteSize;
+        private static readonly int NONCE_OFFSET = RECV_ADDRESS_OFFSET + NetworkAddress.MinimumByteSize;
+        private static readonly int SUBVER_OFFSET = NONCE_OFFSET + BitcoinBufferOperations.UINT64_SIZE;
+        private static readonly int STARTHEIGHT_OFFSET = SUBVER_OFFSET;
 
         [Pure]
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
