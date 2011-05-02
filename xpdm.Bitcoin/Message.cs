@@ -92,8 +92,8 @@ namespace xpdm.Bitcoin
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
         {
             ((uint)Network).WriteBytes(buffer, offset);
-            Encoding.ASCII.GetBytes(Command, 0, MAX_COMMAND_LENGTH, buffer, offset + COMMAND_OFFSET);
-            ByteSize.WriteBytes(buffer, offset + LENGTH_OFFSET);
+            Encoding.ASCII.GetBytes(Command, 0, Command.Length < MAX_COMMAND_LENGTH ? Command.Length : MAX_COMMAND_LENGTH, buffer, offset + COMMAND_OFFSET);
+            PayloadLength.WriteBytes(buffer, offset + LENGTH_OFFSET);
             if (Payload.IncludeChecksum)
             {
                 Checksum.WriteBytes(buffer, offset + CHECKSUM_OFFSET);
