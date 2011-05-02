@@ -3,6 +3,9 @@ using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin
 {
+    /// <summary>
+    /// A variable length integer capable of handling values up to 64-bits.
+    /// </summary>
     public struct VarInt
     {
         private readonly ulong _value;
