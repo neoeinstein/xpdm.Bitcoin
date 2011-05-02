@@ -6,35 +6,26 @@ namespace xpdm.Bitcoin
     /// <summary>
     /// A variable length integer capable of handling values up to 64-bits.
     /// </summary>
-    public struct VarInt
+    public struct VarInt : IBitcoinSerializable
     {
         private readonly ulong _value;
 
-        [CLSCompliant(false)]
         public ulong Value
         {
             get { return _value; }
         }
 
-        public long LongValue
-        {
-            get { return (long) _value; }
-        }
-
-        [CLSCompliant(false)]
         public VarInt(ulong value)
         {
             _value = value;
         }
 
-        public VarInt(long value) : this((ulong) value)
-        {
-        }
-
         public VarInt(byte[] buffer, int offset)
         {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length >= VarInt.MinimumByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - VarInt.MinimumByteSize, "offset");
             Contract.EnsuresOnThrow<IndexOutOfRangeException>(Contract.ValueAtReturn(out this).Value == 0);
             
             ulong val = buffer[offset];
@@ -59,27 +50,28 @@ namespace xpdm.Bitcoin
             _value = val;
         }
 
-        public int ByteSize
+        public uint ByteSize
         {
             get
             {
-                Contract.Ensures(Contract.Result<int>() == 1 || Contract.Result<int>() == 3 || Contract.Result<int>() == 5 || Contract.Result<int>() == 9);
-
-                if (_value < 253)
-                    return 1;
-                if (_value < 65536)
-                    return 3;
-                if (_value < 4294967296L)
-                    return 5;
-                return 9;
+                return VarInt.GetByteSize(_value);
             }
         }
 
+        public static uint GetByteSize(ulong value)
+        {
+            if (value < 253)
+                return 1;
+            if (value < 65536)
+                return 3;
+            if (value < 4294967296L)
+                return 5;
+            return 9;
+        }
+
+        [Pure]
         public byte[] ToBytes()
         {
-            Contract.Ensures(Contract.Result<byte[]>() != null);
-            Contract.Ensures(Contract.Result<byte[]>().Length == ByteSize);
-
             switch(ByteSize)
             {
                 case 1:
@@ -92,27 +84,57 @@ namespace xpdm.Bitcoin
                     return new [] { (byte)255, (byte) _value,        (byte)(_value >> 8 ), (byte)(_value >> 16), (byte)(_value >> 24),
                                                (byte)(_value >> 32), (byte)(_value >> 40), (byte)(_value >> 48), (byte)(_value >> 56)};
             }
-            return new byte[] {};
+            return new byte[] { 0 };
         }
 
-        public static explicit operator VarInt(long value)
+        [Pure]
+        public void WriteToBitcoinBuffer(byte[] buffer, int offset)
+        {
+            switch(ByteSize)
+            {
+                case 1:
+                    buffer[offset] = (byte)_value;
+                    break;
+                case 3:
+                    buffer[offset] = (byte)253;
+                    buffer[offset + 1] = (byte)_value;
+                    buffer[offset + 2] = (byte)(_value >> 8);
+                    break;
+                case 5:
+                    buffer[offset] = (byte)254;
+                    buffer[offset + 1] = (byte)_value;
+                    buffer[offset + 2] = (byte)(_value >> 8);
+                    buffer[offset + 3] = (byte)(_value >> 16);
+                    buffer[offset + 4] = (byte)(_value >> 24);
+                    break;
+                case 9:
+                    buffer[offset] = (byte)254;
+                    buffer[offset + 1] = (byte)_value;
+                    buffer[offset + 2] = (byte)(_value >> 8);
+                    buffer[offset + 3] = (byte)(_value >> 16);
+                    buffer[offset + 4] = (byte)(_value >> 24);
+                    buffer[offset + 5] = (byte)(_value >> 32);
+                    buffer[offset + 6] = (byte)(_value >> 40);
+                    buffer[offset + 7] = (byte)(_value >> 48);
+                    buffer[offset + 8] = (byte)(_value >> 56);
+                    break;
+                default:
+                    buffer[offset] = (byte)0;
+                    break;
+            }
+        }
+
+        public static int MinimumByteSize
+        {
+            get { return BitcoinBufferOperations.UINT8_SIZE; }
+        }
+
+        public static implicit operator VarInt(ulong value)
         {
             return new VarInt(value);
         }
 
-        public static explicit operator long(VarInt value)
-        {
-            return (long)value._value;
-        }
-
-        [CLSCompliant(false)]
-        public static explicit operator VarInt(ulong value)
-        {
-            return new VarInt(value);
-        }
-
-        [CLSCompliant(false)]
-        public static explicit operator ulong(VarInt value)
+        public static implicit operator ulong(VarInt value)
         {
             return value._value;
         }

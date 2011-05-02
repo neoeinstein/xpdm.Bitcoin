@@ -70,9 +70,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddrPayload.cs" />
     <Compile Include="Base58Convert.cs" />
+    <Compile Include="BitcoinBufferOperations.cs" />
+    <Compile Include="BitcoinSerializableBase.cs" />
+    <Compile Include="BlockHeader.cs" />
+    <Compile Include="TimestampedNetworkAddress.cs" />
+    <Compile Include="UnknownPayload.cs" />
+    <Compile Include="VerAckPayload.cs" />
+    <Compile Include="Hash.cs" />
+    <Compile Include="IMessagePayload.cs" />
+    <Compile Include="IMessagePayloadContract.cs" />
+    <Compile Include="InventoryObjectType.cs" />
+    <Compile Include="InventoryVector.cs" />
+    <Compile Include="MessagePayloadBase.cs" />
+    <Compile Include="MessagePayloadFactory.cs" />
+    <Compile Include="Services.cs" />
+    <Compile Include="IBitcoinSerializable.cs" />
+    <Compile Include="IBitcoinSerializableContract.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="MessageNetwork.cs" />
+    <Compile Include="NetworkAddress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VarInt.cs" />
+    <Compile Include="VarString.cs" />
+    <Compile Include="VersionPayload.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
