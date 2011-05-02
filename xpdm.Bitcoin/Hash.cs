@@ -21,10 +21,9 @@ namespace xpdm.Bitcoin
             }
         }
 
-        private const int BYTESIZE = 32;
         public override uint ByteSize
         {
-            get { return BYTESIZE; }
+            get { return (uint)Hash.MinimumByteSize; }
         }
 
         public Hash(byte[] hash)
@@ -36,9 +35,9 @@ namespace xpdm.Bitcoin
             : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= BYTESIZE, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length >= Hash.MinimumByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - BYTESIZE, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - Hash.MinimumByteSize, "offset");
 
             _bytes = new byte[HASH_LENGTH];
             Array.Copy(buffer, offset, _bytes, 0, HASH_LENGTH);
@@ -50,6 +49,11 @@ namespace xpdm.Bitcoin
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
         {
             Array.Copy(_bytes, 0, buffer, offset, HASH_LENGTH);
+        }
+
+        public static int MinimumByteSize
+        {
+            get { return HASH_LENGTH * BitcoinBufferOperations.UINT8_SIZE; }
         }
     }
 }

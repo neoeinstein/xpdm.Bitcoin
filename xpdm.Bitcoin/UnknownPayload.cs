@@ -63,6 +63,14 @@ namespace xpdm.Bitcoin
             Array.Copy(_bytes, 0, buffer, offset, ByteSize);
         }
 
+        public static int MinimumByteSize
+        {
+            get
+            {
+                return 0;
+            }
+        }
+
         [ContractInvariantMethod]
         private void __Invariant()
         {

@@ -8,7 +8,6 @@ namespace xpdm.Bitcoin
 {
     internal static class BitcoinBufferOperations
     {
-        private const int UINT64_SIZE = 8;
         public static void WriteBytes(this ulong val, byte[] buffer, int offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null);
@@ -77,7 +76,6 @@ namespace xpdm.Bitcoin
             return val;
         }
 
-        private const int UINT32_SIZE = 4;
         public static void WriteBytes(this uint val, byte[] buffer, int offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null);
@@ -104,7 +102,6 @@ namespace xpdm.Bitcoin
             return val;
         }
 
-        private const int UINT16_SIZE = 2;
         public static void WriteBytes(this ushort val, byte[] buffer, int offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null);
@@ -148,5 +145,10 @@ namespace xpdm.Bitcoin
 
             return val;
         }
+
+        public const int UINT8_SIZE = 1;
+        public const int UINT16_SIZE = 2;
+        public const int UINT32_SIZE = 4;
+        public const int UINT64_SIZE = 8;
     }
 }

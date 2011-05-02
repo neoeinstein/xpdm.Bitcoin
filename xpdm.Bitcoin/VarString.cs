@@ -30,9 +30,9 @@ namespace xpdm.Bitcoin
         public VarString(byte[] buffer, int offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length > 0, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length >= VarString.MinimumByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - VarString.MinimumByteSize, "offset");
             Contract.EnsuresOnThrow<IndexOutOfRangeException>(Contract.ValueAtReturn(out this).Length == 0);
             Contract.EnsuresOnThrow<IndexOutOfRangeException>(Contract.ValueAtReturn(out this).Value.Length == 0);
 
@@ -71,6 +71,11 @@ namespace xpdm.Bitcoin
         {
             Length.WriteToBitcoinBuffer(buffer, offset);
             Encoding.ASCII.GetBytes(_value, 0, (int)_value.Length, buffer, (int)((uint)offset + Length.ByteSize));
+        }
+
+        public static int MinimumByteSize
+        {
+            get { return VarInt.MinimumByteSize; }
         }
 
         public static implicit operator VarString(string value)

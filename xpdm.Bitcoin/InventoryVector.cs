@@ -8,10 +8,9 @@ namespace xpdm.Bitcoin
         public InventoryObjectType Type { get; private set; }
         public Hash ObjectHash { get; private set; }
 
-        private const int BYTESIZE = 36;
         public override uint ByteSize
         {
-            get { return BYTESIZE; }
+            get { return (uint)InventoryVector.MinimumByteSize; }
         }
 
         public InventoryVector(InventoryObjectType type, Hash objectHash)
@@ -26,21 +25,26 @@ namespace xpdm.Bitcoin
             : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= BYTESIZE, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length >= InventoryVector.MinimumByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - BYTESIZE, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - InventoryVector.MinimumByteSize, "offset");
 
             Type = (InventoryObjectType)buffer.ReadUInt32(offset);
             ObjectHash = new Hash(buffer, offset + OBJECTHASH_OFFSET);
         }
 
-        private const int OBJECTHASH_OFFSET = 4;
+        private const int OBJECTHASH_OFFSET = BitcoinBufferOperations.UINT32_SIZE;
 
         [Pure]
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
         {
             ((uint)Type).WriteBytes(buffer, offset);
             ObjectHash.WriteToBitcoinBuffer(buffer, offset + OBJECTHASH_OFFSET);
+        }
+
+        public static int MinimumByteSize
+        {
+            get { return BitcoinBufferOperations.UINT32_SIZE + Hash.MinimumByteSize; }
         }
 
         [ContractInvariantMethod]

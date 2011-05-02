@@ -118,6 +118,10 @@ namespace xpdm.Bitcoin
             }
         }
 
+        public static int MinimumByteSize
+        {
+            get { return BitcoinBufferOperations.UINT32_SIZE + BitcoinBufferOperations.UINT64_SIZE * 2 + NetworkAddress.MinimumByteSize; }
+        }
         [ContractInvariantMethod]
         private void __Invariant()
         {

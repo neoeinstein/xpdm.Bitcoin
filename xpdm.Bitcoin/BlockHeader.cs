@@ -13,10 +13,9 @@ namespace xpdm.Bitcoin
         public uint Nonce { get; private set; }
         public VarInt TransactionCount { get; private set; }
 
-        private const int BYTESIZE = 80;
         public override uint ByteSize
         {
-            get { return BYTESIZE + TransactionCount.ByteSize; }
+            get { return (uint)(BlockHeader.MinimumByteSize - VarInt.MinimumByteSize + TransactionCount.ByteSize); }
         }
 
         public BlockHeader(uint version, Hash previousBlock, Hash merkleRoot, uint timestamp, uint bits, uint nonce, VarInt transactionCount)
@@ -37,9 +36,9 @@ namespace xpdm.Bitcoin
             : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length > BYTESIZE, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length > BlockHeader.MinimumByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset < buffer.Length - BYTESIZE, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset < buffer.Length - BlockHeader.MinimumByteSize, "offset");
 
             Version = buffer.ReadUInt32(offset);
             PreviousBlock = new Hash(buffer, offset + PREVBLOCK_OFFSET);
@@ -50,12 +49,12 @@ namespace xpdm.Bitcoin
             TransactionCount = new VarInt(buffer, offset + TXCOUNT_OFFSET);
         }
 
-        private const int PREVBLOCK_OFFSET = 4;
-        private const int MERKLEROOT_OFFSET = PREVBLOCK_OFFSET + 32;
-        private const int TIMESTAMP_OFFSET = MERKLEROOT_OFFSET + 32;
-        private const int BITS_OFFSET = TIMESTAMP_OFFSET + 4;
-        private const int NONCE_OFFSET = BITS_OFFSET + 4;
-        private const int TXCOUNT_OFFSET = NONCE_OFFSET + 4;
+        private const int PREVBLOCK_OFFSET = BitcoinBufferOperations.UINT32_SIZE;
+        private static readonly int MERKLEROOT_OFFSET = PREVBLOCK_OFFSET + Hash.MinimumByteSize;
+        private static readonly int TIMESTAMP_OFFSET = MERKLEROOT_OFFSET + Hash.MinimumByteSize;
+        private static readonly int BITS_OFFSET = TIMESTAMP_OFFSET + BitcoinBufferOperations.UINT32_SIZE;
+        private static readonly int NONCE_OFFSET = BITS_OFFSET + BitcoinBufferOperations.UINT32_SIZE;
+        private static readonly int TXCOUNT_OFFSET = NONCE_OFFSET + BitcoinBufferOperations.UINT32_SIZE;
 
         [Pure]
         public override void WriteToBitcoinBuffer(byte[] bytes, int offset)
@@ -67,6 +66,14 @@ namespace xpdm.Bitcoin
             Bits.WriteBytes(bytes, offset + BITS_OFFSET);
             Nonce.WriteBytes(bytes, offset + NONCE_OFFSET);
             TransactionCount.WriteToBitcoinBuffer(bytes, offset + TXCOUNT_OFFSET);
+        }
+
+        public static int MinimumByteSize
+        {
+            get
+            {
+                return BitcoinBufferOperations.UINT32_SIZE * 4 + Hash.MinimumByteSize * 2 + VarInt.MinimumByteSize;
+            }
         }
 
         [ContractInvariantMethod]

@@ -20,9 +20,9 @@ namespace xpdm.Bitcoin
         public VarInt(byte[] buffer, int offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length > 0, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length >= VarInt.MinimumByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - VarInt.MinimumByteSize, "offset");
             Contract.EnsuresOnThrow<IndexOutOfRangeException>(Contract.ValueAtReturn(out this).Value == 0);
             
             ulong val = buffer[offset];
@@ -119,6 +119,11 @@ namespace xpdm.Bitcoin
                     buffer[offset] = (byte)0;
                     break;
             }
+        }
+
+        public static int MinimumByteSize
+        {
+            get { return BitcoinBufferOperations.UINT8_SIZE; }
         }
 
         public static implicit operator VarInt(ulong value)

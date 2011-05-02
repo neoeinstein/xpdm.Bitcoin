@@ -15,12 +15,11 @@ namespace xpdm.Bitcoin
             get { return false; }
         }
 
-        private const uint BYTESIZE = 0;
         public override uint ByteSize
         {
             get 
             {
-                return BYTESIZE;
+                return (uint)VerAckPayload.MinimumByteSize;
             }
         }
 
@@ -32,9 +31,17 @@ namespace xpdm.Bitcoin
             : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= BYTESIZE, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length >= VerAckPayload.MinimumByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - BYTESIZE, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - VerAckPayload.MinimumByteSize, "offset");
+        }
+
+        public static int MinimumByteSize
+        {
+            get
+            {
+                return 0;
+            }
         }
 
         [Pure]
