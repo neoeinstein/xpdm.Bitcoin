@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddrPayload.cs" />
     <Compile Include="Base58Convert.cs" />
     <Compile Include="BitcoinBufferOperations.cs" />
     <Compile Include="BitcoinSerializableBase.cs" />

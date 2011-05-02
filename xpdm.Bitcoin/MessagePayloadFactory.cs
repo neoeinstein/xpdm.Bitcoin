@@ -21,6 +21,10 @@ namespace xpdm.Bitcoin
             {
                 return new VerAckPayload(buffer, offset);
             }
+            if (command.Equals("addr", StringComparison.Ordinal))
+            {
+                return new AddrPayload(buffer, offset);
+            }
 
             return null;
         }
