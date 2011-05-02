@@ -1,0 +1,9 @@
+SIGHASH_ALL:
+  I agree that the funds in this input be transfered only if all of the outputs are as I have noted and the other inputs are also as noted in their specific order.
+SIGHASH_NONE:
+  I agree that the funds in this input be transfered regardless of the outputs specified only if all the other inputs are as they are noted in any order.
+SIGHASH_SINGLE:
+  I agree that the funds in this input be transfered only if the coresponding output is as I have noted, all other outputs before that one are the same in any order, and all the other inputs are as I have noted in any order.
+
+SIGHASH_ANYONECANPAY:
+  Modifies the above, removing all constraints that other inputs.
