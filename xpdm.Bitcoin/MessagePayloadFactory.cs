@@ -13,17 +13,45 @@ namespace xpdm.Bitcoin
 
             command = command.TrimEnd('\0');
 
-            if (command.Equals("version", StringComparison.Ordinal))
+            if (command.Equals(VersionPayload.CommandText, StringComparison.Ordinal))
             {
                 return new VersionPayload(buffer, offset);
             }
-            if (command.Equals("verack", StringComparison.Ordinal))
+            if (command.Equals(VerAckPayload.CommandText, StringComparison.Ordinal))
             {
                 return new VerAckPayload(buffer, offset);
             }
-            if (command.Equals("addr", StringComparison.Ordinal))
+            if (command.Equals(AddrPayload.CommandText, StringComparison.Ordinal))
             {
                 return new AddrPayload(buffer, offset);
+            }
+            if (command.Equals(InvPayload.CommandText, StringComparison.Ordinal))
+            {
+                return new InvPayload(buffer, offset);
+            }
+            if (command.Equals(GetDataPayload.CommandText, StringComparison.Ordinal))
+            {
+                return new GetDataPayload(buffer, offset);
+            }
+            if (command.Equals(GetBlocksPayload.CommandText, StringComparison.Ordinal))
+            {
+                return new GetBlocksPayload(buffer, offset);
+            }
+            if (command.Equals(GetHeadersPayload.CommandText, StringComparison.Ordinal))
+            {
+                return new GetHeadersPayload(buffer, offset);
+            }
+            if (command.Equals(GetAddrPayload.CommandText, StringComparison.Ordinal))
+            {
+                return new GetAddrPayload(buffer, offset);
+            }
+            if (command.Equals(PingPayload.CommandText, StringComparison.Ordinal))
+            {
+                return new PingPayload(buffer, offset);
+            }
+            if (command.Equals(ReplyPayload.CommandText, StringComparison.Ordinal))
+            {
+                return new ReplyPayload(buffer, offset);
             }
 
             return null;
