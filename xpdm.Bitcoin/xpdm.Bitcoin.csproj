@@ -82,6 +82,8 @@
     <Compile Include="GetBlocksPayload.cs" />
     <Compile Include="GetDataPayload.cs" />
     <Compile Include="InvPayload.cs" />
+    <Compile Include="ScriptOpCode.cs" />
+    <Compile Include="SignatureHashType.cs" />
     <Compile Include="TimestampedNetworkAddress.cs" />
     <Compile Include="TransactionReply.cs" />
     <Compile Include="UnknownPayload.cs" />
