@@ -31,5 +31,10 @@ namespace xpdm.Bitcoin
 
         [Pure]
         public abstract void WriteToBitcoinBuffer(byte[] bytes, int offset);
+
+        public static T ReadFromBitcoinBuffer<T>(byte[] buffer, int offset)
+        {
+            return (T) typeof (T).GetConstructor(new[] {typeof (byte[]), typeof (int)}).Invoke(new object[] {buffer, offset});
+        }
     }
 }

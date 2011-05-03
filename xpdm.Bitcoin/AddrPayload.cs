@@ -44,14 +44,7 @@ namespace xpdm.Bitcoin
         public AddrPayload(byte[] buffer, int offset)
         {
             Count = new VarInt(buffer, offset);
-            var addrList = new TimestampedNetworkAddress[Count];
-            int off = offset + (int)Count.ByteSize;
-            for (uint i = 0; i < Count; ++i)
-            {
-                addrList[i] = new TimestampedNetworkAddress(buffer, off);
-                off += (int)addrList[i].ByteSize;
-            }
-            _addressList = addrList;
+            _addressList = buffer.ReadArray<TimestampedNetworkAddress>(offset + (int)Count.ByteSize, Count);
         }
 
         private const uint INCLUDE_TIMESTAMP_VERSION = 31402;
@@ -59,12 +52,7 @@ namespace xpdm.Bitcoin
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
         {
             Count.WriteToBitcoinBuffer(buffer, offset);
-            int off = offset + (int)Count.ByteSize;
-            foreach(var addr in _addressList)
-            {
-                addr.WriteToBitcoinBuffer(buffer, off);
-                off += (int)addr.ByteSize;
-            }
+            BitcoinBufferOperations.WriteBytes(_addressList, buffer, offset + (int)Count.ByteSize, Count);
         }
 
         public static string CommandText
