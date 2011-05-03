@@ -57,15 +57,15 @@ namespace xpdm.Bitcoin
         private static readonly int TXCOUNT_OFFSET = NONCE_OFFSET + BitcoinBufferOperations.UINT32_SIZE;
 
         [Pure]
-        public override void WriteToBitcoinBuffer(byte[] bytes, int offset)
+        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
         {
-            Version.WriteBytes(bytes, offset);
-            PreviousBlock.WriteToBitcoinBuffer(bytes, offset + PREVBLOCK_OFFSET);
-            MerkleRoot.WriteToBitcoinBuffer(bytes, offset + MERKLEROOT_OFFSET);
-            Timestamp.WriteBytes(bytes, offset + TIMESTAMP_OFFSET);
-            Bits.WriteBytes(bytes, offset + BITS_OFFSET);
-            Nonce.WriteBytes(bytes, offset + NONCE_OFFSET);
-            TransactionCount.WriteToBitcoinBuffer(bytes, offset + TXCOUNT_OFFSET);
+            Version.WriteBytes(buffer, offset);
+            PreviousBlock.WriteToBitcoinBuffer(buffer, offset + PREVBLOCK_OFFSET);
+            MerkleRoot.WriteToBitcoinBuffer(buffer, offset + MERKLEROOT_OFFSET);
+            Timestamp.WriteBytes(buffer, offset + TIMESTAMP_OFFSET);
+            Bits.WriteBytes(buffer, offset + BITS_OFFSET);
+            Nonce.WriteBytes(buffer, offset + NONCE_OFFSET);
+            TransactionCount.WriteToBitcoinBuffer(buffer, offset + TXCOUNT_OFFSET);
         }
 
         public static int MinimumByteSize

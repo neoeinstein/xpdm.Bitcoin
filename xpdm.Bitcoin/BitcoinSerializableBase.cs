@@ -30,7 +30,7 @@ namespace xpdm.Bitcoin
         }
 
         [Pure]
-        public abstract void WriteToBitcoinBuffer(byte[] bytes, int offset);
+        public abstract void WriteToBitcoinBuffer(byte[] buffer, int offset);
 
         public static T ReadFromBitcoinBuffer<T>(byte[] buffer, int offset)
         {
