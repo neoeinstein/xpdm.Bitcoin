@@ -13,6 +13,18 @@ namespace xpdm.Bitcoin
 
             command = command.TrimEnd('\0');
 
+            if (command.Equals(InvPayload.CommandText, StringComparison.Ordinal))
+            {
+                return new InvPayload(buffer, offset);
+            }
+            if (command.Equals(TxPayload.CommandText, StringComparison.Ordinal))
+            {
+                return new TxPayload(buffer, offset);
+            }
+            if (command.Equals(BlockPayload.CommandText, StringComparison.Ordinal))
+            {
+                return new BlockPayload(buffer, offset);
+            }
             if (command.Equals(VersionPayload.CommandText, StringComparison.Ordinal))
             {
                 return new VersionPayload(buffer, offset);
@@ -21,13 +33,13 @@ namespace xpdm.Bitcoin
             {
                 return new VerAckPayload(buffer, offset);
             }
+            if (command.Equals(HeadersPayload.CommandText, StringComparison.Ordinal))
+            {
+                return new HeadersPayload(buffer, offset);
+            }
             if (command.Equals(AddrPayload.CommandText, StringComparison.Ordinal))
             {
                 return new AddrPayload(buffer, offset);
-            }
-            if (command.Equals(InvPayload.CommandText, StringComparison.Ordinal))
-            {
-                return new InvPayload(buffer, offset);
             }
             if (command.Equals(GetDataPayload.CommandText, StringComparison.Ordinal))
             {
@@ -52,6 +64,10 @@ namespace xpdm.Bitcoin
             if (command.Equals(ReplyPayload.CommandText, StringComparison.Ordinal))
             {
                 return new ReplyPayload(buffer, offset);
+            }
+            if (command.Equals(AlertPayload.CommandText, StringComparison.Ordinal))
+            {
+                return new AlertPayload(buffer, offset);
             }
 
             return null;
