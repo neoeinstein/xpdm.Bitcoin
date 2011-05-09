@@ -10,30 +10,26 @@ namespace xpdm.Bitcoin
             get { return ReplyPayload.CommandText; }
         }
 
-        public override uint ByteSize
-        {
-            get 
-            {
-                return (uint)ReplyPayload.MinimumByteSize;
-            }
-        }
-
         public TransactionReply Reply { get; private set; }
 
         public ReplyPayload(TransactionReply reply)
         {
             Reply = reply;
+
+            ByteSize = (uint)ReplyPayload.ConstantByteSize;
         }
 
         public ReplyPayload(byte[] buffer, int offset)
             : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= ReplyPayload.MinimumByteSize, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length >= ReplyPayload.ConstantByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - ReplyPayload.MinimumByteSize, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - ReplyPayload.ConstantByteSize, "offset");
 
             Reply = (TransactionReply) buffer.ReadUInt32(offset);
+
+            ByteSize = (uint)ReplyPayload.ConstantByteSize;
         }
 
         public static string CommandText
@@ -44,7 +40,7 @@ namespace xpdm.Bitcoin
             }
         }
 
-        public static int MinimumByteSize
+        public static int ConstantByteSize
         {
             get
             {

@@ -8,29 +8,28 @@ namespace xpdm.Bitcoin
         public InventoryObjectType Type { get; private set; }
         public Hash ObjectHash { get; private set; }
 
-        public override uint ByteSize
-        {
-            get { return (uint)InventoryVector.MinimumByteSize; }
-        }
-
         public InventoryVector(InventoryObjectType type, Hash objectHash)
         {
             Contract.Requires<ArgumentNullException>(objectHash != null);
 
             Type = type;
             ObjectHash = objectHash;
+
+            ByteSize = (uint)InventoryVector.ConstantByteSize;
         }
 
         public InventoryVector(byte[] buffer, int offset)
             : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= InventoryVector.MinimumByteSize, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length >= InventoryVector.ConstantByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - InventoryVector.MinimumByteSize, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - InventoryVector.ConstantByteSize, "offset");
 
             Type = (InventoryObjectType)buffer.ReadUInt32(offset);
             ObjectHash = new Hash(buffer, offset + OBJECTHASH_OFFSET);
+
+            ByteSize = (uint)InventoryVector.ConstantByteSize;
         }
 
         private const int OBJECTHASH_OFFSET = BitcoinBufferOperations.UINT32_SIZE;
@@ -42,9 +41,9 @@ namespace xpdm.Bitcoin
             ObjectHash.WriteToBitcoinBuffer(buffer, offset + OBJECTHASH_OFFSET);
         }
 
-        public static int MinimumByteSize
+        public static int ConstantByteSize
         {
-            get { return BitcoinBufferOperations.UINT32_SIZE + Hash.MinimumByteSize; }
+            get { return BitcoinBufferOperations.UINT32_SIZE + Hash.ConstantByteSize; }
         }
 
         [ContractInvariantMethod]

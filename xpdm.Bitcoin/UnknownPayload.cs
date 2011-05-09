@@ -29,18 +29,12 @@ namespace xpdm.Bitcoin
             }
         }
 
-        public override uint ByteSize
-        {
-            get 
-            {
-                return (uint)_bytes.Length;
-            }
-        }
-
         public UnknownPayload()
         {
             _command = string.Empty;
             _bytes = new byte[0];
+
+            ByteSize = 0;
         }
 
         public UnknownPayload(string command, byte[] buffer, int offset, uint length)
@@ -55,6 +49,8 @@ namespace xpdm.Bitcoin
             _command = command;
             _bytes = new byte[length];
             Array.Copy(buffer, offset, _bytes, 0, length);
+
+            ByteSize = length;
         }
 
         [Pure]

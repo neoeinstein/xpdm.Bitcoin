@@ -10,11 +10,6 @@ namespace xpdm.Bitcoin
         public Services Services { get; private set; }
         public IPEndPoint Endpoint { get; private set; }
 
-        public override uint ByteSize
-        {
-            get { return (uint)NetworkAddress.MinimumByteSize; }
-        }
-
         public NetworkAddress(Services services, IPEndPoint endpoint)
         {
             Contract.Requires<ArgumentNullException>(endpoint != null, "endpoint");
@@ -22,47 +17,52 @@ namespace xpdm.Bitcoin
 
             Services = services;
             Endpoint = endpoint;
+
+            ByteSize = (uint)NetworkAddress.ConstantByteSize;
         }
 
         public NetworkAddress(byte[] buffer, int offset)
             : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= NetworkAddress.MinimumByteSize, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length >= NetworkAddress.ConstantByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - NetworkAddress.MinimumByteSize, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - NetworkAddress.ConstantByteSize, "offset");
 
             Services = (Services)buffer.ReadUInt64(offset);
             var address = new byte[16];
-            Array.Copy(buffer, offset + ADDRESS_IPV6_OFFSET, address, 0, 16);
+            Array.Copy(buffer, AddressIPv6_Offset(ref offset), address, 0, 16);
             Endpoint = new IPEndPoint(
                           new IPAddress(address),
-                          buffer.ReadUInt16BE(offset + PORT_OFFSET));
+                          buffer.ReadUInt16BE(Port_Offset(ref offset)));
+
+            ByteSize = (uint)NetworkAddress.ConstantByteSize;
         }
 
-        private const int ADDRESS_IPV6_OFFSET = BitcoinBufferOperations.UINT64_SIZE;
-        private const int ADDRESS_IPV4TO6_OFFSET = ADDRESS_IPV6_OFFSET + BitcoinBufferOperations.UINT64_SIZE;
-        private const int ADDRESS_IPV4_OFFSET = ADDRESS_IPV4TO6_OFFSET + BitcoinBufferOperations.UINT32_SIZE;
-        private const int PORT_OFFSET = ADDRESS_IPV6_OFFSET + BitcoinBufferOperations.UINT64_SIZE * 2;
+        private int AddressIPv6_Offset(ref int offset) { return offset += (int)((ulong)Services).ByteSize(); }
+        private int AddressIPv4Marker_Offset(ref int offset) { return offset += BitcoinBufferOperations.UINT64_SIZE; }
+        private int AddressIPv4_Offset(ref int offset) { return offset += BitcoinBufferOperations.UINT32_SIZE; }
+        private int Port_Offset(ref int offset) { return offset += BitcoinBufferOperations.UINT64_SIZE * 2; }
 
         [Pure]
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
         {
             ((ulong)Services).WriteBytes(buffer, offset);
+            var subOffset = offset;
             switch(Endpoint.AddressFamily)
             {
                 case AddressFamily.InterNetwork:
-                    ((ushort)0xFFFF).WriteBytes(buffer, ADDRESS_IPV4TO6_OFFSET);
-                    Endpoint.Address.GetAddressBytes().CopyTo(buffer, offset + ADDRESS_IPV4_OFFSET);
+                    ((ushort)0xFFFF).WriteBytes(buffer, AddressIPv4Marker_Offset(ref subOffset));
+                    Endpoint.Address.GetAddressBytes().CopyTo(buffer, AddressIPv4_Offset(ref subOffset));
                     break;
                 case AddressFamily.InterNetworkV6:
-                    Endpoint.Address.GetAddressBytes().CopyTo(buffer, offset + ADDRESS_IPV6_OFFSET);
+                    Endpoint.Address.GetAddressBytes().CopyTo(buffer, AddressIPv6_Offset(ref subOffset));
                     break;
             }
-            ((ushort)Endpoint.Port).WriteBytesBE(buffer, offset + PORT_OFFSET);
+            ((ushort)Endpoint.Port).WriteBytesBE(buffer, Port_Offset(ref offset));
         }
 
-        public static int MinimumByteSize
+        public static int ConstantByteSize
         {
             get { return BitcoinBufferOperations.UINT64_SIZE * 3 + BitcoinBufferOperations.UINT16_SIZE; }
         }

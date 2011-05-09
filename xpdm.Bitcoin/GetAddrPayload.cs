@@ -10,25 +10,20 @@ namespace xpdm.Bitcoin
             get { return GetAddrPayload.CommandText; }
         }
 
-        public override uint ByteSize
-        {
-            get 
-            {
-                return (uint)GetAddrPayload.MinimumByteSize;
-            }
-        }
-
         public GetAddrPayload()
         {
+            ByteSize = 0;
         }
 
         public GetAddrPayload(byte[] buffer, int offset)
             : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= GetAddrPayload.MinimumByteSize, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length >= GetAddrPayload.ConstantByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - GetAddrPayload.MinimumByteSize, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - GetAddrPayload.ConstantByteSize, "offset");
+
+            ByteSize = 0;
         }
 
         public static string CommandText
@@ -39,7 +34,7 @@ namespace xpdm.Bitcoin
             }
         }
 
-        public static int MinimumByteSize
+        public static int ConstantByteSize
         {
             get
             {

@@ -5,7 +5,7 @@ namespace xpdm.Bitcoin
 {
     public abstract class BitcoinSerializableBase : IBitcoinSerializable
     {
-        public abstract uint ByteSize { get; }
+        public uint ByteSize { get; protected set; }
 
         protected BitcoinSerializableBase() { }
 

@@ -15,22 +15,19 @@ namespace xpdm.Bitcoin
             get { return false; }
         }
 
-        private static readonly int VERSION_106_LENGTH = VersionPayload.MinimumByteSize + NetworkAddress.MinimumByteSize + BitcoinBufferOperations.UINT64_SIZE;
+        private static readonly int VERSION_106_LENGTH = VersionPayload.MinimumByteSize + NetworkAddress.ConstantByteSize + BitcoinBufferOperations.UINT64_SIZE;
         private static readonly int VERSION_209_LENGTH = VERSION_106_LENGTH + BitcoinBufferOperations.UINT32_SIZE;
-        public override uint ByteSize
+        private uint CalculateByteSize()
         {
-            get 
+            if (Version >= 209)
             {
-                if (Version >= 209)
-                {
-                    return (uint)(VERSION_209_LENGTH + SubVersionNum.ByteSize);
-                }
-                if (Version >= 106)
-                {
-                    return (uint)(VERSION_106_LENGTH + SubVersionNum.ByteSize);
-                }
-                return (uint)VersionPayload.MinimumByteSize;
+                return (uint)(VERSION_209_LENGTH + SubVersionNum.ByteSize);
             }
+            if (Version >= 106)
+            {
+                return (uint)(VERSION_106_LENGTH + SubVersionNum.ByteSize);
+            }
+            return (uint)VersionPayload.MinimumByteSize;
         }
 
         public uint Version { get; private set; } //31402
@@ -56,6 +53,8 @@ namespace xpdm.Bitcoin
             Nonce = nonce;
             SubVersionNum = subVersionNum;
             StartHeight = startHeight;
+
+            ByteSize = CalculateByteSize();
         }
 
         public VersionPayload(byte[] buffer, int offset)
@@ -84,13 +83,15 @@ namespace xpdm.Bitcoin
             {
                 StartHeight = buffer.ReadUInt32(offset + STARTHEIGHT_OFFSET);
             }
+
+            ByteSize = CalculateByteSize();
         }
 
         private const int SERVICES_OFFSET = BitcoinBufferOperations.UINT32_SIZE;
         private const int TIMESTAMP_OFFSET = SERVICES_OFFSET + BitcoinBufferOperations.UINT64_SIZE;
         private const int EMIT_ADDRESS_OFFSET = TIMESTAMP_OFFSET + BitcoinBufferOperations.UINT64_SIZE;
-        private static readonly int RECV_ADDRESS_OFFSET = EMIT_ADDRESS_OFFSET + NetworkAddress.MinimumByteSize;
-        private static readonly int NONCE_OFFSET = RECV_ADDRESS_OFFSET + NetworkAddress.MinimumByteSize;
+        private static readonly int RECV_ADDRESS_OFFSET = EMIT_ADDRESS_OFFSET + NetworkAddress.ConstantByteSize;
+        private static readonly int NONCE_OFFSET = RECV_ADDRESS_OFFSET + NetworkAddress.ConstantByteSize;
         private static readonly int SUBVER_OFFSET = NONCE_OFFSET + BitcoinBufferOperations.UINT64_SIZE;
         private static readonly int STARTHEIGHT_OFFSET = SUBVER_OFFSET;
 
@@ -120,7 +121,7 @@ namespace xpdm.Bitcoin
 
         public static int MinimumByteSize
         {
-            get { return BitcoinBufferOperations.UINT32_SIZE + BitcoinBufferOperations.UINT64_SIZE * 2 + NetworkAddress.MinimumByteSize; }
+            get { return BitcoinBufferOperations.UINT32_SIZE + BitcoinBufferOperations.UINT64_SIZE * 2 + NetworkAddress.ConstantByteSize; }
         }
 
         [ContractInvariantMethod]

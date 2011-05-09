@@ -15,25 +15,20 @@ namespace xpdm.Bitcoin
             get { return false; }
         }
 
-        public override uint ByteSize
-        {
-            get 
-            {
-                return (uint)VerAckPayload.MinimumByteSize;
-            }
-        }
-
         public VerAckPayload()
         {
+            ByteSize = (uint)VerAckPayload.ConstantByteSize;
         }
 
         public VerAckPayload(byte[] buffer, int offset)
             : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= VerAckPayload.MinimumByteSize, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length >= VerAckPayload.ConstantByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - VerAckPayload.MinimumByteSize, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - VerAckPayload.ConstantByteSize, "offset");
+
+            ByteSize = (uint)VerAckPayload.ConstantByteSize;
         }
 
         public static string CommandText
@@ -44,7 +39,7 @@ namespace xpdm.Bitcoin
             }
         }
 
-        public static int MinimumByteSize
+        public static int ConstantByteSize
         {
             get
             {

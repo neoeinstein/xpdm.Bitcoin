@@ -147,9 +147,28 @@ namespace xpdm.Bitcoin
         }
 
         public const int UINT8_SIZE = 1;
+        public static uint ByteSize(this byte dummy)
+        {
+            return UINT8_SIZE;
+        }
+
         public const int UINT16_SIZE = 2;
+        public static uint ByteSize(this ushort dummy)
+        {
+            return UINT16_SIZE;
+        }
+
         public const int UINT32_SIZE = 4;
+        public static uint ByteSize(this uint dummy)
+        {
+            return UINT32_SIZE;
+        }
+
         public const int UINT64_SIZE = 8;
+        public static uint ByteSize(this ulong dummy)
+        {
+            return UINT64_SIZE;
+        }
 
         public static T[] ReadArray<T>(this byte[] buffer, int offset, ulong count) where T : BitcoinSerializableBase
         {

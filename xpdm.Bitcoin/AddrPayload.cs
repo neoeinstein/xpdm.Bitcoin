@@ -10,49 +10,29 @@ namespace xpdm.Bitcoin
             get { return AddrPayload.CommandText; }
         }
 
-        public override uint ByteSize
-        {
-            get
-            {
-                return Count.ByteSize + (uint)_addressList.Length * (_addressList.Length > 0 ? _addressList[0].ByteSize : 0);
-            }
-        }
-
-        public VarInt Count { get; private set; }
-
-        private TimestampedNetworkAddress[] _addressList;
-        public TimestampedNetworkAddress[] AddressList
-        {
-            get
-            {
-                var retVal = new TimestampedNetworkAddress[_addressList.Length];
-                Array.Copy(_addressList, retVal, _addressList.Length);
-
-                return retVal;
-            }
-        }
+        public VarArray<TimestampedNetworkAddress> AddressList { get; private set; }
 
         public AddrPayload(TimestampedNetworkAddress[] addressList)
         {
             Contract.Requires<ArgumentNullException>(addressList != null);
 
-            _addressList = new TimestampedNetworkAddress[addressList.Length];
-            Array.Copy(addressList, _addressList, addressList.Length);
-            Count = new VarInt((uint)_addressList.Length);
+            AddressList = new VarArray<TimestampedNetworkAddress>(addressList);
+            
+            ByteSize = AddressList.ByteSize;
         }
 
         public AddrPayload(byte[] buffer, int offset)
         {
-            Count = new VarInt(buffer, offset);
-            _addressList = buffer.ReadArray<TimestampedNetworkAddress>(offset + (int)Count.ByteSize, Count);
+            AddressList = new VarArray<TimestampedNetworkAddress>(buffer, offset);
+
+            ByteSize = AddressList.ByteSize;
         }
 
         private const uint INCLUDE_TIMESTAMP_VERSION = 31402;
 
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
         {
-            Count.WriteToBitcoinBuffer(buffer, offset);
-            BitcoinBufferOperations.WriteBytes(_addressList, buffer, offset + (int)Count.ByteSize, Count);
+            AddressList.WriteToBitcoinBuffer(buffer, offset);
         }
 
         public static string CommandText
@@ -68,7 +48,7 @@ namespace xpdm.Bitcoin
         [ContractInvariantMethod]
         private void __Invariant()
         {
-            Contract.Invariant((ulong)_addressList.Length == Count);
+            Contract.Invariant(AddressList != null);
         }
     }
 }

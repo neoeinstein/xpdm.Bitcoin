@@ -10,25 +10,20 @@ namespace xpdm.Bitcoin
             get { return PingPayload.CommandText; }
         }
 
-        public override uint ByteSize
-        {
-            get 
-            {
-                return (uint)PingPayload.MinimumByteSize;
-            }
-        }
-
         public PingPayload()
         {
+            ByteSize = (uint)PingPayload.ConstantByteSize;
         }
 
         public PingPayload(byte[] buffer, int offset)
             : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= PingPayload.MinimumByteSize, "buffer");
+            Contract.Requires<ArgumentException>(buffer.Length >= PingPayload.ConstantByteSize, "buffer");
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - PingPayload.MinimumByteSize, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - PingPayload.ConstantByteSize, "offset");
+
+            ByteSize = (uint)PingPayload.ConstantByteSize;
         }
 
         public static string CommandText
@@ -39,7 +34,7 @@ namespace xpdm.Bitcoin
             }
         }
 
-        public static int MinimumByteSize
+        public static int ConstantByteSize
         {
             get
             {

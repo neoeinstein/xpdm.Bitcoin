@@ -74,7 +74,7 @@
     <Compile Include="Base58Convert.cs" />
     <Compile Include="BitcoinBufferOperations.cs" />
     <Compile Include="BitcoinSerializableBase.cs" />
-    <Compile Include="BlockHeader.cs" />
+    <Compile Include="Block.cs" />
     <Compile Include="ReplyPayload.cs" />
     <Compile Include="PingPayload.cs" />
     <Compile Include="GetAddrPayload.cs" />
@@ -87,6 +87,7 @@
     <Compile Include="TimestampedNetworkAddress.cs" />
     <Compile Include="TransactionReply.cs" />
     <Compile Include="UnknownPayload.cs" />
+    <Compile Include="VarArray.cs" />
     <Compile Include="VerAckPayload.cs" />
     <Compile Include="Hash.cs" />
     <Compile Include="IMessagePayload.cs" />

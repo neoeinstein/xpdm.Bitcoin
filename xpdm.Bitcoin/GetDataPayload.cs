@@ -10,38 +10,15 @@ namespace xpdm.Bitcoin
             get { return GetDataPayload.CommandText; }
         }
 
-        public override uint ByteSize
-        {
-            get
-            {
-                return Count.ByteSize + (uint)Count * (uint)InventoryVector.MinimumByteSize;
-            }
-        }
-
-        public VarInt Count { get; private set; }
-
-        private readonly InventoryVector[] _inventory;
-        public InventoryVector[] Inventory
-        {
-            get
-            {
-                Contract.Ensures(Contract.Result<InventoryVector[]>() != null);
-                Contract.Ensures((uint)Contract.Result<InventoryVector[]>().Length == Count);
-
-                var retVal = new InventoryVector[_inventory.Length];
-                Array.Copy(_inventory, retVal, _inventory.Length);
-
-                return retVal;
-            }
-        }
+        public VarArray<InventoryVector> Inventory { get; private set; }
 
         public GetDataPayload(InventoryVector[] inventory)
         {
             Contract.Requires<ArgumentNullException>(inventory != null, "inventory");
 
-            _inventory = new InventoryVector[inventory.Length];
-            Array.Copy(inventory, _inventory, inventory.Length);
-            Count = new VarInt((uint)inventory.Length);
+            Inventory = new VarArray<InventoryVector>(inventory);
+
+            ByteSize = Inventory.ByteSize;
         }
 
         public GetDataPayload(byte[] buffer, int offset)
@@ -52,15 +29,15 @@ namespace xpdm.Bitcoin
             Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
             Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - GetDataPayload.MinimumByteSize, "offset");
 
-            Count = new VarInt(buffer, offset);
-            _inventory = buffer.ReadArray<InventoryVector>(offset + (int)Count.ByteSize, Count);
+            Inventory = new VarArray<InventoryVector>(buffer, offset);
+
+            ByteSize = Inventory.ByteSize;
         }
 
         [Pure]
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
         {
-            Count.WriteToBitcoinBuffer(buffer, offset);
-            BitcoinBufferOperations.WriteBytes(_inventory, buffer, offset + (int)Count.ByteSize, Count);
+            Inventory.WriteToBitcoinBuffer(buffer, offset);
         }
 
         public static string CommandText
@@ -70,7 +47,7 @@ namespace xpdm.Bitcoin
 
         public static int MinimumByteSize
         {
-            get { return VarInt.MinimumByteSize; }
+            get { return VarArray<InventoryVector>.MinimumByteSize; }
         }
     }
 }
