@@ -1,4 +1,4 @@
-﻿namespace xpdm.Bitcoin
+﻿namespace xpdm.Bitcoin.Scripting
 {
     public enum ScriptOpCode : byte
     {
