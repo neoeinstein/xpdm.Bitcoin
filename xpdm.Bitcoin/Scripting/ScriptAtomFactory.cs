@@ -69,6 +69,12 @@ namespace xpdm.Bitcoin.Scripting
                 case ScriptOpCode.OP_2DUP:
                 case ScriptOpCode.OP_3DUP:
                     return new Atoms.OpDupAtom(opcode);
+                case ScriptOpCode.OP_RIPEMD160:
+                case ScriptOpCode.OP_SHA1:
+                case ScriptOpCode.OP_SHA256:
+                case ScriptOpCode.OP_HASH160:
+                case ScriptOpCode.OP_HASH256:
+                    return new Atoms.OpHashAtom(opcode);
             }
             return null;
         }
