@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.Numerics;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,11 @@ namespace xpdm.Bitcoin
     {
         public static readonly int Hash256ByteLength = 256 / 8;
         public static readonly int Hash160ByteLength = 160 / 8;
+
+        public static BigInteger Hash256(BigInteger bi)
+        {
+            return ExecuteHashFunction(Hash256, bi);
+        }
 
         public static byte[] Hash256(byte[] buffer)
         {
@@ -38,6 +44,11 @@ namespace xpdm.Bitcoin
             }
         }
 
+        public static BigInteger Hash160(BigInteger bi)
+        {
+            return ExecuteHashFunction(Hash160, bi);
+        }
+
         public static byte[] Hash160(byte[] buffer)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
@@ -57,6 +68,11 @@ namespace xpdm.Bitcoin
             Contract.Ensures(Contract.Result<byte[]>().Length == Hash160ByteLength);
 
             return Ripemd160(Sha256(buffer, offset, length));
+        }
+
+        public static BigInteger Sha1(BigInteger bi)
+        {
+            return ExecuteHashFunction(Sha1, bi);
         }
 
         public static byte[] Sha1(byte[] buffer)
@@ -83,6 +99,11 @@ namespace xpdm.Bitcoin
             }
         }
 
+        public static BigInteger Ripemd160(BigInteger bi)
+        {
+            return ExecuteHashFunction(Ripemd160, bi);
+        }
+
         public static byte[] Ripemd160(byte[] buffer)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
@@ -107,6 +128,11 @@ namespace xpdm.Bitcoin
             }
         }
 
+        public static BigInteger Sha256(BigInteger bi)
+        {
+            return ExecuteHashFunction(Sha256, bi);
+        }
+
         public static byte[] Sha256(byte[] buffer)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
@@ -129,6 +155,19 @@ namespace xpdm.Bitcoin
             {
                 return sha.ComputeHash(buffer, offset, length);
             }
+        }
+
+        private delegate byte[] HashFunction(byte[] buffer);
+
+        private static BigInteger ExecuteHashFunction(HashFunction hash, BigInteger bi)
+        {
+            Contract.Requires(hash != null);
+
+            var intermediateArray = bi.ToByteArray();
+            Array.Reverse(intermediateArray);
+            intermediateArray = hash(intermediateArray);
+            Array.Reverse(intermediateArray);
+            return new BigInteger(intermediateArray);
         }
     }
 }
