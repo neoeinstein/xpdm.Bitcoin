@@ -57,7 +57,7 @@ namespace xpdm.Bitcoin.Protocol
         {
             get
             {
-                return BitcoinBufferOperations.UINT32_SIZE * 2 + VarArray<TxIn>.MinimumByteSize + VarArray<TxOut>.MinimumByteSize;
+                return BufferOperations.UINT32_SIZE * 2 + VarArray<TxIn>.MinimumByteSize + VarArray<TxOut>.MinimumByteSize;
             }
         }
     }

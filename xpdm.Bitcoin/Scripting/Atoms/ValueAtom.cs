@@ -51,14 +51,14 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             {
                 retVal = new byte[val.LongLength + 1 + 4];
                 retVal[0] = (byte)ScriptOpCode.OP_PUSHDATA4;
-                xpdm.Bitcoin.Protocol.BitcoinBufferOperations.WriteBytes((uint)retVal.LongLength, retVal, 1);
+                ((uint)retVal.LongLength).WriteBytes(retVal, 1);
                 val.CopyTo(retVal, 5);
             }
             else if (val.LongLength > byte.MaxValue)
             {
                 retVal = new byte[val.LongLength + 1 + 2];
                 retVal[0] = (byte)ScriptOpCode.OP_PUSHDATA2;
-                xpdm.Bitcoin.Protocol.BitcoinBufferOperations.WriteBytes((ushort)retVal.LongLength, retVal, 1);
+                ((ushort)retVal.LongLength).WriteBytes(retVal, 1);
                 val.CopyTo(retVal, 3);
             }
             else if (val.LongLength >= (int)ScriptOpCode.OP_PUSHDATA1)

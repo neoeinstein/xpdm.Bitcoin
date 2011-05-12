@@ -41,9 +41,9 @@ namespace xpdm.Bitcoin.Protocol
         }
 
         private int AddressIPv6_Offset(ref int offset) { return offset += (int)((ulong)Services).ByteSize(); }
-        private int AddressIPv4Marker_Offset(ref int offset) { return offset += BitcoinBufferOperations.UINT64_SIZE; }
-        private int AddressIPv4_Offset(ref int offset) { return offset += BitcoinBufferOperations.UINT32_SIZE; }
-        private int Port_Offset(ref int offset) { return offset += BitcoinBufferOperations.UINT64_SIZE * 2; }
+        private int AddressIPv4Marker_Offset(ref int offset) { return offset += BufferOperations.UINT64_SIZE; }
+        private int AddressIPv4_Offset(ref int offset) { return offset += BufferOperations.UINT32_SIZE; }
+        private int Port_Offset(ref int offset) { return offset += BufferOperations.UINT64_SIZE * 2; }
 
         [Pure]
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
@@ -65,7 +65,7 @@ namespace xpdm.Bitcoin.Protocol
 
         public static int ConstantByteSize
         {
-            get { return BitcoinBufferOperations.UINT64_SIZE * 3 + BitcoinBufferOperations.UINT16_SIZE; }
+            get { return BufferOperations.UINT64_SIZE * 3 + BufferOperations.UINT16_SIZE; }
         }
 
         private readonly static NetworkAddress s_IPv6Any = new NetworkAddress(0, new IPEndPoint(IPAddress.IPv6Any, 0));

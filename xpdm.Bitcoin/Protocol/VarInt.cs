@@ -127,7 +127,7 @@ namespace xpdm.Bitcoin.Protocol
 
         public static int MinimumByteSize
         {
-            get { return BitcoinBufferOperations.UINT8_SIZE; }
+            get { return BufferOperations.UINT8_SIZE; }
         }
 
         public static implicit operator VarInt(ulong value)

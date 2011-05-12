@@ -33,7 +33,7 @@ namespace xpdm.Bitcoin.Protocol
             ByteSize = (uint)InventoryVector.ConstantByteSize;
         }
 
-        private const int OBJECTHASH_OFFSET = BitcoinBufferOperations.UINT32_SIZE;
+        private const int OBJECTHASH_OFFSET = BufferOperations.UINT32_SIZE;
 
         [Pure]
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
@@ -44,7 +44,7 @@ namespace xpdm.Bitcoin.Protocol
 
         public static int ConstantByteSize
         {
-            get { return BitcoinBufferOperations.UINT32_SIZE + Hash.ConstantByteSize; }
+            get { return BufferOperations.UINT32_SIZE + Hash.ConstantByteSize; }
         }
 
         [ContractInvariantMethod]

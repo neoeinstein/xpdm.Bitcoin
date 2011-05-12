@@ -44,7 +44,7 @@ namespace xpdm.Bitcoin.Protocol
 
         public static int ConstantByteSize
         {
-            get { return BitcoinBufferOperations.UINT32_SIZE + Hash.ConstantByteSize; }
+            get { return BufferOperations.UINT32_SIZE + Hash.ConstantByteSize; }
         }
 
         [ContractInvariantMethod]

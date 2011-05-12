@@ -65,7 +65,7 @@ namespace xpdm.Bitcoin.Protocol
             Command = Encoding.ASCII.GetString(buffer, Command_Offset(ref offset), MAX_COMMAND_LENGTH).TrimEnd('\0');
             PayloadLength = buffer.ReadUInt32(PayloadLength_Offset(ref offset));
 
-            ByteSize = ((uint)Network).ByteSize() + MAX_COMMAND_LENGTH * BitcoinBufferOperations.UINT8_SIZE + PayloadLength.ByteSize();
+            ByteSize = ((uint)Network).ByteSize() + MAX_COMMAND_LENGTH * BufferOperations.UINT8_SIZE + PayloadLength.ByteSize();
 
             if (MessagePayloadFactory.PayloadRequiresChecksum(Command))
             {
@@ -80,7 +80,7 @@ namespace xpdm.Bitcoin.Protocol
         }
 
         private int Command_Offset(ref int offset) { return offset += (int)((uint)Network).ByteSize(); }
-        private int PayloadLength_Offset(ref int offset) { return offset += BitcoinBufferOperations.UINT8_SIZE * MAX_COMMAND_LENGTH; }
+        private int PayloadLength_Offset(ref int offset) { return offset += BufferOperations.UINT8_SIZE * MAX_COMMAND_LENGTH; }
         private int Checksum_Offset(ref int offset) { return offset += (int)PayloadLength.ByteSize(); }
         private int Payload_Offset(ref int offset) { return offset += (int)(MessagePayloadFactory.PayloadRequiresChecksum(Command) ? Checksum.ByteSize() : 0); }
 
@@ -101,7 +101,7 @@ namespace xpdm.Bitcoin.Protocol
         {
             get
             {
-                return BitcoinBufferOperations.UINT32_SIZE * 2 + BitcoinBufferOperations.UINT8_SIZE * MAX_COMMAND_LENGTH;
+                return BufferOperations.UINT32_SIZE * 2 + BufferOperations.UINT8_SIZE * MAX_COMMAND_LENGTH;
             }
         }
 

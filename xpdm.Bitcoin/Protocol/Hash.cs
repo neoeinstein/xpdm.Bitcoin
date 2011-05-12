@@ -35,7 +35,7 @@ namespace xpdm.Bitcoin.Protocol
             Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - Hash.ConstantByteSize, "offset");
 
             _bytes = new byte[HASH_LENGTH];
-            Array.Copy(buffer, offset, _bytes, 0, HASH_LENGTH * BitcoinBufferOperations.UINT8_SIZE);
+            Array.Copy(buffer, offset, _bytes, 0, HASH_LENGTH * BufferOperations.UINT8_SIZE);
 
             ByteSize = (uint)Hash.ConstantByteSize;
         }
@@ -45,12 +45,12 @@ namespace xpdm.Bitcoin.Protocol
         [Pure]
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
         {
-            Array.Copy(_bytes, 0, buffer, offset, HASH_LENGTH * BitcoinBufferOperations.UINT8_SIZE);
+            Array.Copy(_bytes, 0, buffer, offset, HASH_LENGTH * BufferOperations.UINT8_SIZE);
         }
 
         public static int ConstantByteSize
         {
-            get { return HASH_LENGTH * BitcoinBufferOperations.UINT8_SIZE; }
+            get { return HASH_LENGTH * BufferOperations.UINT8_SIZE; }
         }
     }
 }

@@ -16,8 +16,8 @@ namespace xpdm.Bitcoin.Protocol
             get { return false; }
         }
 
-        private static readonly int VERSION_106_LENGTH = VersionPayload.MinimumByteSize + NetworkAddress.ConstantByteSize + BitcoinBufferOperations.UINT64_SIZE;
-        private static readonly int VERSION_209_LENGTH = VERSION_106_LENGTH + BitcoinBufferOperations.UINT32_SIZE;
+        private static readonly int VERSION_106_LENGTH = VersionPayload.MinimumByteSize + NetworkAddress.ConstantByteSize + BufferOperations.UINT64_SIZE;
+        private static readonly int VERSION_209_LENGTH = VERSION_106_LENGTH + BufferOperations.UINT32_SIZE;
         private uint CalculateByteSize()
         {
             if (Version >= 209)
@@ -88,12 +88,12 @@ namespace xpdm.Bitcoin.Protocol
             ByteSize = CalculateByteSize();
         }
 
-        private const int SERVICES_OFFSET = BitcoinBufferOperations.UINT32_SIZE;
-        private const int TIMESTAMP_OFFSET = SERVICES_OFFSET + BitcoinBufferOperations.UINT64_SIZE;
-        private const int EMIT_ADDRESS_OFFSET = TIMESTAMP_OFFSET + BitcoinBufferOperations.UINT64_SIZE;
+        private const int SERVICES_OFFSET = BufferOperations.UINT32_SIZE;
+        private const int TIMESTAMP_OFFSET = SERVICES_OFFSET + BufferOperations.UINT64_SIZE;
+        private const int EMIT_ADDRESS_OFFSET = TIMESTAMP_OFFSET + BufferOperations.UINT64_SIZE;
         private static readonly int RECV_ADDRESS_OFFSET = EMIT_ADDRESS_OFFSET + NetworkAddress.ConstantByteSize;
         private static readonly int NONCE_OFFSET = RECV_ADDRESS_OFFSET + NetworkAddress.ConstantByteSize;
-        private static readonly int SUBVER_OFFSET = NONCE_OFFSET + BitcoinBufferOperations.UINT64_SIZE;
+        private static readonly int SUBVER_OFFSET = NONCE_OFFSET + BufferOperations.UINT64_SIZE;
         private static readonly int STARTHEIGHT_OFFSET = SUBVER_OFFSET;
 
         [Pure]
@@ -122,7 +122,7 @@ namespace xpdm.Bitcoin.Protocol
 
         public static int MinimumByteSize
         {
-            get { return BitcoinBufferOperations.UINT32_SIZE + BitcoinBufferOperations.UINT64_SIZE * 2 + NetworkAddress.ConstantByteSize; }
+            get { return BufferOperations.UINT32_SIZE + BufferOperations.UINT64_SIZE * 2 + NetworkAddress.ConstantByteSize; }
         }
 
         [ContractInvariantMethod]

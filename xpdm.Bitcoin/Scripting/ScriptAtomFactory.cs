@@ -30,7 +30,7 @@ namespace xpdm.Bitcoin.Scripting
                         {
                             return null;
                         }
-                        size = xpdm.Bitcoin.Protocol.BitcoinBufferOperations.ReadUInt16(buffer, offset);
+                        size = buffer.ReadUInt16(offset);
                         offset += 2;
                         break;
                     case ScriptOpCode.OP_PUSHDATA4:
@@ -38,7 +38,7 @@ namespace xpdm.Bitcoin.Scripting
                         {
                             return null;
                         }
-                        size = xpdm.Bitcoin.Protocol.BitcoinBufferOperations.ReadUInt32(buffer, offset);
+                        size = buffer.ReadUInt32(offset);
                         offset += 4;
                         break;
                     default:

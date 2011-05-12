@@ -73,6 +73,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocol\AddrPayload.cs" />
     <Compile Include="Protocol\AlertPayload.cs" />
+    <Compile Include="BufferOperations.cs" />
     <Compile Include="Protocol\BitcoinBufferOperations.cs" />
     <Compile Include="Protocol\BitcoinSerializableBase.cs" />
     <Compile Include="Protocol\Block.cs" />

@@ -35,7 +35,7 @@ namespace xpdm.Bitcoin.Protocol
             ByteSize = (uint)TimestampedNetworkAddress.ConstantByteSize;
         }
 
-        private const int NETADDR_OFFSET = BitcoinBufferOperations.UINT32_SIZE;
+        private const int NETADDR_OFFSET = BufferOperations.UINT32_SIZE;
 
         [Pure]
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
@@ -48,7 +48,7 @@ namespace xpdm.Bitcoin.Protocol
         {
             get
             {
-                return BitcoinBufferOperations.UINT32_SIZE + NetworkAddress.ConstantByteSize;
+                return BufferOperations.UINT32_SIZE + NetworkAddress.ConstantByteSize;
             }
         }
 

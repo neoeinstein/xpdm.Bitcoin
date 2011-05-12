@@ -28,7 +28,7 @@ namespace xpdm.Bitcoin.Protocol
             ScriptLength = (ulong)script.LongLength;
             _script = (byte[])script.Clone();
 
-            ByteSize = Value.ByteSize() + ScriptLength.ByteSize + (uint)ScriptLength.Value * BitcoinBufferOperations.UINT8_SIZE;
+            ByteSize = Value.ByteSize() + ScriptLength.ByteSize + (uint)ScriptLength.Value * BufferOperations.UINT8_SIZE;
         }
 
         public TxOut(byte[] buffer, int offset)
@@ -45,10 +45,10 @@ namespace xpdm.Bitcoin.Protocol
             Array.Copy(buffer, offset + SCRIPTLEN_OFFSET + (int) ScriptLength.ByteSize, script, 0, (int)ScriptLength.Value);
             _script = script;
 
-            ByteSize = Value.ByteSize() + ScriptLength.ByteSize + (uint)ScriptLength.Value * BitcoinBufferOperations.UINT8_SIZE;
+            ByteSize = Value.ByteSize() + ScriptLength.ByteSize + (uint)ScriptLength.Value * BufferOperations.UINT8_SIZE;
         }
 
-        private static readonly int SCRIPTLEN_OFFSET = BitcoinBufferOperations.UINT64_SIZE;
+        private static readonly int SCRIPTLEN_OFFSET = BufferOperations.UINT64_SIZE;
 
         [Pure]
         public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
@@ -62,7 +62,7 @@ namespace xpdm.Bitcoin.Protocol
         {
             get
             {
-                return BitcoinBufferOperations.UINT64_SIZE + VarInt.MinimumByteSize;
+                return BufferOperations.UINT64_SIZE + VarInt.MinimumByteSize;
             }
         }
     }

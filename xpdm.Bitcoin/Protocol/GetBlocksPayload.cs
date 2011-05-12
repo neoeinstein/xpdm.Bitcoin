@@ -65,7 +65,7 @@ namespace xpdm.Bitcoin.Protocol
 
         public static int MinimumByteSize
         {
-            get { return BitcoinBufferOperations.UINT32_SIZE + VarArray<Hash>.MinimumByteSize +  Hash.ConstantByteSize; }
+            get { return BufferOperations.UINT32_SIZE + VarArray<Hash>.MinimumByteSize +  Hash.ConstantByteSize; }
         }
     }
 }
