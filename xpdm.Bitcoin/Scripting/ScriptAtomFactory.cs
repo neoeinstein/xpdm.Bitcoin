@@ -53,7 +53,7 @@ namespace xpdm.Bitcoin.Scripting
                 var valBytes = new byte[size];
                 Array.Copy(buffer, offset, valBytes, 0, size);
                 offset += (int)size;
-                return new Atoms.ValueAtom(new BigInteger(valBytes));
+                return new Atoms.ValueAtom(valBytes);
             }
 
             return GetOpAtom(opcode);
