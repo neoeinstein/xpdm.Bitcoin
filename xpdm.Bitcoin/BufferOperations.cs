@@ -166,5 +166,33 @@ namespace xpdm.Bitcoin
         {
             return UINT64_SIZE;
         }
+
+        public static string ToByteString(this byte[] buffer)
+        {
+            return buffer.ToByteString("x2", string.Empty);
+        }
+
+        public static string ToByteString(this byte[] buffer, string byteFormat)
+        {
+            return buffer.ToByteString(byteFormat, string.Empty);
+        }
+
+        public static string ToByteString(this byte[] buffer, string byteFormat, string byteJoin)
+        {
+            var sb = new System.Text.StringBuilder();
+            int i = 0;
+            for (;;)
+            {
+                sb.Append(buffer[i++].ToString(byteFormat));
+                if (i < buffer.Length)
+                {
+                    sb.Append(byteJoin);
+                }
+                else
+                {
+                    return sb.ToString();
+                }
+            }
+        }
     }
 }
