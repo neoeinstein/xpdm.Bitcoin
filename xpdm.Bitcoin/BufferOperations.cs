@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.Globalization;
+using System.Numerics;
 
 namespace xpdm.Bitcoin
 {
@@ -166,6 +167,46 @@ namespace xpdm.Bitcoin
         public static uint ByteSize(this ulong dummy)
         {
             return UINT64_SIZE;
+        }
+
+        public static byte[] ToBytesArrayBE(this BigInteger bi)
+        {
+            Contract.Ensures(Contract.Result<byte[]>() != null);
+            Contract.Ensures(Contract.Result<byte[]>().Length == bi.ToByteArray().Length);
+
+            var resultArray = bi.ToByteArray();
+            Array.Reverse(resultArray);
+            return resultArray;
+        }
+
+        public static void WriteBytesBE(this BigInteger bi, byte[] buffer, int offset)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Requires<ArgumentOutOfRangeException>(0 <= offset && offset <= buffer.Length, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset + bi.ToByteArray().Length <= buffer.Length, "bi");
+
+            var resultArray = bi.ToBytesArrayBE();
+            Array.Copy(resultArray, 0, buffer, offset, resultArray.Length);
+        }
+
+        public static BigInteger ReadBigIntegerBE(this byte[] buffer)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+
+            return buffer.ReadBigIntegerBE(0, buffer.Length);
+        }
+
+        public static BigInteger ReadBigIntegerBE(this byte[] buffer, int offset, int length)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Requires<ArgumentOutOfRangeException>(0 <= offset && offset <= buffer.Length, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(0 <= length, "length");
+            Contract.Requires<ArgumentOutOfRangeException>(offset + length <= buffer.Length, "length");
+
+            var intermediateBuffer = new byte[length];
+            Array.Copy(buffer, offset, intermediateBuffer, 0, length);
+            Array.Reverse(intermediateBuffer);
+            return new BigInteger(intermediateBuffer);
         }
 
         public static string ToByteString(this byte[] buffer)
