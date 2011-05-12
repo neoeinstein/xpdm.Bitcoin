@@ -6,29 +6,26 @@ namespace xpdm.Bitcoin.Scripting
 {
     public class Script : LinkedList<IScriptAtom>
     {
+        public static readonly int MaximumScriptAtoms = 200;
+
         public bool Execute()
         {
-            var stack = new CircularQueue<IScriptAtom>();
+            var context = new ExecutionContext();
 
             foreach (var atom in this)
             {
-                if (!atom.CanExecute(stack))
+                if (context.ExecutionResult == false)
                 {
                     return false;
                 }
-                try
-                {
-                    atom.Execute(stack);
-                }
-                catch (ImmediateFailureScriptException)
+                if (!atom.CanExecute(context))
                 {
                     return false;
                 }
+                atom.Execute(context);
             }
 
-            var finalatom = stack.Pop();
-
-            return stack.Count == 0 && finalatom is IScriptValueAtom && ((IScriptValueAtom)finalatom).Value == BigInteger.One;
+            return context.ExecutionResult == true;
         }
     }
 }

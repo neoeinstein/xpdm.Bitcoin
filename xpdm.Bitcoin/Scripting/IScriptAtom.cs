@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.Contracts;
 using C5;
+using System.Numerics;
 
 namespace xpdm.Bitcoin.Scripting
 {
@@ -8,7 +9,9 @@ namespace xpdm.Bitcoin.Scripting
     {
         int OperandCount { get; }
         int ResultCount { get; }
-        [Pure] bool CanExecute(IStack<IScriptAtom> stack);
-        [Pure] void Execute(IStack<IScriptAtom> stack);
+        int AltStackChange { get; }
+        [Pure] bool CanExecute(ExecutionContext context);
+        [Pure] void Execute(ExecutionContext context);
+        byte[] ToByteCode();
     }
 }

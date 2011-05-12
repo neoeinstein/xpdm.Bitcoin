@@ -1,6 +1,7 @@
 ﻿using System;
 using C5;
 using System.Diagnostics.Contracts;
+using System.Numerics;
 
 namespace xpdm.Bitcoin.Scripting
 {
@@ -27,20 +28,37 @@ namespace xpdm.Bitcoin.Scripting
             }
         }
 
-        [Pure]
-        public bool CanExecute(IStack<IScriptAtom> stack)
+        public int AltStackChange
         {
-            Contract.Ensures(stack.Count >= OperandCount || Contract.Result<bool>() == false);
+            get
+            {
+                return default(int);
+            }
+        }
 
+        [Pure]
+        public bool CanExecute(ExecutionContext context)
+        {
             return default(bool);
         }
 
         [Pure]
-        public void Execute(IStack<IScriptAtom> stack)
+        public void Execute(ExecutionContext context)
         {
-            Contract.Requires(this.CanExecute(stack));
-            Contract.Ensures(Contract.OldValue(stack.Count) - this.OperandCount + this.ResultCount == stack.Count );
-            Contract.EnsuresOnThrow<Exception>(Contract.OldValue(stack.Count) == stack.Count);
+            Contract.Requires(this.CanExecute(context));
+            Contract.Ensures(Contract.OldValue(context.ValueStack.Count) - this.OperandCount + this.ResultCount == context.ValueStack.Count );
+            Contract.Ensures(Contract.OldValue(context.AltStack.Count) + this.AltStackChange == context.AltStack.Count);
+            Contract.EnsuresOnThrow<Exception>(Contract.OldValue(context.ValueStack.Count) == context.ValueStack.Count);
+            Contract.EnsuresOnThrow<Exception>(Contract.OldValue(context.AltStack.Count) == context.AltStack.Count);
+            Contract.EnsuresOnThrow<Exception>(context.HardFailure == true);
+        }
+
+        [Pure]
+        public byte[] ToByteCode()
+        {
+            Contract.Ensures(Contract.Result<byte[]>() != null);
+
+            return default(byte[]);
         }
     }
 }
