@@ -1,4 +1,6 @@
-﻿namespace xpdm.Bitcoin.Scripting.Atoms
+﻿using System.Diagnostics.Contracts;
+using System;
+namespace xpdm.Bitcoin.Scripting.Atoms
 {
     public class OpDupAtom : OpAtom
     {
@@ -6,7 +8,7 @@
         {
             get
             {
-                return 1;
+                return (OpCode == ScriptOpCode.OP_3DUP ? 3 : OpCode == ScriptOpCode.OP_2DUP ? 2 : 1);
             }
         }
 
@@ -14,15 +16,31 @@
         {
             get
             {
-                return 2;
+                return OperandCount * 2;
             }
         }
 
         protected override void ExecuteImpl(ExecutionContext context)
         {
-            context.ValueStack.Push(context.ValueStack[0]);
+            var index = OperandCount - 1;
+            switch (OpCode)
+            {
+                case ScriptOpCode.OP_3DUP:
+                    context.ValueStack.Push(context.ValueStack[index]);
+                    goto case ScriptOpCode.OP_2DUP;
+                case ScriptOpCode.OP_2DUP:
+                    context.ValueStack.Push(context.ValueStack[index]);
+                    goto default;
+                default:
+                    context.ValueStack.Push(context.ValueStack[index]);
+                    break;
+            }
         }
 
-        public OpDupAtom() : base(ScriptOpCode.OP_DUP) { }
+        public OpDupAtom(ScriptOpCode opcode)
+            : base(opcode)
+        {
+            Contract.Requires<ArgumentException>(opcode == ScriptOpCode.OP_DUP || opcode == ScriptOpCode.OP_2DUP || opcode == ScriptOpCode.OP_3DUP, "opcode");
+        }
     }
 }

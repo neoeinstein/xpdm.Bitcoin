@@ -66,7 +66,9 @@ namespace xpdm.Bitcoin.Scripting
             switch (opcode)
             {
                 case ScriptOpCode.OP_DUP:
-                    return new Atoms.OpDupAtom();
+                case ScriptOpCode.OP_2DUP:
+                case ScriptOpCode.OP_3DUP:
+                    return new Atoms.OpDupAtom(opcode);
             }
             return null;
         }
