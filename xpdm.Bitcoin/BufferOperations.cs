@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.Globalization;
 
 namespace xpdm.Bitcoin
 {
@@ -203,6 +204,30 @@ namespace xpdm.Bitcoin
                     return sb.ToString();
                 }
             }
+        }
+
+        public static byte[] FromByteString(string byteString)
+        {
+            Contract.Requires<ArgumentNullException>(byteString != null, "byteString");
+            Contract.Ensures(Contract.Result<byte[]>() != null);
+            Contract.Ensures(Contract.Result<byte[]>().Length == (byteString.Trim().Length + 1) >> 1);
+
+            byteString = byteString.Trim();
+
+            var ba = new byte[(byteString.Length + 1) >> 1];
+            var offset = 0;
+            if (byteString.Length % 2 == 1)
+            {
+                ba[0] = byte.Parse(byteString.Substring(0, 1), NumberStyles.AllowHexSpecifier);
+                offset = 1;
+            }
+
+            for (int i = offset; i < ba.Length; ++i)
+            {
+                ba[i] = byte.Parse(byteString.Substring(i*2 - offset, 2), NumberStyles.AllowHexSpecifier);
+            }
+
+            return ba;
         }
     }
 }
