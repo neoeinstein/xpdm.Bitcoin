@@ -25,6 +25,18 @@ namespace xpdm.Bitcoin.Scripting
             }
         }
 
+        private bool _inFinalState = false;
+        public bool InFinalState
+        {
+            get { return _inFinalState; }
+            set
+            {
+                Contract.Ensures(Contract.OldValue<bool>(InFinalState) == true || InFinalState == value);
+
+                _inFinalState |= value;
+            }
+        }
+
         public ExecutionContext()
         {
             ValueStack = new CircularQueue<byte[]>();
@@ -40,9 +52,15 @@ namespace xpdm.Bitcoin.Scripting
                 {
                     return false;
                 }
-                if (ValueStack.Count == 1 && AltStack.Count == 0 && ControlStack.Count == 0)
+                if (InFinalState)
                 {
-                    return ExecutionContext.ToBool(ValueStack[0]);
+                    if (ValueStack.Count == 1 && AltStack.Count == 0 && ControlStack.Count == 0)
+                    {
+                        new Atoms.OpVerifyAtom().Execute(this);
+
+                        return !HardFailure && IsValid;
+                    }
+                    return false;
                 }
                 return null;
             }
