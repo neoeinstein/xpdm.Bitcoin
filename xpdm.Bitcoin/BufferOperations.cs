@@ -169,16 +169,26 @@ namespace xpdm.Bitcoin
 
         public static string ToByteString(this byte[] buffer)
         {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Ensures(Contract.Result<string>() != null);
+            Contract.Ensures(Contract.Result<string>().Length == buffer.Length * 2);
+
             return buffer.ToByteString("x2", string.Empty);
         }
 
         public static string ToByteString(this byte[] buffer, string byteFormat)
         {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Ensures(Contract.Result<string>() != null);
+
             return buffer.ToByteString(byteFormat, string.Empty);
         }
 
         public static string ToByteString(this byte[] buffer, string byteFormat, string byteJoin)
         {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Ensures(Contract.Result<string>() != null);
+
             var sb = new System.Text.StringBuilder();
             int i = 0;
             for (;;)
