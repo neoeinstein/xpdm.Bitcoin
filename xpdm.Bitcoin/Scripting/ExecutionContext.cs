@@ -79,6 +79,11 @@ namespace xpdm.Bitcoin.Scripting
             return false;
         }
 
+        public static byte[] ToStackValue(bool val)
+        {
+            return val ? ExecutionContext.True : ExecutionContext.False;
+        }
+
         public static byte[] True
         {
             get
