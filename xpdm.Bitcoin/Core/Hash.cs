@@ -113,5 +113,17 @@ namespace xpdm.Bitcoin.Core
         }
 
         #endregion
+
+        #region Equality Operators
+        public static bool operator ==(Hash h1, Hash h2)
+        {
+            return h1.Equals(h2);
+        }
+
+        public static bool operator !=(Hash h1, Hash h2)
+        {
+            return h1.Equals(h2);
+        }
+        #endregion
     }
 }
