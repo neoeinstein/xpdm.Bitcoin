@@ -319,11 +319,13 @@ namespace xpdm.Bitcoin.Core
 
         #endregion
 
-        public static BitcoinObject DeserializeFromStream<T>(Stream stream)
+        public static BitcoinObject DeserializeFromStream<T>(Stream stream) where T : BitcoinObject, new()
         {
             Contract.Requires<ArgumentNullException>(stream != null, "stream");
 
-            throw new NotImplementedException();
+            var ooze = new T();
+            ooze.Deserialize(stream);
+            return ooze;
         }
 
         public static void Serialize(Stream stream, BitcoinObject obj)
