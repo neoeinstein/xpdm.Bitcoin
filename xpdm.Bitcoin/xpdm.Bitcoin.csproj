@@ -111,6 +111,8 @@
     <Compile Include="Scripting\Atoms\OpAtom.cs" />
     <Compile Include="Scripting\Atoms\OpDupAtom.cs" />
     <Compile Include="Scripting\Atoms\OpHashAtom.cs" />
+    <Compile Include="Scripting\Atoms\OpEqualAtom.cs" />
+    <Compile Include="Scripting\Atoms\OpVerifyAtom.cs" />
     <Compile Include="Scripting\Atoms\ValueAtom.cs" />
     <Compile Include="Scripting\ExecutionContext.cs" />
     <Compile Include="Scripting\IOpAtom.cs" />

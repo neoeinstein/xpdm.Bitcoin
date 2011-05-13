@@ -4,6 +4,6 @@ namespace xpdm.Bitcoin.Scripting
 {
     public interface IScriptValueAtom
     {
-        BigInteger Value { get; }
+        byte[] Value { get; }
     }
 }
