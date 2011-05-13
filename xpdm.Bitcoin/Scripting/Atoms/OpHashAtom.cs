@@ -27,7 +27,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 
         protected override void ExecuteImpl(ExecutionContext context)
         {
-            BigInteger result;
+            byte[] result;
             switch (OpCode)
             {
                 case ScriptOpCode.OP_RIPEMD160:
