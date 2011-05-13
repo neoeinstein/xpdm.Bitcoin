@@ -82,6 +82,16 @@ namespace xpdm.Bitcoin.Scripting
             }
         }
 
+        public Script Script { get; private set; }
+        public int CurrentIndex { get; set; }
+        public int LastSeparatorIndex { get; set; }
+
+        public ExecutionContext(Script script)
+        {
+            Contract.Requires<ArgumentNullException>(script != null, "script");
+            Script = script;
+        }
+
         public static bool ToBool(byte[] val)
         {
             for (int i = 0; i < val.Length; ++i)
@@ -116,6 +126,12 @@ namespace xpdm.Bitcoin.Scripting
             {
                 return new byte[] { 0x00 };
             }
+        }
+
+        [ContractInvariantMethod]
+        private void __Invariant()
+        {
+            Contract.Invariant(Script != null);
         }
     }
 }

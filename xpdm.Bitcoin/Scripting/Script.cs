@@ -10,7 +10,7 @@ namespace xpdm.Bitcoin.Scripting
 
         public bool Execute()
         {
-            var context = new ExecutionContext();
+            var context = new ExecutionContext(this);
 
             foreach (var atom in this)
             {
@@ -23,6 +23,7 @@ namespace xpdm.Bitcoin.Scripting
                     return false;
                 }
                 atom.Execute(context);
+                ++context.CurrentIndex;
             }
 
             context.InFinalState = true;
