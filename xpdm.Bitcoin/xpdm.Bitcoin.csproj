@@ -76,7 +76,9 @@
     <Compile Include="Core\Hash160.cs" />
     <Compile Include="Core\Hash256.cs" />
     <Compile Include="Core\Hash.cs" />
+    <Compile Include="Core\TransactionInput.cs" />
     <Compile Include="Core\TransactionOutput.cs" />
+    <Compile Include="Core\TransactionOutpoint.cs" />
     <Compile Include="HashUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocol\AddrPayload.cs" />
