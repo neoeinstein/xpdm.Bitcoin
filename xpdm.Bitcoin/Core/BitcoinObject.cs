@@ -379,5 +379,11 @@ namespace xpdm.Bitcoin.Core
         {
             return this.SerializeToByteArray();
         }
+
+        protected void InvalidateBitcoinHashes()
+        {
+            _hash256 = null;
+            _hash160 = null;
+        }
     }
 }
