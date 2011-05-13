@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using SCG=System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -158,6 +156,15 @@ namespace xpdm.Bitcoin.Core
         protected static void WriteVarArray<T>(Stream stream, T[] objs) where T : BitcoinObject, new()
         {
             WriteVarInt(stream, objs.Length);
+            foreach (var obj in objs)
+            {
+                obj.Serialize(stream);
+            }
+        }
+
+        protected static void WriteCollection<T>(Stream stream, SCG.ICollection<T> objs) where T : BitcoinObject, new()
+        {
+            WriteVarInt(stream, objs.Count);
             foreach (var obj in objs)
             {
                 obj.Serialize(stream);
