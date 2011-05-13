@@ -14,9 +14,9 @@ namespace xpdm.Bitcoin.Scripting
 
             foreach (var atom in this)
             {
-                if (context.ExecutionResult == false)
+                if (context.ExecutionResult.HasValue)
                 {
-                    return false;
+                    return context.ExecutionResult.Value;
                 }
                 if (!atom.CanExecute(context))
                 {
@@ -24,6 +24,8 @@ namespace xpdm.Bitcoin.Scripting
                 }
                 atom.Execute(context);
             }
+
+            context.InFinalState = true;
 
             return context.ExecutionResult == true;
         }
