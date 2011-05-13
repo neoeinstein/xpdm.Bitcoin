@@ -53,7 +53,7 @@ namespace xpdm.Bitcoin.Scripting
                 var valBytes = new byte[size];
                 Array.Copy(buffer, offset, valBytes, 0, size);
                 offset += (int)size;
-                return new Atoms.ValueAtom(new BigInteger(valBytes));
+                return new Atoms.ValueAtom(valBytes);
             }
 
             return GetOpAtom(opcode);
@@ -69,6 +69,15 @@ namespace xpdm.Bitcoin.Scripting
                 case ScriptOpCode.OP_2DUP:
                 case ScriptOpCode.OP_3DUP:
                     return new Atoms.OpDupAtom(opcode);
+                case ScriptOpCode.OP_RIPEMD160:
+                case ScriptOpCode.OP_SHA1:
+                case ScriptOpCode.OP_SHA256:
+                case ScriptOpCode.OP_HASH160:
+                case ScriptOpCode.OP_HASH256:
+                    return new Atoms.OpHashAtom(opcode);
+                case ScriptOpCode.OP_EQUAL:
+                case ScriptOpCode.OP_EQUALVERIFY:
+                    return new Atoms.OpEqualAtom(opcode);
             }
             return null;
         }

@@ -46,8 +46,10 @@ namespace xpdm.Bitcoin.Scripting
         public void Execute(ExecutionContext context)
         {
             Contract.Requires(this.CanExecute(context));
-            Contract.Ensures(Contract.OldValue(context.ValueStack.Count) - this.OperandCount + this.ResultCount == context.ValueStack.Count );
-            Contract.Ensures(Contract.OldValue(context.AltStack.Count) + this.AltStackChange == context.AltStack.Count);
+            Contract.Ensures(context.HardFailure || Contract.OldValue(context.ValueStack.Count) - this.OperandCount + this.ResultCount == context.ValueStack.Count);
+            Contract.Ensures(!context.HardFailure || Contract.OldValue(context.ValueStack.Count) == context.ValueStack.Count);
+            Contract.Ensures(context.HardFailure || Contract.OldValue(context.AltStack.Count) + this.AltStackChange == context.AltStack.Count);
+            Contract.Ensures(!context.HardFailure || Contract.OldValue(context.AltStack.Count) == context.AltStack.Count);
             Contract.EnsuresOnThrow<Exception>(Contract.OldValue(context.ValueStack.Count) == context.ValueStack.Count);
             Contract.EnsuresOnThrow<Exception>(Contract.OldValue(context.AltStack.Count) == context.AltStack.Count);
             Contract.EnsuresOnThrow<Exception>(context.HardFailure == true);
