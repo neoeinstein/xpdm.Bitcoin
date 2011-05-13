@@ -338,14 +338,39 @@ namespace xpdm.Bitcoin.Core
 
         #endregion
 
-        public void CalculateBitcoinHash256()
+        private Hash256 _hash256;
+        public Hash256 Hash256
         {
-            HashUtil.Hash256(this.BuildBitcoinHashByteArray());
+            get
+            {
+                if (_hash256 == null)
+                {
+                    _hash256 = CalculateBitcoinHash256();
+                }
+                return _hash256;
+            }
         }
 
-        public void CalculateBitcoinHash160()
+        private Hash256 CalculateBitcoinHash256()
         {
-            HashUtil.Hash160(this.BuildBitcoinHashByteArray());
+            return HashUtil.Hash256(this.BuildBitcoinHashByteArray());
+        }
+
+        private Hash160 _hash160;
+        public Hash160 Hash160
+        {
+            get
+            {
+                if (_hash160 == null)
+                {
+                    _hash160 = CalculateBitcoinHash160();
+                }
+                return _hash160;
+            }
+        }
+        private Hash160 CalculateBitcoinHash160()
+        {
+            return HashUtil.Hash160(this.BuildBitcoinHashByteArray());
         }
 
         protected virtual byte[] BuildBitcoinHashByteArray()

@@ -31,19 +31,19 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             switch (OpCode)
             {
                 case ScriptOpCode.OP_RIPEMD160:
-                    result = HashUtil.Ripemd160(context.ValueStack[0]);
+                    result = HashUtil.Ripemd160(context.ValueStack[0]).Bytes;
                     break;
                 case ScriptOpCode.OP_SHA1:
-                    result = HashUtil.Sha1(context.ValueStack[0]);
+                    result = HashUtil.Sha1(context.ValueStack[0]).Bytes;
                     break;
                 case ScriptOpCode.OP_SHA256:
-                    result = HashUtil.Sha256(context.ValueStack[0]);
+                    result = HashUtil.Sha256(context.ValueStack[0]).Bytes;
                     break;
                 case ScriptOpCode.OP_HASH160:
-                    result = HashUtil.Hash160(context.ValueStack[0]);
+                    result = HashUtil.Hash160(context.ValueStack[0]).Bytes;
                     break;
                 case ScriptOpCode.OP_HASH256:
-                    result = HashUtil.Hash256(context.ValueStack[0]);
+                    result = HashUtil.Hash256(context.ValueStack[0]).Bytes;
                     break;
                 default:
                     context.HardFailure = true;
