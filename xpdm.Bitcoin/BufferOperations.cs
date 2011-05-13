@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.Globalization;
+using System.Numerics;
 
 namespace xpdm.Bitcoin
 {
@@ -165,6 +167,108 @@ namespace xpdm.Bitcoin
         public static uint ByteSize(this ulong dummy)
         {
             return UINT64_SIZE;
+        }
+
+        public static byte[] ToBytesArrayBE(this BigInteger bi)
+        {
+            Contract.Ensures(Contract.Result<byte[]>() != null);
+            Contract.Ensures(Contract.Result<byte[]>().Length == bi.ToByteArray().Length);
+
+            var resultArray = bi.ToByteArray();
+            Array.Reverse(resultArray);
+            return resultArray;
+        }
+
+        public static void WriteBytesBE(this BigInteger bi, byte[] buffer, int offset)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Requires<ArgumentOutOfRangeException>(0 <= offset && offset <= buffer.Length, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(offset + bi.ToByteArray().Length <= buffer.Length, "bi");
+
+            var resultArray = bi.ToBytesArrayBE();
+            Array.Copy(resultArray, 0, buffer, offset, resultArray.Length);
+        }
+
+        public static BigInteger ReadBigIntegerBE(this byte[] buffer)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+
+            return buffer.ReadBigIntegerBE(0, buffer.Length);
+        }
+
+        public static BigInteger ReadBigIntegerBE(this byte[] buffer, int offset, int length)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Requires<ArgumentOutOfRangeException>(0 <= offset && offset <= buffer.Length, "offset");
+            Contract.Requires<ArgumentOutOfRangeException>(0 <= length, "length");
+            Contract.Requires<ArgumentOutOfRangeException>(offset + length <= buffer.Length, "length");
+
+            var intermediateBuffer = new byte[length];
+            Array.Copy(buffer, offset, intermediateBuffer, 0, length);
+            Array.Reverse(intermediateBuffer);
+            return new BigInteger(intermediateBuffer);
+        }
+
+        public static string ToByteString(this byte[] buffer)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Ensures(Contract.Result<string>() != null);
+            Contract.Ensures(Contract.Result<string>().Length == buffer.Length * 2);
+
+            return buffer.ToByteString("x2", string.Empty);
+        }
+
+        public static string ToByteString(this byte[] buffer, string byteFormat)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            return buffer.ToByteString(byteFormat, string.Empty);
+        }
+
+        public static string ToByteString(this byte[] buffer, string byteFormat, string byteJoin)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            var sb = new System.Text.StringBuilder();
+            int i = 0;
+            for (;;)
+            {
+                sb.Append(buffer[i++].ToString(byteFormat));
+                if (i < buffer.Length)
+                {
+                    sb.Append(byteJoin);
+                }
+                else
+                {
+                    return sb.ToString();
+                }
+            }
+        }
+
+        public static byte[] FromByteString(string byteString)
+        {
+            Contract.Requires<ArgumentNullException>(byteString != null, "byteString");
+            Contract.Ensures(Contract.Result<byte[]>() != null);
+            Contract.Ensures(Contract.Result<byte[]>().Length == (byteString.Trim().Length + 1) >> 1);
+
+            byteString = byteString.Trim();
+
+            var ba = new byte[(byteString.Length + 1) >> 1];
+            var offset = 0;
+            if (byteString.Length % 2 == 1)
+            {
+                ba[0] = byte.Parse(byteString.Substring(0, 1), NumberStyles.AllowHexSpecifier);
+                offset = 1;
+            }
+
+            for (int i = offset; i < ba.Length; ++i)
+            {
+                ba[i] = byte.Parse(byteString.Substring(i*2 - offset, 2), NumberStyles.AllowHexSpecifier);
+            }
+
+            return ba;
         }
     }
 }
