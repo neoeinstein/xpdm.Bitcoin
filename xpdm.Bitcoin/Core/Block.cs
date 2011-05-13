@@ -40,7 +40,7 @@ namespace xpdm.Bitcoin.Core
             MerkleRoot = GetMerkleRoot();
         }
 
-        private IIndexed<Hash256> _merkleTree;
+        private IList<Hash256> _merkleTree;
         
         public Hash256 GetMerkleRoot()
         {
@@ -48,10 +48,10 @@ namespace xpdm.Bitcoin.Core
             {
                 _merkleTree = CalculateMerkleTree(Transactions);
             }
-            return _merkleTree[_merkleTree.Count - 1];
+            return _merkleTree.Last;
         }
 
-        public static IIndexed<Hash256> CalculateMerkleTree(SCG.IEnumerable<Transaction> transactions)
+        public static IList<Hash256> CalculateMerkleTree(SCG.IEnumerable<Transaction> transactions)
         {
             var tree = new ArrayList<Hash256>();
             var queue = new CircularQueue<Hash256>();
