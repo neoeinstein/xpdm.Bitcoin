@@ -23,7 +23,7 @@ namespace xpdm.Bitcoin.Core
             //Contract.Requires<ArgumentOutOfRangeException>(stream.Position + SerializedByteSize <= stream.Length, "length");
         }
 
-        protected sealed override int SerializedByteSize
+        public sealed override int SerializedByteSize
         {
             get
             {

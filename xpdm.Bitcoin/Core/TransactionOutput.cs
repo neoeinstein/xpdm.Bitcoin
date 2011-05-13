@@ -46,7 +46,7 @@ namespace xpdm.Bitcoin.Core
             WriteBytes(stream, ScriptBytes);
         }
 
-        protected override int SerializedByteSize
+        public override int SerializedByteSize
         {
             get { return BufferOperations.UINT64_SIZE + VarIntByteSize(_scriptBytes.Length) + _scriptBytes.Length; }
         }

@@ -44,7 +44,7 @@ namespace xpdm.Bitcoin.Core
             stream.Write(_bytes, 0, _bytes.Length);
         }
 
-        protected sealed override int SerializedByteSize
+        public sealed override int SerializedByteSize
         {
             get { return HashByteSize; }
         }

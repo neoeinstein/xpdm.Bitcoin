@@ -42,7 +42,7 @@ namespace xpdm.Bitcoin.Core
 
         protected abstract void Deserialize(Stream stream);
         public abstract void Serialize(Stream stream);
-        protected abstract int SerializedByteSize { get; }
+        public abstract int SerializedByteSize { get; }
 
         public void SerializeToBuffer(byte[] buffer, int offset)
         {
