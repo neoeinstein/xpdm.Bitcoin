@@ -29,6 +29,7 @@ namespace xpdm.Bitcoin.Core
             _scriptBytes = (byte[])scriptBytes.Clone();
         }
 
+        public TransactionOutput() { }
         public TransactionOutput(Stream stream) : base(stream) { }
         public TransactionOutput(byte[] buffer, int offset) : base(buffer, offset) { }
 
