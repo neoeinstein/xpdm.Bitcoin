@@ -10,23 +10,12 @@ namespace xpdm.Bitcoin.Core
     public sealed class TransactionOutput : BitcoinObject
     {
         public BitcoinValue Value { get; private set; }
-        private byte[] _scriptBytes;
-        public byte[] ScriptBytes
-        {
-            get
-            {
-                Contract.Ensures(Contract.Result<byte[]>() != null);
+        public Script Script { get; private set; }
 
-                var retVal = (byte[])_scriptBytes.Clone();
-                return retVal;
-            }
-        }
-
-
-        public TransactionOutput(BitcoinValue value, byte[] scriptBytes)
+        public TransactionOutput(BitcoinValue value, Script script)
         {
             Value = value;
-            _scriptBytes = (byte[])scriptBytes.Clone();
+            Script = script;
         }
 
         public TransactionOutput() { }
@@ -36,20 +25,18 @@ namespace xpdm.Bitcoin.Core
         protected override void Deserialize(System.IO.Stream stream)
         {
             Value = ReadUInt64(stream);
-            var byteCount = ReadVarInt(stream);
-            _scriptBytes = ReadBytes(stream, (int)byteCount);
+            Script = new Script(stream);
         }
 
         public override void Serialize(System.IO.Stream stream)
         {
             Write(stream, (ulong)Value);
-            WriteVarInt(stream, ScriptBytes.Length);
-            WriteBytes(stream, ScriptBytes);
+            Script.Serialize(stream);
         }
 
         public override int SerializedByteSize
         {
-            get { return BufferOperations.UINT64_SIZE + VarIntByteSize(_scriptBytes.Length) + _scriptBytes.Length; }
+            get { return BufferOperations.UINT64_SIZE + Script.SerializedByteSize; }
         }
     }
 }
