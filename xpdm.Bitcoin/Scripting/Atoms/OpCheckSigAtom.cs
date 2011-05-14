@@ -26,10 +26,11 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 
         protected override void ExecuteImpl(ExecutionContext context)
         {
-            var key = context.ValueStack[0];
-            var sig = context.ValueStack[1];
+            var key = context.ValueStack.Peek(0);
+            var sig = context.ValueStack.Peek(1);
 
-            var subscript = context.Script[context.LastSeparatorIndex, context.CurrentIndex - context.LastSeparatorIndex];
+            var subscript = context.CurrentScript.Subscript(context.LastSeparatorAtomIndex, 
+                                                            context.CurrentAtomIndex - context.LastSeparatorAtomIndex);
 
             bool isValidSignature = false;
             
