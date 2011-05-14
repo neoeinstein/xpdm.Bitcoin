@@ -340,6 +340,8 @@ namespace xpdm.Bitcoin.Core
 
         #endregion
 
+        #region Hashing
+
         private Hash256 _hash256;
         public Hash256 Hash256
         {
@@ -384,6 +386,28 @@ namespace xpdm.Bitcoin.Core
         {
             _hash256 = null;
             _hash160 = null;
+        }
+
+        #endregion
+    }
+
+    [ContractClassFor(typeof(BitcoinObject))]
+    internal abstract class BitcoinObjectContract : BitcoinObject
+    {
+        protected sealed override void Deserialize(Stream stream)
+        {
+            Contract.Requires<ArgumentNullException>(stream != null, "stream");
+            //Contract.Requires<ArgumentOutOfRangeException>(length <= stream.Length, "length");
+            //Contract.Requires<ArgumentOutOfRangeException>(stream.Position + length <= stream.Length, "length");
+        }
+
+        public sealed override void Serialize(Stream stream)
+        {
+        }
+
+        public sealed override int SerializedByteSize
+        {
+            get { return default(int); }
         }
     }
 }
