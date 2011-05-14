@@ -32,7 +32,7 @@ namespace xpdm.Bitcoin.Scripting
             return GetAtom(ms);
         }
 
-        private static IScriptAtom GetOpAtom(ScriptOpCode opcode)
+        public static IScriptAtom GetOpAtom(ScriptOpCode opcode)
         {
             Contract.Requires<ArgumentOutOfRangeException>(opcode > ScriptOpCode.OP_PUSHDATA4, "opcode");
 
