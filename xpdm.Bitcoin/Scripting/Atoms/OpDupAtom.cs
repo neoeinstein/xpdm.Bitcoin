@@ -2,7 +2,7 @@
 using System;
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
-    public class OpDupAtom : OpAtom
+    public sealed class OpDupAtom : OpAtom
     {
         public override int OperandCount
         {

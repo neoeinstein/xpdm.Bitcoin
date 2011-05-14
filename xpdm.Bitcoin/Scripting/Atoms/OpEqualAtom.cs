@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
-    public class OpEqualAtom : OpVerifyAtom
+    public sealed class OpEqualAtom : OpVerifyAtom
     {
         public override int OperandCount
         {

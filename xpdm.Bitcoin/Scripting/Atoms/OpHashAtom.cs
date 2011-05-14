@@ -7,7 +7,7 @@ using System.Text;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
-    public class OpHashAtom : OpAtom
+    public sealed class OpHashAtom : OpAtom
     {
         public override int OperandCount
         {
