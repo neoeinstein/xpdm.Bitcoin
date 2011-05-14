@@ -17,6 +17,14 @@ namespace xpdm.Bitcoin.Core
         {
             Atoms = new WrappedArray<Scripting.IScriptAtom>(new Scripting.IScriptAtom[0]);
         }
+
+        public Script(SCG.IEnumerable<Scripting.IScriptAtom> atoms)
+        {
+            var atomsList = new ArrayList<Scripting.IScriptAtom>();
+            atomsList.AddAll(atoms);
+            Atoms = new GuardedList<Scripting.IScriptAtom>(atomsList);
+        }
+
         public Script(Stream stream) : base(stream) { }
         public Script(byte[] buffer, int offset) : base(buffer, offset) { }
 

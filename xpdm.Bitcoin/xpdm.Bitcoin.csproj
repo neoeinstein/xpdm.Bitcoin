@@ -80,6 +80,7 @@
     <Compile Include="Core\Hash.cs" />
     <Compile Include="Core\IBitcoinSerializable.cs" />
     <Compile Include="Core\Script.cs" />
+    <Compile Include="Core\ScriptBuilder.cs" />
     <Compile Include="Core\Transaction.cs" />
     <Compile Include="Core\TransactionInput.cs" />
     <Compile Include="Core\TransactionOutput.cs" />
