@@ -109,21 +109,9 @@ namespace xpdm.Bitcoin.Core
 
         public bool Equals(Hash other)
         {
-            return _bytes.Length == other._bytes.Length && _bytes.SequenceEqual(other._bytes);
+            return other != null && _bytes.Length == other._bytes.Length && _bytes.SequenceEqual(other._bytes);
         }
 
-        #endregion
-
-        #region Equality Operators
-        public static bool operator ==(Hash h1, Hash h2)
-        {
-            return h1.Equals(h2);
-        }
-
-        public static bool operator !=(Hash h1, Hash h2)
-        {
-            return h1.Equals(h2);
-        }
         #endregion
     }
 }
