@@ -263,9 +263,9 @@ namespace xpdm.Bitcoin
                 offset = 1;
             }
 
-            for (int i = ba.Length - 1; i >= offset; --i)
+            for (int i = offset; i < ba.Length; i++)
             {
-                ba[i] = byte.Parse(byteString.Substring(i*2 - offset, 2), NumberStyles.AllowHexSpecifier);
+                ba[ba.Length - 1 - i] = byte.Parse(byteString.Substring(i*2 - offset, 2), NumberStyles.AllowHexSpecifier);
             }
 
             return ba;
