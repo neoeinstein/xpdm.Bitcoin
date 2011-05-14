@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 namespace xpdm.Bitcoin.Core
 {
     [ContractClass(typeof(BitcoinObjectContract))]
-    public abstract class BitcoinObject
+    public abstract class BitcoinObject : IBitcoinSerializable
     {
         protected BitcoinObject() { }
 
