@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace xpdm.Bitcoin.Scripting
+namespace xpdm.Bitcoin.Scripting.Atoms
 {
     public interface IScriptValueAtom
     {

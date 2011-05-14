@@ -31,7 +31,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             {
                 return;
             }
-            if (ExecutionContext.ToBool(context.ValueStack[0]))
+            if (ExecutionContext.ToBool(context.ValueStack.Peek()))
             {
                 context.ValueStack.Pop();
             }

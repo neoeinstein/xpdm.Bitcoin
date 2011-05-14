@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
-    public class OpEqualAtom : OpVerifyAtom
+    public sealed class OpEqualAtom : OpVerifyAtom
     {
         public override int OperandCount
         {
@@ -27,8 +27,8 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 
         protected override void ExecuteImpl(ExecutionContext context)
         {
-            bool equal = context.ValueStack[0].Length == context.ValueStack[1].Length
-                         && context.ValueStack[0].SequenceEqual(context.ValueStack[1]);
+            bool equal = context.ValueStack.Peek(0).Length == context.ValueStack.Peek(1).Length
+                         && context.ValueStack.Peek(0).SequenceEqual(context.ValueStack.Peek(1));
 
             context.ValueStack.Pop();
             context.ValueStack.Pop();

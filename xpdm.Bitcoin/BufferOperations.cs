@@ -232,11 +232,11 @@ namespace xpdm.Bitcoin
             Contract.Ensures(Contract.Result<string>() != null);
 
             var sb = new System.Text.StringBuilder();
-            int i = 0;
+            int i = buffer.Length;
             for (;;)
             {
-                sb.Append(buffer[i++].ToString(byteFormat));
-                if (i < buffer.Length)
+                sb.Append(buffer[--i].ToString(byteFormat));
+                if (i > 0)
                 {
                     sb.Append(byteJoin);
                 }
@@ -259,11 +259,11 @@ namespace xpdm.Bitcoin
             var offset = 0;
             if (byteString.Length % 2 == 1)
             {
-                ba[0] = byte.Parse(byteString.Substring(0, 1), NumberStyles.AllowHexSpecifier);
+                ba[ba.Length - 1] = byte.Parse(byteString.Substring(0, 1), NumberStyles.AllowHexSpecifier);
                 offset = 1;
             }
 
-            for (int i = offset; i < ba.Length; ++i)
+            for (int i = ba.Length - 1; i >= offset; --i)
             {
                 ba[i] = byte.Parse(byteString.Substring(i*2 - offset, 2), NumberStyles.AllowHexSpecifier);
             }

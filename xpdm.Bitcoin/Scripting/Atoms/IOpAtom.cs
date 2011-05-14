@@ -1,7 +1,13 @@
 ﻿using System.Diagnostics.Contracts;
 
-namespace xpdm.Bitcoin.Scripting
+namespace xpdm.Bitcoin.Scripting.Atoms
 {
+    [ContractClass(typeof(IOpAtomContract))]
+    public interface IOpAtom
+    {
+        ScriptOpCode OpCode { get; }
+    }
+
     [ContractClassFor(typeof(IOpAtom))]
     public abstract class IOpAtomContract : IOpAtom
     {
