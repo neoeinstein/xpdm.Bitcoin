@@ -26,13 +26,13 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             switch (OpCode)
             {
                 case ScriptOpCode.OP_3DUP:
-                    context.ValueStack.Push(context.ValueStack[index]);
+                    context.ValueStack.Push(context.ValueStack.Peek(index));
                     goto case ScriptOpCode.OP_2DUP;
                 case ScriptOpCode.OP_2DUP:
-                    context.ValueStack.Push(context.ValueStack[index]);
+                    context.ValueStack.Push(context.ValueStack.Peek(index));
                     goto default;
                 default:
-                    context.ValueStack.Push(context.ValueStack[index]);
+                    context.ValueStack.Push(context.ValueStack.Peek(index));
                     break;
             }
         }
