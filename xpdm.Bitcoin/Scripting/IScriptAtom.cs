@@ -12,6 +12,5 @@ namespace xpdm.Bitcoin.Scripting
         int AltStackChange { get; }
         [Pure] bool CanExecute(ExecutionContext context);
         [Pure] void Execute(ExecutionContext context);
-        byte[] ToByteCode();
     }
 }

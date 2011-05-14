@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
+using System.IO;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
@@ -15,17 +16,29 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             OpCode = opcode;
         }
 
-        public override byte[] ToByteCode()
-        {
-            Contract.Ensures(Contract.Result<byte[]>().Length == 1);
-            Contract.Ensures((ScriptOpCode)Contract.Result<byte[]>()[0] == OpCode);
-
-            return new byte[] { (byte)OpCode };
-        }
+        protected OpAtom() { }
+        protected OpAtom(Stream stream) : base(stream) { }
+        protected OpAtom(byte[] buffer, int offset) : base(buffer, offset) { }
 
         public override string ToString()
         {
             return OpCode.ToString();
+        }
+
+        protected sealed override void Deserialize(Stream stream)
+        {
+            var opcode = (ScriptOpCode)ReadByte(stream);
+            OpCode = opcode;
+        }
+
+        public sealed override void Serialize(Stream stream)
+        {
+            Write(stream, (byte)OpCode);
+        }
+
+        public sealed override int SerializedByteSize
+        {
+            get { return 1; }
         }
     }
 }

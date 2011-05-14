@@ -2,10 +2,11 @@
 using System.Diagnostics.Contracts;
 using C5;
 using System.Numerics;
+using System.IO;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
-    public abstract class ScriptAtom : IScriptAtom
+    public abstract class ScriptAtom : Core.BitcoinSerializable, IScriptAtom
     {
         public virtual int OperandCount { get { return 0; } }
         public virtual int ResultCount { get { return 1; } }
@@ -43,6 +44,8 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         [Pure]
         protected abstract void ExecuteImpl(ExecutionContext context);
 
-        public abstract byte[] ToByteCode();
+        protected ScriptAtom() { }
+        protected ScriptAtom(Stream stream) : base(stream) { }
+        protected ScriptAtom(byte[] buffer, int offset) : base(buffer, offset) { }
     }
 }

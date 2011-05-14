@@ -55,12 +55,5 @@ namespace xpdm.Bitcoin.Scripting
             Contract.EnsuresOnThrow<Exception>(context.HardFailure == true);
         }
 
-        [Pure]
-        public byte[] ToByteCode()
-        {
-            Contract.Ensures(Contract.Result<byte[]>() != null);
-
-            return default(byte[]);
-        }
     }
 }

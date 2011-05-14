@@ -2,10 +2,11 @@
 using System.Numerics;
 using C5;
 using System;
+using System.IO;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
-    public class ValueAtom : ScriptAtom, IScriptValueAtom
+    public sealed class ValueAtom : ScriptAtom, IScriptValueAtom
     {
         public byte[] Value { get; private set; }
 
@@ -35,48 +36,85 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             context.ValueStack.Push(this.Value);
         }
 
-        public override byte[] ToByteCode()
-        {
-            Contract.Ensures(Contract.Result<byte[]>() != null);
-            Contract.Ensures(Value.LongLength <= ushort.MaxValue || Contract.Result<byte[]>().LongLength == Value.LongLength + 5);
-            Contract.Ensures(Value.LongLength <= byte.MaxValue || Contract.Result<byte[]>().LongLength == Value.LongLength + 3);
-            Contract.Ensures(Value.LongLength < (int)ScriptOpCode.OP_PUSHDATA1 || Contract.Result<byte[]>().LongLength == Value.LongLength + 2);
-            Contract.Ensures(Value.LongLength >= (int)ScriptOpCode.OP_PUSHDATA1 || Contract.Result<byte[]>().LongLength == Value.LongLength + 1);
+        public ValueAtom() { }
+        public ValueAtom(Stream stream) : base(stream) { }
+        public ValueAtom(byte[] buffer, int offset) : base(buffer, offset) { }
 
-            byte[] retVal;
+        public override void Serialize(Stream stream)
+        {
+            //Contract.Ensures(Contract.Result<byte[]>() != null);
+            //Contract.Ensures(Value.LongLength <= ushort.MaxValue || Contract.Result<byte[]>().LongLength == Value.LongLength + 5);
+            //Contract.Ensures(Value.LongLength <= byte.MaxValue || Contract.Result<byte[]>().LongLength == Value.LongLength + 3);
+            //Contract.Ensures(Value.LongLength < (int)ScriptOpCode.OP_PUSHDATA1 || Contract.Result<byte[]>().LongLength == Value.LongLength + 2);
+            //Contract.Ensures(Value.LongLength >= (int)ScriptOpCode.OP_PUSHDATA1 || Contract.Result<byte[]>().LongLength == Value.LongLength + 1);
+
             if (Value.LongLength > uint.MaxValue)
             {
                 throw new InvalidOperationException("Unable to write value with size greater than " + uint.MaxValue);
             }
             if (Value.LongLength > ushort.MaxValue)
             {
-                retVal = new byte[Value.LongLength + 1 + 4];
-                retVal[0] = (byte)ScriptOpCode.OP_PUSHDATA4;
-                ((uint)retVal.LongLength).WriteBytes(retVal, 1);
-                Value.CopyTo(retVal, 5);
+                Write(stream, (byte)ScriptOpCode.OP_PUSHDATA4);
+                Write(stream, (uint)Value.LongLength);
             }
             else if (Value.LongLength > byte.MaxValue)
             {
-                retVal = new byte[Value.LongLength + 1 + 2];
-                retVal[0] = (byte)ScriptOpCode.OP_PUSHDATA2;
-                ((ushort)retVal.LongLength).WriteBytes(retVal, 1);
-                Value.CopyTo(retVal, 3);
+                Write(stream, (byte)ScriptOpCode.OP_PUSHDATA2);
+                Write(stream, (ushort)Value.LongLength);
             }
             else if (Value.LongLength >= (int)ScriptOpCode.OP_PUSHDATA1)
             {
-                retVal = new byte[Value.LongLength + 1 + 1];
-                retVal[0] = (byte)ScriptOpCode.OP_PUSHDATA1;
-                retVal[1] = (byte)Value.LongLength;
-                Value.CopyTo(retVal, 2);
+                Write(stream, (byte)ScriptOpCode.OP_PUSHDATA1);
+                Write(stream, (byte)Value.LongLength);
             }
             else
             {
-                retVal = new byte[Value.LongLength + 1];
-                retVal[0] = (byte)Value.LongLength;
-                Value.CopyTo(retVal, 1);
+                Write(stream, (byte)Value.LongLength);
             }
 
-            return retVal;
+            WriteBytes(stream, Value);
+        }
+
+        protected override void Deserialize(Stream stream)
+        {
+            var opcode = (ScriptOpCode)ReadByte(stream);
+            uint length;
+            switch (opcode)
+            {
+                case ScriptOpCode.OP_PUSHDATA1:
+                    length = ReadByte(stream);
+                    break;
+                case ScriptOpCode.OP_PUSHDATA2:
+                    length = ReadUInt16(stream);
+                    break;
+                case ScriptOpCode.OP_PUSHDATA4:
+                    length = ReadUInt32(stream);
+                    break;
+                default:
+                    length = (byte)opcode;
+                    break;
+            }
+            Value = ReadBytes(stream, (int)length);
+        }
+
+        public override int SerializedByteSize
+        {
+            get
+            {
+                if (Value.Length > ushort.MaxValue)
+                {
+                    return Value.Length + 5;
+                }
+                if (Value.Length > byte.MaxValue)
+                {
+                    return Value.Length + 3;
+                }
+                if (Value.Length >= (byte)ScriptOpCode.OP_PUSHDATA1)
+                {
+                    return Value.Length + 2;
+                }
+                return Value.Length + 1;
+            }
         }
     }
 }
