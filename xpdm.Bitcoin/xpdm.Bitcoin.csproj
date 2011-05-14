@@ -129,9 +129,7 @@
     <Compile Include="Scripting\Atoms\ValueAtom.cs" />
     <Compile Include="Scripting\ExecutionContext.cs" />
     <Compile Include="Scripting\IOpAtom.cs" />
-    <Compile Include="Scripting\IOpAtomContract.cs" />
     <Compile Include="Scripting\IScriptAtom.cs" />
-    <Compile Include="Scripting\IScriptAtomContract.cs" />
     <Compile Include="Scripting\IScriptValueAtom.cs" />
     <Compile Include="Scripting\Script.cs" />
     <Compile Include="Scripting\Atoms\ScriptAtom.cs" />
