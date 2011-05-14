@@ -132,7 +132,6 @@
     <Compile Include="Scripting\Atoms\IOpAtom.cs" />
     <Compile Include="Scripting\IScriptAtom.cs" />
     <Compile Include="Scripting\Atoms\IScriptValueAtom.cs" />
-    <Compile Include="Scripting\Script.cs" />
     <Compile Include="Scripting\Atoms\ScriptAtom.cs" />
     <Compile Include="Scripting\ScriptAtomFactory.cs" />
     <Compile Include="Scripting\ScriptOpCode.cs" />

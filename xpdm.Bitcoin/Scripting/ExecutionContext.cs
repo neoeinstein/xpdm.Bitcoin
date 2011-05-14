@@ -13,6 +13,26 @@ namespace xpdm.Bitcoin.Scripting
         public IStack<byte[]> AltStack { get; private set; }
         public IStack<bool> ControlStack { get; private set; }
 
+        public bool Execute(Core.Script script)
+        {
+            foreach (var atom in script.Atoms)
+            {
+                if (this.ExecutionResult.HasValue)
+                {
+                    return this.ExecutionResult.Value;
+                }
+                if (!atom.CanExecute(this))
+                {
+                    return false;
+                }
+                atom.Execute(this);
+            }
+
+            this.InFinalState = true;
+
+            return this.ExecutionResult == true;
+        }
+
         private bool _hardFailure = false;
         public bool HardFailure
         {
