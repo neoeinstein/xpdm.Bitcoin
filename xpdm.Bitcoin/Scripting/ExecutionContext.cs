@@ -16,17 +16,17 @@ namespace xpdm.Bitcoin.Scripting
 
         public int OpAtomsExecuted { get; private set; }
 
-        public bool Execute(Core.Script script)
+        public void ExecutePartial(Core.Script script)
         {
             foreach (var atom in script.Atoms)
             {
                 if (this.ExecutionResult.HasValue)
                 {
-                    return this.ExecutionResult.Value;
+                    break;
                 }
                 if (!atom.CanExecute(this))
                 {
-                    return false;
+                    this.HardFailure = true;
                 }
                 atom.Execute(this);
 
@@ -35,6 +35,11 @@ namespace xpdm.Bitcoin.Scripting
                     ++OpAtomsExecuted;
                 }
             }
+        }
+
+        public bool Execute(Core.Script script)
+        {
+            ExecutePartial(script);
 
             this.InFinalState = true;
 
