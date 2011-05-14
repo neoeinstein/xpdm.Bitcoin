@@ -6,7 +6,7 @@ using System;
 namespace xpdm.Bitcoin.Scripting
 {
     [ContractClass(typeof(IScriptAtomContract))]
-    public interface IScriptAtom
+    public interface IScriptAtom : Core.IBitcoinSerializable
     {
         int OperandCount { get; }
         int ResultCount { get; }
@@ -64,5 +64,8 @@ namespace xpdm.Bitcoin.Scripting
             Contract.EnsuresOnThrow<Exception>(Contract.OldValue(context.AltStack.Count) == context.AltStack.Count);
             Contract.EnsuresOnThrow<Exception>(context.HardFailure == true);
         }
+
+        public abstract void Serialize(System.IO.Stream stream);
+        public abstract int SerializedByteSize { get; }
     }
 }
