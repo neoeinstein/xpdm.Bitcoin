@@ -1,67 +1,40 @@
 ﻿using System;
 using System.Numerics;
 using System.Diagnostics.Contracts;
+using System.IO;
 
 namespace xpdm.Bitcoin.Scripting
 {
     public static class ScriptAtomFactory
     {
-        public static IScriptAtom GetAtom(byte[] buffer, ref int offset)
+        public static IScriptAtom GetAtom(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
             Contract.Ensures(Contract.Result<IScriptAtom>() != null);
-            Contract.Ensures(Contract.ValueAtReturn(out offset) <= buffer.Length);
 
-            var opcode = (ScriptOpCode)buffer[offset++];
+            var opcode = (ScriptOpCode)stream.ReadByte();
+
             if (opcode <= ScriptOpCode.OP_PUSHDATA4)
             {
-                uint size;
-                switch(opcode)
-                {
-                    case ScriptOpCode.OP_PUSHDATA1:
-                        if (buffer.Length <= offset)
-                        {
-                            return null;
-                        }
-                        size = buffer[offset++];
-                        break;
-                    case ScriptOpCode.OP_PUSHDATA2:
-                        if (buffer.Length <= offset + 1)
-                        {
-                            return null;
-                        }
-                        size = buffer.ReadUInt16(offset);
-                        offset += 2;
-                        break;
-                    case ScriptOpCode.OP_PUSHDATA4:
-                        if (buffer.Length <= offset + 3)
-                        {
-                            return null;
-                        }
-                        size = buffer.ReadUInt32(offset);
-                        offset += 4;
-                        break;
-                    default:
-                        size = (uint)opcode;
-                        break;
-                }
-
-                if (buffer.Length <= offset + size)
-                {
-                    return null;
-                }
-                var valBytes = new byte[size];
-                Array.Copy(buffer, offset, valBytes, 0, size);
-                offset += (int)size;
-                return new Atoms.ValueAtom(valBytes);
+                stream.Position--;
+                return new Atoms.ValueAtom(stream);
             }
 
             return GetOpAtom(opcode);
         }
 
+        public static IScriptAtom GetAtom(byte[] buffer, int offset)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Ensures(Contract.Result<IScriptAtom>() != null);
+            Contract.Ensures(Contract.ValueAtReturn(out offset) <= buffer.Length);
+
+            var ms = new MemoryStream(buffer, offset, buffer.Length - offset);
+            return GetAtom(ms);
+        }
+
         private static IScriptAtom GetOpAtom(ScriptOpCode opcode)
         {
-            Contract.Requires<ArgumentOutOfRangeException>(opcode >= ScriptOpCode.OP_PUSHDATA1, "opcode");
+            Contract.Requires<ArgumentOutOfRangeException>(opcode > ScriptOpCode.OP_PUSHDATA4, "opcode");
 
             switch (opcode)
             {
