@@ -38,5 +38,10 @@ namespace xpdm.Bitcoin.Core
         {
             get { return BufferOperations.UINT64_SIZE + Script.SerializedByteSize; }
         }
+
+        public override string ToString()
+        {
+            return Value + " [ " + Script + " ]";
+        }
     }
 }

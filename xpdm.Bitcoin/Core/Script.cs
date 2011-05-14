@@ -76,5 +76,10 @@ namespace xpdm.Bitcoin.Core
                 return VarIntByteSize(scriptSize) + scriptSize;
             }
         }
+
+        public override string ToString()
+        {
+            return string.Join(" ", Atoms);
+        }
     }
 }

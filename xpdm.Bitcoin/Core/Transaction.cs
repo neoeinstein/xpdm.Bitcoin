@@ -59,5 +59,10 @@ namespace xpdm.Bitcoin.Core
                 return BufferOperations.UINT32_SIZE*2 + tiSize + toSize;
             }
         }
+
+        public override string ToString()
+        {
+            return Version + " [ {" + string.Join("}, {", TransactionInputs) + "} ] => [ {" + string.Join("}, {", TransactionOutputs) + "} ] " + LockTime;
+        }
     }
 }

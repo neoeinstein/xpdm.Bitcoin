@@ -121,5 +121,10 @@ namespace xpdm.Bitcoin.Scripting.Atoms
                 return Value.Length + 1;
             }
         }
+
+        public override string ToString()
+        {
+            return BufferOperations.ToByteString(Value);
+        }
     }
 }

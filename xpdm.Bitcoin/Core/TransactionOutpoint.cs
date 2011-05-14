@@ -37,5 +37,10 @@ namespace xpdm.Bitcoin.Core
         {
             get { return SourceTransactionHash.HashByteSize + BufferOperations.UINT32_SIZE; }
         }
+
+        public override string ToString()
+        {
+            return SourceTransactionHash + ":" + OutputSequenceNumber;
+        }
     }
 }
