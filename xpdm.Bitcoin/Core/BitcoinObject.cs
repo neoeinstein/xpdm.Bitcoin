@@ -100,7 +100,7 @@ namespace xpdm.Bitcoin.Core
 
         protected static long ReadInt64(Stream stream)
         {
-            return ReadUInt32(stream) & ((long)ReadUInt32(stream) << 32);
+            return ReadUInt32(stream) | ((long)ReadUInt32(stream) << 32);
         }
 
         protected static uint ReadUInt32(Stream stream)
@@ -111,9 +111,9 @@ namespace xpdm.Bitcoin.Core
         protected static int ReadInt32(Stream stream)
         {
             int value = stream.ReadByte();
-            value &= stream.ReadByte() << 8;
-            value &= stream.ReadByte() << 16;
-            value &= stream.ReadByte() << 24;
+            value |= stream.ReadByte() << 8;
+            value |= stream.ReadByte() << 16;
+            value |= stream.ReadByte() << 24;
             return value;
         }
 
@@ -124,7 +124,7 @@ namespace xpdm.Bitcoin.Core
 
         protected static short ReadInt16(Stream stream)
         {
-            int value = stream.ReadByte() & (stream.ReadByte() << 8);
+            int value = stream.ReadByte() | (stream.ReadByte() << 8);
             return (short) value;
         }
 
