@@ -72,7 +72,8 @@ namespace xpdm.Bitcoin.Core
         {
             get
             {
-                return Atoms.Sum(a => a.SerializedByteSize);
+                var scriptSize = Atoms.Sum(a => a.SerializedByteSize);
+                return VarIntByteSize(scriptSize) + scriptSize;
             }
         }
     }
