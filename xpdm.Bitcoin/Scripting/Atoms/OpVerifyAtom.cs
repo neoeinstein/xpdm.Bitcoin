@@ -15,14 +15,6 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             }
         }
 
-        public override int ResultCount
-        {
-            get
-            {
-                return 0;
-            }
-        }
-
         protected bool VerifyOrFail { get; private set; }
 
         protected override void ExecuteImpl(ExecutionContext context)

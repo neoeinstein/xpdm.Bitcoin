@@ -51,8 +51,12 @@ namespace xpdm.Bitcoin.Scripting
                 case ScriptOpCode.OP_EQUAL:
                 case ScriptOpCode.OP_EQUALVERIFY:
                     return new Atoms.OpEqualAtom(opcode);
+                case ScriptOpCode.OP_CHECKSIG:
+                case ScriptOpCode.OP_CHECKSIGVERIFY:
+                    return new Atoms.OpCheckSigAtom(opcode);
+                default:
+                    return new Atoms.OpInvalidAtom(opcode);
             }
-            return null;
         }
     }
 }

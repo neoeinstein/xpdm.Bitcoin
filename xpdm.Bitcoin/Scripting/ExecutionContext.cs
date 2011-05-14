@@ -18,22 +18,31 @@ namespace xpdm.Bitcoin.Scripting
 
         public void ExecutePartial(Core.Script script)
         {
-            foreach (var atom in script.Atoms)
+            try
             {
-                if (this.ExecutionResult.HasValue)
-                {
-                    break;
-                }
-                if (!atom.CanExecute(this))
-                {
-                    this.HardFailure = true;
-                }
-                atom.Execute(this);
+                CurrentScript = script;
 
-                if (atom is Atoms.OpAtom)
+                foreach (var atom in script.Atoms)
                 {
-                    ++OpAtomsExecuted;
+                    if (this.ExecutionResult.HasValue)
+                    {
+                        break;
+                    }
+                    if (!atom.CanExecute(this))
+                    {
+                        this.HardFailure = true;
+                    }
+                    atom.Execute(this);
+
+                    if (atom is Atoms.OpAtom)
+                    {
+                        ++OpAtomsExecuted;
+                    }
                 }
+            }
+            finally
+            {
+                CurrentScript = null;
             }
         }
 
@@ -116,15 +125,9 @@ namespace xpdm.Bitcoin.Scripting
             }
         }
 
-        public Script Script { get; private set; }
-        public int CurrentIndex { get; set; }
-        public int LastSeparatorIndex { get; set; }
-
-        public ExecutionContext(Script script)
-        {
-            Contract.Requires<ArgumentNullException>(script != null, "script");
-            Script = script;
-        }
+        public Core.Script CurrentScript { get; private set; }
+        public int CurrentAtomIndex { get; set; }
+        public int LastSeparatorAtomIndex { get; set; }
 
         public static bool ToBool(byte[] val)
         {
@@ -165,7 +168,9 @@ namespace xpdm.Bitcoin.Scripting
         [ContractInvariantMethod]
         private void __Invariant()
         {
-            Contract.Invariant(Script != null);
+            Contract.Invariant(CurrentScript == null);
+            Contract.Invariant(CurrentAtomIndex == 0);
+            Contract.Invariant(LastSeparatorAtomIndex == 0);
         }
     }
 }

@@ -128,6 +128,7 @@
     <Compile Include="Scripting\Atoms\OpDupAtom.cs" />
     <Compile Include="Scripting\Atoms\OpHashAtom.cs" />
     <Compile Include="Scripting\Atoms\OpEqualAtom.cs" />
+    <Compile Include="Scripting\Atoms\OpInvalidAtom.cs" />
     <Compile Include="Scripting\Atoms\OpVerifyAtom.cs" />
     <Compile Include="Scripting\Atoms\StackExtensions.cs" />
     <Compile Include="Scripting\Atoms\ValueAtom.cs" />
