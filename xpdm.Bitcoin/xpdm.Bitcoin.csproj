@@ -129,9 +129,9 @@
     <Compile Include="Scripting\Atoms\OpVerifyAtom.cs" />
     <Compile Include="Scripting\Atoms\ValueAtom.cs" />
     <Compile Include="Scripting\ExecutionContext.cs" />
-    <Compile Include="Scripting\IOpAtom.cs" />
+    <Compile Include="Scripting\Atoms\IOpAtom.cs" />
     <Compile Include="Scripting\IScriptAtom.cs" />
-    <Compile Include="Scripting\IScriptValueAtom.cs" />
+    <Compile Include="Scripting\Atoms\IScriptValueAtom.cs" />
     <Compile Include="Scripting\Script.cs" />
     <Compile Include="Scripting\Atoms\ScriptAtom.cs" />
     <Compile Include="Scripting\ScriptAtomFactory.cs" />
