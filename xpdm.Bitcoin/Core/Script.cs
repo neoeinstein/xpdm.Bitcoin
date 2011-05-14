@@ -25,6 +25,27 @@ namespace xpdm.Bitcoin.Core
             Atoms = new GuardedList<Scripting.IScriptAtom>(atomsList);
         }
 
+        public Script Subscript(int index, int length)
+        {
+            var subscript = new Script();
+            subscript.Atoms = Atoms.View(index, length);
+            return subscript;
+        }
+
+        public ScriptBuilder ToScriptBuilder()
+        {
+            var sb = new ScriptBuilder();
+            sb.Atoms.AddAll(Atoms);
+            return sb;
+        }
+
+        public byte[] SerializeToByteArrayWithoutSize()
+        {
+            var arr = new byte[Atoms.Sum(a => a.SerializedByteSize)];
+            Array.Copy(SerializeToByteArray(), VarIntByteSize(arr.Length), arr, 0, arr.Length);
+            return arr;
+        }
+
         public Script(Stream stream) : base(stream) { }
         public Script(byte[] buffer, int offset) : base(buffer, offset) { }
 
