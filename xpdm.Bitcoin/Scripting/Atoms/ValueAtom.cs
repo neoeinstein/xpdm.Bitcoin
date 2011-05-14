@@ -3,6 +3,7 @@ using System.Numerics;
 using C5;
 using System;
 using System.IO;
+using System.Runtime.Serialization;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
@@ -48,12 +49,12 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             //Contract.Ensures(Value.LongLength < (int)ScriptOpCode.OP_PUSHDATA1 || Contract.Result<byte[]>().LongLength == Value.LongLength + 2);
             //Contract.Ensures(Value.LongLength >= (int)ScriptOpCode.OP_PUSHDATA1 || Contract.Result<byte[]>().LongLength == Value.LongLength + 1);
 
-            if (Value.LongLength > uint.MaxValue)
-            {
-                throw new InvalidOperationException("Unable to write value with size greater than " + uint.MaxValue);
-            }
             if (Value.LongLength > ushort.MaxValue)
             {
+                if (Value.LongLength > MaximumAtomSize)
+                {
+                    throw new SerializationException("Unable to serialize atom with size greater than maximum");
+                }
                 Write(stream, (byte)ScriptOpCode.OP_PUSHDATA4);
                 Write(stream, (uint)Value.LongLength);
             }
@@ -93,6 +94,10 @@ namespace xpdm.Bitcoin.Scripting.Atoms
                 default:
                     length = (byte)opcode;
                     break;
+            }
+            if (length > MaximumAtomSize)
+            {
+                throw new SerializationException("Unable to deserialize atom with size greater than maximum");
             }
             Value = ReadBytes(stream, (int)length);
         }

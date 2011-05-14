@@ -8,10 +8,13 @@ namespace xpdm.Bitcoin.Scripting
     public class ExecutionContext
     {
         public static readonly int MaximumCombinedStackSize = 1000;
+        public static readonly int MaximumOpAtomsPerScript = 200;
 
         public IStack<byte[]> ValueStack { get; private set; }
         public IStack<byte[]> AltStack { get; private set; }
         public IStack<bool> ControlStack { get; private set; }
+
+        public int OpAtomsExecuted { get; private set; }
 
         public bool Execute(Core.Script script)
         {
@@ -26,6 +29,11 @@ namespace xpdm.Bitcoin.Scripting
                     return false;
                 }
                 atom.Execute(this);
+
+                if (atom is Atoms.OpAtom)
+                {
+                    ++OpAtomsExecuted;
+                }
             }
 
             this.InFinalState = true;
@@ -98,7 +106,8 @@ namespace xpdm.Bitcoin.Scripting
         {
             get
             {
-                return ValueStack.Count + AltStack.Count <= MaximumCombinedStackSize;
+                return ValueStack.Count + AltStack.Count <= MaximumCombinedStackSize
+                    && OpAtomsExecuted <= MaximumOpAtomsPerScript;
             }
         }
 

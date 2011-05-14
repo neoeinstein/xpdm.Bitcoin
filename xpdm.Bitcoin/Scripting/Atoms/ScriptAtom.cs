@@ -8,6 +8,8 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 {
     public abstract class ScriptAtom : Core.BitcoinSerializable, IScriptAtom
     {
+        public static readonly int MaximumAtomSize = 520;
+
         public virtual int OperandCount { get { return 0; } }
         public virtual int ResultCount { get { return 1; } }
         public virtual int AltStackChange { get { return 0; } }

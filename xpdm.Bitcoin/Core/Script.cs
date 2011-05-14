@@ -9,6 +9,8 @@ namespace xpdm.Bitcoin.Core
 {
     public sealed class Script : BitcoinObject
     {
+        public static readonly int MaximumScriptByteSize = 10000;
+
         public IList<Scripting.IScriptAtom> Atoms { get; private set; }
 
         public Script()
@@ -20,26 +22,38 @@ namespace xpdm.Bitcoin.Core
 
         protected override void Deserialize(Stream stream)
         {
-            var size = (int)ReadVarInt(stream);
+            var scriptSize = (int)ReadVarInt(stream);
+            if (scriptSize > Script.MaximumScriptByteSize)
+            {
+                throw new SerializationException("Unable to deserialize: Script length greater than maximum allowable script size: " + scriptSize);
+            }
+
             var atoms = new ArrayList<Scripting.IScriptAtom>();
             int read = 0;
-            while (read < size)
+
+            while (read < scriptSize)
             {
                 var atom = Scripting.ScriptAtomFactory.GetAtom(stream);
                 read += atom.SerializedByteSize;
                 atoms.Add(atom);
             }
-            if (read > size)
+            if (read > scriptSize)
             {
-                stream.Position -= read - size;
-                throw new SerializationException("Script longer than expected.");
+                stream.Position -= read - scriptSize;
+                throw new SerializationException("Unable to deserialize: Script longer than expected.");
             }
             Atoms = new GuardedList<Scripting.IScriptAtom>(atoms);
         }
 
         public override void Serialize(Stream stream)
         {
-            WriteVarInt(stream, Atoms.Sum(a => a.SerializedByteSize));
+            var scriptSize = Atoms.Sum(a => a.SerializedByteSize);
+            if (scriptSize > Script.MaximumScriptByteSize)
+            {
+                throw new SerializationException("Unable to serialize: Script length greater than maximum allowable script size: " + scriptSize);
+            }
+
+            WriteVarInt(stream, scriptSize);
             foreach (var atom in Atoms)
             {
                 atom.Serialize(stream);
