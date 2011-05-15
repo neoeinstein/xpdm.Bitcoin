@@ -15,14 +15,6 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             }
         }
 
-        public override int ResultCount
-        {
-            get
-            {
-                return 0;
-            }
-        }
-
         protected bool VerifyOrFail { get; private set; }
 
         protected override void ExecuteImpl(ExecutionContext context)
@@ -31,7 +23,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             {
                 return;
             }
-            if (ExecutionContext.ToBool(context.ValueStack[0]))
+            if (ExecutionContext.ToBool(context.ValueStack.Peek()))
             {
                 context.ValueStack.Pop();
             }

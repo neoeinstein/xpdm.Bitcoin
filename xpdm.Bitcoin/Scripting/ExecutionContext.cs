@@ -8,10 +8,52 @@ namespace xpdm.Bitcoin.Scripting
     public class ExecutionContext
     {
         public static readonly int MaximumCombinedStackSize = 1000;
+        public static readonly int MaximumOpAtomsPerScript = 200;
 
         public IStack<byte[]> ValueStack { get; private set; }
         public IStack<byte[]> AltStack { get; private set; }
         public IStack<bool> ControlStack { get; private set; }
+
+        public int OpAtomsExecuted { get; private set; }
+
+        public void ExecutePartial(Core.Script script)
+        {
+            try
+            {
+                CurrentScript = script;
+
+                foreach (var atom in script.Atoms)
+                {
+                    if (this.ExecutionResult.HasValue)
+                    {
+                        break;
+                    }
+                    if (!atom.CanExecute(this))
+                    {
+                        this.HardFailure = true;
+                    }
+                    atom.Execute(this);
+
+                    if (atom is Atoms.OpAtom)
+                    {
+                        ++OpAtomsExecuted;
+                    }
+                }
+            }
+            finally
+            {
+                CurrentScript = null;
+            }
+        }
+
+        public bool Execute(Core.Script script)
+        {
+            ExecutePartial(script);
+
+            this.InFinalState = true;
+
+            return this.ExecutionResult == true;
+        }
 
         private bool _hardFailure = false;
         public bool HardFailure
@@ -78,9 +120,14 @@ namespace xpdm.Bitcoin.Scripting
         {
             get
             {
-                return ValueStack.Count + AltStack.Count <= MaximumCombinedStackSize;
+                return ValueStack.Count + AltStack.Count <= MaximumCombinedStackSize
+                    && OpAtomsExecuted <= MaximumOpAtomsPerScript;
             }
         }
+
+        public Core.Script CurrentScript { get; private set; }
+        public int CurrentAtomIndex { get; set; }
+        public int LastSeparatorAtomIndex { get; set; }
 
         public static bool ToBool(byte[] val)
         {
@@ -116,6 +163,14 @@ namespace xpdm.Bitcoin.Scripting
             {
                 return new byte[] { 0x00 };
             }
+        }
+
+        [ContractInvariantMethod]
+        private void __Invariant()
+        {
+            Contract.Invariant(CurrentScript == null);
+            Contract.Invariant(CurrentAtomIndex == 0);
+            Contract.Invariant(LastSeparatorAtomIndex == 0);
         }
     }
 }

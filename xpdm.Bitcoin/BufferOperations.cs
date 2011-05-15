@@ -215,7 +215,16 @@ namespace xpdm.Bitcoin
             Contract.Ensures(Contract.Result<string>() != null);
             Contract.Ensures(Contract.Result<string>().Length == buffer.Length * 2);
 
-            return buffer.ToByteString("x2", string.Empty);
+            return buffer.ToByteString("x2", string.Empty, 0);
+        }
+
+        public static string ToByteString(this byte[] buffer, Endianness endianness)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Ensures(Contract.Result<string>() != null);
+            Contract.Ensures(Contract.Result<string>().Length == buffer.Length * 2);
+
+            return buffer.ToByteString("x2", string.Empty, endianness);
         }
 
         public static string ToByteString(this byte[] buffer, string byteFormat)
@@ -223,7 +232,15 @@ namespace xpdm.Bitcoin
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
             Contract.Ensures(Contract.Result<string>() != null);
 
-            return buffer.ToByteString(byteFormat, string.Empty);
+            return buffer.ToByteString(byteFormat, string.Empty, 0);
+        }
+
+        public static string ToByteString(this byte[] buffer, string byteFormat, Endianness endianness)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            return buffer.ToByteString(byteFormat, string.Empty, endianness);
         }
 
         public static string ToByteString(this byte[] buffer, string byteFormat, string byteJoin)
@@ -231,12 +248,20 @@ namespace xpdm.Bitcoin
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
             Contract.Ensures(Contract.Result<string>() != null);
 
+            return buffer.ToByteString(byteFormat, byteJoin, 0);
+        }
+
+        public static string ToByteString(this byte[] buffer, string byteFormat, string byteJoin, Endianness endianness)
+        {
+            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
+            Contract.Ensures(Contract.Result<string>() != null);
+
             var sb = new System.Text.StringBuilder();
-            int i = buffer.Length;
-            for (;;)
+            int i = (endianness == Endianness.LittleEndian ? buffer.Length : 0);
+            for (; ; )
             {
-                sb.Append(buffer[--i].ToString(byteFormat));
-                if (i > 0)
+                sb.Append(buffer[(endianness == Endianness.LittleEndian ? --i : i++)].ToString(byteFormat));
+                if ((endianness == Endianness.LittleEndian ? i > 0 : i < buffer.Length))
                 {
                     sb.Append(byteJoin);
                 }
@@ -253,19 +278,30 @@ namespace xpdm.Bitcoin
             Contract.Ensures(Contract.Result<byte[]>() != null);
             Contract.Ensures(Contract.Result<byte[]>().Length == (byteString.Trim().Length + 1) >> 1);
 
+            return FromByteString(byteString, 0);
+        }
+
+        public static byte[] FromByteString(string byteString, Endianness endianness)
+        {
+            Contract.Requires<ArgumentNullException>(byteString != null, "byteString");
+            Contract.Ensures(Contract.Result<byte[]>() != null);
+            Contract.Ensures(Contract.Result<byte[]>().Length == (byteString.Trim().Length + 1) >> 1);
+
             byteString = byteString.Trim();
 
+
             var ba = new byte[(byteString.Length + 1) >> 1];
+            var end = (endianness == Endianness.LittleEndian ? ba.Length - 1 : 0);
             var offset = 0;
             if (byteString.Length % 2 == 1)
             {
-                ba[ba.Length - 1] = byte.Parse(byteString.Substring(0, 1), NumberStyles.AllowHexSpecifier);
+                ba[end] = byte.Parse(byteString.Substring(0, 1), NumberStyles.AllowHexSpecifier);
                 offset = 1;
             }
 
-            for (int i = ba.Length - 1; i >= offset; --i)
+            for (int i = offset; i < ba.Length; i++)
             {
-                ba[i] = byte.Parse(byteString.Substring(i*2 - offset, 2), NumberStyles.AllowHexSpecifier);
+                ba[end  + (endianness == Endianness.LittleEndian ? -i : i)] = byte.Parse(byteString.Substring(i * 2 - offset, 2), NumberStyles.AllowHexSpecifier);
             }
 
             return ba;
