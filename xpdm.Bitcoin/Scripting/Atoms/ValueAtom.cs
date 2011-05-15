@@ -124,7 +124,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 
         public override string ToString()
         {
-            return BufferOperations.ToByteString(Value);
+            return BufferOperations.ToByteString(Value, Endianness.BigEndian);
         }
     }
 }

@@ -22,5 +22,33 @@ namespace xpdm.Bitcoin.Core
         {
             get { return HASH_LEN; }
         }
+
+        public static Hash256 Parse(string hashString)
+        {
+            Contract.Requires<ArgumentNullException>(hashString != null, "hashString");
+            Contract.Requires<FormatException>(hashString.Trim().Length == HASH_LEN * 2, "Hash string not of expected length.");
+            Contract.Ensures(Contract.Result<Hash256>() != null);
+
+            var bytes = BufferOperations.FromByteString(hashString.Trim(), Endianness.LittleEndian);
+            return new Hash256(bytes);
+        }
+
+        public static bool TryParse(string hashString, out Hash256 hash)
+        {
+            Contract.Ensures(Contract.Result<bool>() == true || Contract.ValueAtReturn(out hash) == default(Hash256));
+            Contract.Ensures(Contract.Result<bool>() == false || Contract.ValueAtReturn(out hash) != null);
+
+            try
+            {
+                hash = Parse(hashString);
+                return true;
+            }
+            catch (ArgumentException) { }
+            catch (FormatException) { }
+            catch (OverflowException) { }
+
+            hash = default(Hash256);
+            return false;
+        }
     }
 }
