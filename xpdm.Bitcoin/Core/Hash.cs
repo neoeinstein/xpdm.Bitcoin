@@ -7,7 +7,7 @@ using System.Text;
 
 namespace xpdm.Bitcoin.Core
 {
-    public abstract class Hash : BitcoinObject, IEquatable<Hash>
+    public abstract class Hash : BitcoinObject, IEquatable<Hash>, IEquatable<BitcoinObject>
     {
         private byte[] _bytes;
         public byte[] Bytes
@@ -105,11 +105,16 @@ namespace xpdm.Bitcoin.Core
 
         #endregion
 
-        #region IEquatable<Hash> Members
+        #region IEquatable<> Members
 
-        public bool Equals(Hash other)
+        public sealed override bool Equals(Hash other)
         {
             return other != null && _bytes.Length == other._bytes.Length && _bytes.SequenceEqual(other._bytes);
+        }
+
+        public sealed override bool Equals(BitcoinObject other)
+        {
+            return other.Equals(this);
         }
 
         #endregion

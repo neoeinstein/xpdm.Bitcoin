@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 
 namespace xpdm.Bitcoin.Core
 {
-    public abstract class BitcoinObject : BitcoinSerializable
+    public abstract class BitcoinObject : BitcoinSerializable, IEquatable<BitcoinObject>, IEquatable<Hash>
     {
         protected BitcoinObject() { }
         protected BitcoinObject(Stream stream) : base(stream) { }
@@ -57,6 +57,7 @@ namespace xpdm.Bitcoin.Core
             return HashUtil.Hash160(this.BuildBitcoinHashByteArray());
         }
 
+        [Pure]
         protected virtual byte[] BuildBitcoinHashByteArray()
         {
             Contract.Ensures(Contract.Result<byte[]>() != null);
@@ -71,6 +72,31 @@ namespace xpdm.Bitcoin.Core
         }
 
         #endregion
-    }
 
+        #region IEquatable<> Members
+
+        [Pure]
+        public virtual bool Equals(BitcoinObject other)
+        {
+            return other != null && this.Hash256.Equals(other.Hash256);
+        }
+
+        [Pure]
+        public virtual bool Equals(Hash other)
+        {
+            return other != null && this.Hash256.Equals(other);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as BitcoinObject);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Hash256.GetHashCode();
+        }
+
+        #endregion
+    }
 }
