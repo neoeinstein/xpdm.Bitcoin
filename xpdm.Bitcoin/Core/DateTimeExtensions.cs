@@ -16,7 +16,12 @@ namespace xpdm.Bitcoin.Core
 
         public static uint ToSecondsSinceEpoch(DateTime dateTime)
         {
-            return (uint)(dateTime - Epoch).TotalSeconds;
+            // The significand of a double contains 52 bits. This is enough to
+            // contain a complete uint (at 32 bits) up to its max value without
+            // loss of resolution. This ensures that this transformation is
+            // safe. Use checked here to prevent silent overflows for dates in
+            // the far future or before the UNIX Epoch.
+            return checked((uint)(dateTime - Epoch).TotalSeconds);
         }
     }
 }
