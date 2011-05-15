@@ -62,7 +62,8 @@ namespace xpdm.Bitcoin.Core
 
         public override string ToString()
         {
-            return Version + " [ {" + string.Join("}, {", TransactionInputs) + "} ] => [ {" + string.Join("}, {", TransactionOutputs) + "} ] " + LockTime;
+            return string.Format("{0} [ {{{1}}} ] => [ {{{2}}} ] @ {3}", 
+                Version, string.Join("}, {", TransactionInputs), string.Join("}, {", TransactionOutputs), LockTime);
         }
     }
 }

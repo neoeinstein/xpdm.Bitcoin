@@ -2,6 +2,7 @@
 using SCG = System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -69,6 +70,14 @@ namespace xpdm.Bitcoin.Core
             return tree;
         }
 
+        public bool IsBlockHeader
+        {
+            get
+            {
+                return MerkleRoot != null && Transactions.IsEmpty;
+            }
+        }
+
         public Block() { }
         public Block(Stream stream) : base(stream) { }
         public Block(byte[] buffer, int offset) : base(buffer, offset) { }
@@ -117,6 +126,12 @@ namespace xpdm.Bitcoin.Core
             var ms = new MemoryStream();
             this.SerializeHeader(ms);
             return ms.ToArray();
+        }
+
+        public override string ToString()
+        {
+            return string.Format("v{0} <{1} ^{2} {3:s} 0x{4:x8} {5}", Version, PreviousBlockHash, MerkleRoot, DateTimeExtensions.FromSecondsSinceEpoch(Timestamp), DifficultyBits, Nonce)
+                + (IsBlockHeader ? string.Empty : string.Format("[ {{{0}}} ]", string.Join("}, {", Transactions)));
         }
     }
 }

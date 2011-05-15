@@ -41,7 +41,7 @@ namespace xpdm.Bitcoin.Core
 
         public override string ToString()
         {
-            return Value + " [ " + Script + " ]";
+            return string.Format("{0} [ {1} ]", Value, Script);
         }
     }
 }

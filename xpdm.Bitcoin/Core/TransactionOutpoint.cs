@@ -40,7 +40,7 @@ namespace xpdm.Bitcoin.Core
 
         public override string ToString()
         {
-            return SourceTransactionHash + ":" + OutputSequenceNumber;
+            return string.Format("{0}:{1}", SourceTransactionHash, OutputSequenceNumber);
         }
     }
 }

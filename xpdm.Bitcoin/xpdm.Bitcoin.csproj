@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\DateTimeExtensions.cs" />
     <Compile Include="Core\BitcoinObject.cs" />
     <Compile Include="Core\BitcoinSerializable.cs" />
     <Compile Include="Core\BitcoinValue.cs" />

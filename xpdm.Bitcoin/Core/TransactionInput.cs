@@ -44,7 +44,7 @@ namespace xpdm.Bitcoin.Core
 
         public override string ToString()
         {
-            return Source + " [ " + Script + " ] " + SequenceNumber;
+            return string.Format("{0} [ {1} ] {2}", Source, Script, SequenceNumber);
         }
     }
 }
