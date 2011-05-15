@@ -3,6 +3,7 @@ using SCG = System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System;
+using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -38,22 +39,32 @@ namespace xpdm.Bitcoin.Core
             var trans = new ArrayList<Transaction>();
             trans.AddAll(transactions);
             Transactions = new GuardedCollection<Transaction>(trans);
-            MerkleRoot = GetMerkleRoot();
+            MerkleRoot = CalculateMerkleRoot();
         }
 
         private IList<Hash256> _merkleTree;
         
-        public Hash256 GetMerkleRoot()
+        public Hash256 CalculateMerkleRoot()
         {
+            CalculateMerkleTree();
+            return _merkleTree.IsEmpty ? _merkleTree.Last : null;
+        }
+
+        public IList<Hash256> CalculateMerkleTree()
+        {
+            Contract.Ensures(Contract.Result<IList<Hash256>>() != null);
+
             if (_merkleTree == null)
             {
                 _merkleTree = CalculateMerkleTree(Transactions);
             }
-            return _merkleTree.Last;
+            return _merkleTree;
         }
 
         public static IList<Hash256> CalculateMerkleTree(SCG.IEnumerable<Transaction> transactions)
         {
+            Contract.Ensures(Contract.Result<IList<Hash256>>() != null);
+
             var tree = new ArrayList<Hash256>();
             var queue = new CircularQueue<Hash256>();
             foreach (var trans in transactions)
@@ -101,6 +112,7 @@ namespace xpdm.Bitcoin.Core
             WriteCollection(stream, Transactions);
         }
 
+        [Pure]
         public void SerializeHeader(Stream stream)
         {
             Write(stream, Version);

@@ -43,6 +43,21 @@ namespace xpdm.Bitcoin.Core
         protected ScriptBase(Stream stream) : base(stream) { }
         protected ScriptBase(byte[] buffer, int offset) : base(buffer, offset) { }
 
+        [Pure]
+        protected T Subscript<T>(int index, int length) where T : ScriptBase, new()
+        {
+            Contract.Requires<ArgumentOutOfRangeException>(0 <= index && index < Atoms.Count, "index");
+            Contract.Requires<ArgumentOutOfRangeException>(0 <= length && length <= Atoms.Count, "length");
+            Contract.Requires<ArgumentOutOfRangeException>(index + length <= Atoms.Count, "length");
+
+            using (var view = Atoms.View(index, length))
+            {
+                var script = new T();
+                script._atoms.AddAll(view);
+                return script;
+            }
+        }
+
         protected sealed override void Deserialize(Stream stream)
         {
             var scriptSize = (int)ReadVarInt(stream);

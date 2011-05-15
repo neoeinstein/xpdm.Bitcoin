@@ -15,6 +15,7 @@ namespace xpdm.Bitcoin.Core
             Atoms = new ArrayList<Scripting.IScriptAtom>();
         }
 
+        public ScriptBuilder(ScriptBase script) : this(script.Atoms) { }
         public ScriptBuilder(SCG.IEnumerable<Scripting.IScriptAtom> atoms) : base(atoms) { }
         public ScriptBuilder(Stream stream) : base(stream) { }
         public ScriptBuilder(byte[] buffer, int offset) : base(buffer, offset) { }
@@ -25,9 +26,9 @@ namespace xpdm.Bitcoin.Core
             Contract.Requires<ArgumentOutOfRangeException>(0 <= length && length <= Atoms.Count, "length");
             Contract.Requires<ArgumentOutOfRangeException>(index + length <= Atoms.Count, "length");
 
-            return new ScriptBuilder(Atoms.View(index, length));
+            return Subscript<ScriptBuilder>(index, length);
         }
-
+        
         public Script FreezeToScript()
         {
             Contract.Ensures(Contract.Result<Script>() != null);

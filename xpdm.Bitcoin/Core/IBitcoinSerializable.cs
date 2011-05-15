@@ -7,13 +7,14 @@ namespace xpdm.Bitcoin.Core
     [ContractClass(typeof(IBitcoinSerializableContract))]
     public interface IBitcoinSerializable
     {
-        void Serialize(Stream stream);
+        [Pure] void Serialize(Stream stream);
         int SerializedByteSize { get; }
     }
 
     [ContractClassFor(typeof(IBitcoinSerializable))]
     internal abstract class IBitcoinSerializableContract : IBitcoinSerializable
     {
+        [Pure]
         public void Serialize(Stream stream)
         {
             Contract.Requires<ArgumentNullException>(stream != null, "stream");

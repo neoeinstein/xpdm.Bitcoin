@@ -37,17 +37,7 @@ namespace xpdm.Bitcoin.Core
             Contract.Requires<ArgumentOutOfRangeException>(0 <= length && length <= Atoms.Count, "length");
             Contract.Requires<ArgumentOutOfRangeException>(index + length <= Atoms.Count, "length");
 
-            var subscript = new Script();
-            subscript.Atoms = Atoms.View(index, length);
-            return subscript;
-        }
-
-        public ScriptBuilder ToScriptBuilder()
-        {
-            Contract.Ensures(Contract.Result<ScriptBuilder>() != null);
-            Contract.Ensures(Contract.Result<ScriptBuilder>().Atoms.SequencedEquals(Atoms));
-
-            return new ScriptBuilder(Atoms);
+            return Subscript<Script>(index, length);
         }
     }
 }
