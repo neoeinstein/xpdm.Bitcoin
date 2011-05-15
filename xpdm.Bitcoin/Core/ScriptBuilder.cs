@@ -1,28 +1,47 @@
 ﻿using System;
-using SCG = System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
 using C5;
-using System.IO;
+using SCG = System.Collections.Generic;
 
 namespace xpdm.Bitcoin.Core
 {
-    public sealed class ScriptBuilder : BitcoinObject
+    public sealed class ScriptBuilder : ScriptBase
     {
-        public IList<Scripting.IScriptAtom> Atoms { get; private set; }
-
         public ScriptBuilder()
         {
             Atoms = new ArrayList<Scripting.IScriptAtom>();
         }
 
+        public ScriptBuilder(SCG.IEnumerable<Scripting.IScriptAtom> atoms) : base(atoms) { }
+        public ScriptBuilder(Stream stream) : base(stream) { }
+        public ScriptBuilder(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        public ScriptBuilder Subscript(int index, int length)
+        {
+            Contract.Requires<ArgumentOutOfRangeException>(0 <= index && index < Atoms.Count, "index");
+            Contract.Requires<ArgumentOutOfRangeException>(0 <= length && length <= Atoms.Count, "length");
+            Contract.Requires<ArgumentOutOfRangeException>(index + length <= Atoms.Count, "length");
+
+            return new ScriptBuilder(Atoms.View(index, length));
+        }
+
         public Script FreezeToScript()
         {
+            Contract.Ensures(Contract.Result<Script>() != null);
+            Contract.Ensures(Contract.Result<Script>().Atoms.SequencedEquals(Atoms));
+
             return new Script(Atoms);
         }
 
         public static ScriptBuilder GenerateScriptToPublicKeyHash(Hash160 pubKeyHash)
         {
+            Contract.Requires<ArgumentNullException>(pubKeyHash != null, "pubKeyHash");
+            Contract.Ensures(Contract.Result<ScriptBuilder>() != null);
+            Contract.Ensures(Contract.Result<ScriptBuilder>().Atoms.Count == 5);
+
             var sb = new ScriptBuilder();
             sb.Atoms.Add(xpdm.Bitcoin.Scripting.ScriptAtomFactory.GetOpAtom(xpdm.Bitcoin.Scripting.ScriptOpCode.OP_DUP));
             sb.Atoms.Add(xpdm.Bitcoin.Scripting.ScriptAtomFactory.GetOpAtom(xpdm.Bitcoin.Scripting.ScriptOpCode.OP_HASH160));
@@ -30,29 +49,6 @@ namespace xpdm.Bitcoin.Core
             sb.Atoms.Add(xpdm.Bitcoin.Scripting.ScriptAtomFactory.GetOpAtom(xpdm.Bitcoin.Scripting.ScriptOpCode.OP_EQUALVERIFY));
             sb.Atoms.Add(new xpdm.Bitcoin.Scripting.Atoms.OpCheckSigAtom());
             return sb;
-        }
-
-        protected override void Deserialize(Stream stream)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Serialize(Stream stream)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override int SerializedByteSize
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public override string ToString()
-        {
-            return string.Join(" ", Atoms);
         }
     }
 }
