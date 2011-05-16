@@ -7,7 +7,7 @@ using System.Text;
 
 namespace xpdm.Bitcoin.Core
 {
-    public abstract class Hash : BitcoinObject, IEquatable<Hash>, IEquatable<BitcoinObject>
+    public abstract class Hash : BitcoinObject, IEquatable<Hash>, IEquatable<BitcoinObject>, IComparable<Hash>, IComparable
     {
         private byte[] _bytes;
         public byte[] Bytes
@@ -118,5 +118,26 @@ namespace xpdm.Bitcoin.Core
         }
 
         #endregion
+
+        [Pure]
+        public int CompareTo(Hash other)
+        {
+            if (other == null)
+                return 1;
+            int compare = 0;
+            int i = Math.Max(HashByteSize, other.HashByteSize) - 1;
+            while (compare == 0 && i >= 0)
+            {
+                compare = (i < HashByteSize ? this[i] : 0).CompareTo(i < other.HashByteSize ? other[i] : 0);
+                --i;
+            }
+            return compare;
+        }
+
+        [Pure]
+        public int CompareTo(object obj)
+        {
+            return (obj is Hash ? CompareTo((Hash)obj) : 1);
+        }
     }
 }

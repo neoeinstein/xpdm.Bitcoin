@@ -111,9 +111,7 @@ namespace xpdm.Bitcoin.Core
 
         public int CompareTo(object obj)
         {
-            if (obj == null || !(obj is BitcoinValue))
-                return -1;
-            return this.CompareTo((BitcoinValue)obj);
+            return (obj is BitcoinValue ? this.CompareTo((BitcoinValue)obj) : 1);
         }
 
         #endregion
