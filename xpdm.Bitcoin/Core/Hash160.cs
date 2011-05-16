@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Numerics;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -14,6 +15,7 @@ namespace xpdm.Bitcoin.Core
         {
             Contract.Requires<ArgumentException>(hash.Length == HASH_LEN, "hash");
         }
+        public Hash160(BigInteger bi) : base(bi, HASH_LEN) { }
         public Hash160(Stream stream) : base(stream) { }
         public Hash160(byte[] buffer, int offset) : base(buffer, offset) { }
 
