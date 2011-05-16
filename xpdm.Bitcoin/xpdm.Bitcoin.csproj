@@ -83,6 +83,7 @@
     <Compile Include="Core\Script.cs" />
     <Compile Include="Core\ScriptBase.cs" />
     <Compile Include="Core\ScriptBuilder.cs" />
+    <Compile Include="Core\Timestamp.cs" />
     <Compile Include="Core\Transaction.cs" />
     <Compile Include="Core\TransactionInput.cs" />
     <Compile Include="Core\TransactionOutput.cs" />

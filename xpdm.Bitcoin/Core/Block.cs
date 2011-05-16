@@ -12,12 +12,12 @@ namespace xpdm.Bitcoin.Core
         public uint Version { get; private set; }
         public Hash256 PreviousBlockHash { get; private set; }
         public Hash256 MerkleRoot { get; private set; }
-        public uint Timestamp { get; private set; }
+        public Timestamp Timestamp { get; private set; }
         public uint DifficultyBits { get; private set; }
         public uint Nonce { get; private set; }
         public ICollection<Transaction> Transactions { get; private set; }
 
-        public Block(uint version, Hash256 previousBlockHash, Hash256 merkleRoot, uint timestamp, uint difficultyBits, uint nonce)
+        public Block(uint version, Hash256 previousBlockHash, Hash256 merkleRoot, Timestamp timestamp, uint difficultyBits, uint nonce)
         {
             Version = version;
             PreviousBlockHash = previousBlockHash;
@@ -28,7 +28,7 @@ namespace xpdm.Bitcoin.Core
             Transactions = new WrappedArray<Transaction>(new Transaction[0]);
         }
 
-        public Block(uint version, Hash256 previousBlockHash, uint timestamp, uint difficultyBits, uint nonce, SCG.IEnumerable<Transaction> transactions)
+        public Block(uint version, Hash256 previousBlockHash, Timestamp timestamp, uint difficultyBits, uint nonce, SCG.IEnumerable<Transaction> transactions)
         {
             Version = version;
             PreviousBlockHash = previousBlockHash;
