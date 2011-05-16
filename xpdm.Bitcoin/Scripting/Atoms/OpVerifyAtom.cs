@@ -15,22 +15,41 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             }
         }
 
+        public override int ResultCount
+        {
+            get
+            {
+                return 0;
+            }
+        }
+
         protected bool VerifyOrFail { get; private set; }
 
         protected override void ExecuteImpl(ExecutionContext context)
         {
+            ExecuteVerify(context, ExecutionContext.ToBool(context.ValueStack.Peek()));
+        }
+
+        protected void ExecuteVerify(ExecutionContext context, bool valid)
+        {
             if (!VerifyOrFail)
             {
-                return;
+                PopArguments(context);
+                context.ValueStack.Push(ExecutionContext.ToStackValue(valid));
             }
-            if (ExecutionContext.ToBool(context.ValueStack.Peek()))
+            else if (valid)
             {
-                context.ValueStack.Pop();
+                PopArguments(context);
             }
             else
             {
                 context.HardFailure = true;
             }
+        }
+
+        protected virtual void PopArguments(ExecutionContext context)
+        {
+            context.ValueStack.Pop();
         }
 
         public OpVerifyAtom() : this(ScriptOpCode.OP_VERIFY, true) { }

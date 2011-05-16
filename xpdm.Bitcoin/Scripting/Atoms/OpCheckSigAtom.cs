@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
+using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
@@ -29,16 +30,18 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             var key = context.ValueStack.Peek(0);
             var sig = context.ValueStack.Peek(1);
 
-            var subscript = context.CurrentScript.Subscript(context.LastSeparatorAtomIndex, 
-                                                            context.CurrentAtomIndex - context.LastSeparatorAtomIndex);
+            var subscript = new ScriptBuilder(context.CurrentScript.Subscript(context.LastSeparatorAtomIndex,
+                                                            context.CurrentAtomIndex - context.LastSeparatorAtomIndex));
 
             bool isValidSignature = false;
             
-            context.ValueStack.Pop();
-            context.ValueStack.Pop();
-            context.ValueStack.Push(ExecutionContext.ToStackValue(isValidSignature));
+            ExecuteVerify(context, isValidSignature);
+        }
 
-            base.ExecuteImpl(context);
+        protected override void PopArguments(ExecutionContext context)
+        {
+            context.ValueStack.Pop();
+            context.ValueStack.Pop();
         }
 
         public OpCheckSigAtom() : this(false) { }

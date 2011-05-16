@@ -30,11 +30,13 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             bool equal = context.ValueStack.Peek(0).Length == context.ValueStack.Peek(1).Length
                          && context.ValueStack.Peek(0).SequenceEqual(context.ValueStack.Peek(1));
 
-            context.ValueStack.Pop();
-            context.ValueStack.Pop();
-            context.ValueStack.Push(ExecutionContext.ToStackValue(equal));
+            ExecuteVerify(context, equal);
+        }
 
-            base.ExecuteImpl(context);
+        protected override void PopArguments(ExecutionContext context)
+        {
+            context.ValueStack.Pop();
+            context.ValueStack.Pop();
         }
 
         public OpEqualAtom() : this(false) { }
