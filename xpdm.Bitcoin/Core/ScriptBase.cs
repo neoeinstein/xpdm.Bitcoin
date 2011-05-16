@@ -12,6 +12,7 @@ namespace xpdm.Bitcoin.Core
     {
         public static readonly int MaximumScriptByteSize = 10000;
 
+        [ContractPublicPropertyName("Atoms")]
         private IList<Scripting.IScriptAtom> _atoms;
         public virtual IList<Scripting.IScriptAtom> Atoms
         {
@@ -27,6 +28,16 @@ namespace xpdm.Bitcoin.Core
                 Contract.Ensures(Atoms != null);
 
                 _atoms = value;
+            }
+        }
+
+        public Scripting.IScriptAtom this[int index]
+        {
+            get
+            {
+                Contract.Requires<IndexOutOfRangeException>(0 <= index && index < _atoms.Count);
+
+                return _atoms[index];
             }
         }
 

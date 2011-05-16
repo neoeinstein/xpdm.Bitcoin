@@ -9,6 +9,7 @@ namespace xpdm.Bitcoin.Core
 {
     public abstract class Hash : BitcoinObject, IEquatable<Hash>, IEquatable<BitcoinObject>, IComparable<Hash>, IComparable
     {
+        [ContractPublicPropertyName("Bytes")]
         private byte[] _bytes;
         public byte[] Bytes
         {
@@ -17,6 +18,16 @@ namespace xpdm.Bitcoin.Core
                 Contract.Ensures(Contract.Result<byte[]>() != null);
 
                 return (byte[])_bytes.Clone();
+            }
+        }
+
+        public byte this[int index]
+        {
+            get
+            {
+                Contract.Requires(0 <= index && index < _bytes.Length, "index");
+
+                return _bytes[index];
             }
         }
 

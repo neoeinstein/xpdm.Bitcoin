@@ -15,7 +15,17 @@ namespace xpdm.Bitcoin.Core
         public Timestamp Timestamp { get; private set; }
         public uint DifficultyBits { get; private set; }
         public uint Nonce { get; private set; }
-        public ICollection<Transaction> Transactions { get; private set; }
+        public IList<Transaction> Transactions { get; private set; }
+
+        public Transaction this[int index]
+        {
+            get
+            {
+                Contract.Requires<IndexOutOfRangeException>(0 <= index && index < Transactions.Count);
+
+                return Transactions[index];
+            }
+        }
 
         public Block(uint version, Hash256 previousBlockHash, Hash256 merkleRoot, Timestamp timestamp, uint difficultyBits, uint nonce)
         {
@@ -38,7 +48,7 @@ namespace xpdm.Bitcoin.Core
 
             var trans = new ArrayList<Transaction>();
             trans.AddAll(transactions);
-            Transactions = new GuardedCollection<Transaction>(trans);
+            Transactions = new GuardedList<Transaction>(trans);
             MerkleRoot = CalculateMerkleRoot();
         }
 
@@ -103,7 +113,7 @@ namespace xpdm.Bitcoin.Core
             Nonce = ReadUInt32(stream);
             var transactionsArr = ReadVarArray<Transaction>(stream);
             var transactions = new WrappedArray<Transaction>(transactionsArr);
-            Transactions = new GuardedCollection<Transaction>(transactions);
+            Transactions = new GuardedList<Transaction>(transactions);
         }
 
         public override void Serialize(Stream stream)

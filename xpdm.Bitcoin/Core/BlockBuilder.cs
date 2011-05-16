@@ -63,7 +63,17 @@ namespace xpdm.Bitcoin.Core
             }
         }
 
-        public ICollection<Transaction> Transactions { get; private set; }
+        public IList<Transaction> Transactions { get; private set; }
+
+        public Transaction this[int index]
+        {
+            get
+            {
+                Contract.Requires<IndexOutOfRangeException>(0 <= index && index < Transactions.Count);
+
+                return Transactions[index];
+            }
+        }
 
         public BlockBuilder()
         {
