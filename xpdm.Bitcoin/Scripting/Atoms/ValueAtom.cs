@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Numerics;
 using C5;
 using System;
@@ -7,13 +8,22 @@ using System.Runtime.Serialization;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
-    public sealed class ValueAtom : ScriptAtom, IScriptValueAtom
+    public sealed class ValueAtom : ScriptAtom, IScriptValueAtom, IEquatable<ValueAtom>
     {
-        public byte[] Value { get; private set; }
+        private byte[] _value;
+        public byte[] Value
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<byte[]>() != null);
+
+                return (byte[])_value.Clone();
+            }
+        }
 
         public ValueAtom(byte[] bytes)
         {
-            Value = bytes;
+            _value = bytes;
         }
 
         public ValueAtom(BigInteger value)
@@ -33,7 +43,6 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 
         protected override void ExecuteImpl(ExecutionContext context)
         {
-
             context.ValueStack.Push(this.Value);
         }
 
@@ -49,31 +58,31 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             //Contract.Ensures(Value.LongLength < (int)ScriptOpCode.OP_PUSHDATA1 || Contract.Result<byte[]>().LongLength == Value.LongLength + 2);
             //Contract.Ensures(Value.LongLength >= (int)ScriptOpCode.OP_PUSHDATA1 || Contract.Result<byte[]>().LongLength == Value.LongLength + 1);
 
-            if (Value.LongLength > ushort.MaxValue)
+            if (_value.LongLength > ushort.MaxValue)
             {
-                if (Value.LongLength > MaximumAtomSize)
+                if (_value.LongLength > MaximumAtomSize)
                 {
                     throw new SerializationException("Unable to serialize atom with size greater than maximum");
                 }
                 Write(stream, (byte)ScriptOpCode.OP_PUSHDATA4);
-                Write(stream, (uint)Value.LongLength);
+                Write(stream, (uint)_value.LongLength);
             }
-            else if (Value.LongLength > byte.MaxValue)
+            else if (_value.LongLength > byte.MaxValue)
             {
                 Write(stream, (byte)ScriptOpCode.OP_PUSHDATA2);
-                Write(stream, (ushort)Value.LongLength);
+                Write(stream, (ushort)_value.LongLength);
             }
-            else if (Value.LongLength >= (int)ScriptOpCode.OP_PUSHDATA1)
+            else if (_value.LongLength >= (int)ScriptOpCode.OP_PUSHDATA1)
             {
                 Write(stream, (byte)ScriptOpCode.OP_PUSHDATA1);
-                Write(stream, (byte)Value.LongLength);
+                Write(stream, (byte)_value.LongLength);
             }
             else
             {
-                Write(stream, (byte)Value.LongLength);
+                Write(stream, (byte)_value.LongLength);
             }
 
-            WriteBytes(stream, Value);
+            WriteBytes(stream, _value);
         }
 
         protected override void Deserialize(Stream stream)
@@ -99,32 +108,47 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             {
                 throw new SerializationException("Unable to deserialize atom with size greater than maximum");
             }
-            Value = ReadBytes(stream, (int)length);
+            _value = ReadBytes(stream, (int)length);
         }
 
         public override int SerializedByteSize
         {
             get
             {
-                if (Value.Length > ushort.MaxValue)
+                if (_value.Length > ushort.MaxValue)
                 {
-                    return Value.Length + 5;
+                    return _value.Length + 5;
                 }
-                if (Value.Length > byte.MaxValue)
+                if (_value.Length > byte.MaxValue)
                 {
-                    return Value.Length + 3;
+                    return _value.Length + 3;
                 }
-                if (Value.Length >= (byte)ScriptOpCode.OP_PUSHDATA1)
+                if (_value.Length >= (byte)ScriptOpCode.OP_PUSHDATA1)
                 {
-                    return Value.Length + 2;
+                    return _value.Length + 2;
                 }
-                return Value.Length + 1;
+                return _value.Length + 1;
             }
         }
 
         public override string ToString()
         {
-            return BufferOperations.ToByteString(Value, Endianness.BigEndian);
+            return BufferOperations.ToByteString(_value, Endianness.BigEndian);
+        }
+
+        public bool Equals(ValueAtom other)
+        {
+            return other != null && _value.Length == other._value.Length && _value.SequenceEqual(other._value);
+        }
+
+        public override bool Equals(IScriptAtom other)
+        {
+            return this.Equals(other as ValueAtom);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as ValueAtom);
         }
     }
 }

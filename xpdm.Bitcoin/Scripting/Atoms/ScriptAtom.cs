@@ -49,5 +49,12 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         protected ScriptAtom() { }
         protected ScriptAtom(Stream stream) : base(stream) { }
         protected ScriptAtom(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        #region IEquatable<IScriptAtom> Members
+
+        [Pure]
+        public abstract bool Equals(IScriptAtom other);
+
+        #endregion
     }
 }

@@ -7,7 +7,7 @@ using System.IO;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
-    public abstract class OpAtom : ScriptAtom
+    public abstract class OpAtom : ScriptAtom, IEquatable<OpAtom>
     {
         public ScriptOpCode OpCode { get; private set; }
 
@@ -39,6 +39,21 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         public sealed override int SerializedByteSize
         {
             get { return 1; }
+        }
+
+        public bool Equals(OpAtom other)
+        {
+            return other != null && OpCode.Equals(other.OpCode);
+        }
+
+        public sealed override bool Equals(IScriptAtom other)
+        {
+            return this.Equals(other as OpAtom);
+        }
+
+        public sealed override bool Equals(object obj)
+        {
+            return this.Equals(obj as OpAtom);
         }
     }
 }

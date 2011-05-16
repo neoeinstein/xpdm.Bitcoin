@@ -6,7 +6,7 @@ using System;
 namespace xpdm.Bitcoin.Scripting
 {
     [ContractClass(typeof(IScriptAtomContract))]
-    public interface IScriptAtom : Core.IBitcoinSerializable
+    public interface IScriptAtom : Core.IBitcoinSerializable, IEquatable<IScriptAtom>
     {
         int OperandCount { get; }
         int ResultCount { get; }
@@ -67,5 +67,6 @@ namespace xpdm.Bitcoin.Scripting
 
         public abstract void Serialize(System.IO.Stream stream);
         public abstract int SerializedByteSize { get; }
+        public abstract bool Equals(IScriptAtom other);
     }
 }
