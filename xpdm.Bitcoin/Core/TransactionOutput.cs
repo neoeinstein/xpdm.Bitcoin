@@ -43,5 +43,7 @@ namespace xpdm.Bitcoin.Core
         {
             return string.Format("{0} [ {1} ]", Value, Script);
         }
+
+        public static TransactionOutput Empty { get { return new TransactionOutput(-1, new Script()); } }
     }
 }
