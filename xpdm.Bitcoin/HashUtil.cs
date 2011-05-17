@@ -67,9 +67,9 @@ namespace xpdm.Bitcoin
             using (var sha = SHA256.Create())
             {
                 sha.TransformBlock(bufferA, offsetA, lengthA, bufferA, offsetA);
-                var hashBuffer = sha.TransformFinalBlock(bufferB, offsetB, lengthB);
-                hashBuffer = sha.ComputeHash(hashBuffer);
-                return new Hash256(hashBuffer);
+                sha.TransformBlock(bufferB, offsetB, lengthB, bufferB, offsetB);
+                sha.TransformFinalBlock(new byte[0], 0, 0);
+                return Sha256(sha.Hash);
             }
         }
 

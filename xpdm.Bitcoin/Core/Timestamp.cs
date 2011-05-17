@@ -96,7 +96,7 @@ namespace xpdm.Bitcoin.Core
             return this.ToString(format, null);
         }
 
-        private const string _defaultFormat = "D";
+        private const string _defaultFormat = "Ts";
 
         [Pure]
         public string ToString(string format, IFormatProvider formatProvider)
