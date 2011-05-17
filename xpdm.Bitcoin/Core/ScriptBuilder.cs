@@ -20,18 +20,16 @@ namespace xpdm.Bitcoin.Core
         public ScriptBuilder(Stream stream) : base(stream) { }
         public ScriptBuilder(byte[] buffer, int offset) : base(buffer, offset) { }
 
-        public ScriptBuilder Subscript(int index, int length)
+        public ScriptBuilder Subscript(int offset, int length)
         {
-            Contract.Requires<ArgumentOutOfRangeException>(0 <= index && index < Atoms.Count, "index");
-            Contract.Requires<ArgumentOutOfRangeException>(0 <= length && length <= Atoms.Count, "length");
-            Contract.Requires<ArgumentOutOfRangeException>(index + length <= Atoms.Count, "length");
+            ContractsCommon.ValidOffsetLength(0, Atoms.Count, offset, length);
 
-            return Subscript<ScriptBuilder>(index, length);
+            return Subscript<ScriptBuilder>(offset, length);
         }
         
         public Script FreezeToScript()
         {
-            Contract.Ensures(Contract.Result<Script>() != null);
+            ContractsCommon.ResultIsNonNull<Script>();
             Contract.Ensures(Contract.Result<Script>().Atoms.SequencedEquals(Atoms));
 
             return new Script(Atoms);
@@ -39,8 +37,8 @@ namespace xpdm.Bitcoin.Core
 
         public static ScriptBuilder GenerateScriptToPublicKeyHash(Hash160 pubKeyHash)
         {
-            Contract.Requires<ArgumentNullException>(pubKeyHash != null, "pubKeyHash");
-            Contract.Ensures(Contract.Result<ScriptBuilder>() != null);
+            ContractsCommon.NotNull(pubKeyHash, "pubKeyhash");
+            ContractsCommon.ResultIsNonNull<ScriptBuilder>();
             Contract.Ensures(Contract.Result<ScriptBuilder>().Atoms.Count == 5);
 
             var sb = new ScriptBuilder();

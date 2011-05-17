@@ -21,7 +21,7 @@ namespace xpdm.Bitcoin.Core
         {
             get
             {
-                Contract.Requires<IndexOutOfRangeException>(0 <= index && index < Transactions.Count);
+                ContractsCommon.ValidIndex(0, Transactions.Count, index);
 
                 return Transactions[index];
             }
@@ -62,7 +62,7 @@ namespace xpdm.Bitcoin.Core
 
         public IList<Hash256> CalculateMerkleTree()
         {
-            Contract.Ensures(Contract.Result<IList<Hash256>>() != null);
+            ContractsCommon.ResultIsNonNull<IList<Hash256>>();
 
             if (_merkleTree == null)
             {
@@ -73,7 +73,8 @@ namespace xpdm.Bitcoin.Core
 
         public static IList<Hash256> CalculateMerkleTree(SCG.IEnumerable<Transaction> transactions)
         {
-            Contract.Ensures(Contract.Result<IList<Hash256>>() != null);
+            ContractsCommon.NotNull(transactions, "transactions");
+            ContractsCommon.ResultIsNonNull<IList<Hash256>>();
 
             var tree = new ArrayList<Hash256>();
             var queue = new CircularQueue<Hash256>();
@@ -125,6 +126,7 @@ namespace xpdm.Bitcoin.Core
         [Pure]
         public void SerializeHeader(Stream stream)
         {
+            ContractsCommon.NotNull(stream, "stream");
             Write(stream, Version);
             PreviousBlockHash.Serialize(stream);
             MerkleRoot.Serialize(stream);

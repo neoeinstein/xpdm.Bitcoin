@@ -19,7 +19,7 @@ namespace xpdm.Bitcoin.Core
         {
             get
             {
-                Contract.Ensures(Contract.Result<Hash256>() != null);
+                ContractsCommon.ResultIsNonNull<Hash256>();
 
                 if (_hash256 == null)
                 {
@@ -31,7 +31,7 @@ namespace xpdm.Bitcoin.Core
 
         private Hash256 CalculateBitcoinHash256()
         {
-            Contract.Ensures(Contract.Result<Hash256>() != null);
+            ContractsCommon.ResultIsNonNull<Hash256>();
 
             return HashUtil.Hash256(this.BuildBitcoinHashByteArray());
         }
@@ -41,7 +41,7 @@ namespace xpdm.Bitcoin.Core
         {
             get
             {
-                Contract.Ensures(Contract.Result<Hash160>() != null);
+                ContractsCommon.ResultIsNonNull<Hash160>();
 
                 if (_hash160 == null)
                 {
@@ -52,7 +52,7 @@ namespace xpdm.Bitcoin.Core
         }
         private Hash160 CalculateBitcoinHash160()
         {
-            Contract.Ensures(Contract.Result<Hash160>() != null);
+            ContractsCommon.ResultIsNonNull<Hash160>();
 
             return HashUtil.Hash160(this.BuildBitcoinHashByteArray());
         }
@@ -60,7 +60,7 @@ namespace xpdm.Bitcoin.Core
         [Pure]
         protected virtual byte[] BuildBitcoinHashByteArray()
         {
-            Contract.Ensures(Contract.Result<byte[]>() != null);
+            ContractsCommon.ResultIsNonNull<byte[]>();
 
             return this.SerializeToByteArray();
         }

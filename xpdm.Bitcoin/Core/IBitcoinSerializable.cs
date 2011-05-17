@@ -4,30 +4,33 @@ using System.IO;
 
 namespace xpdm.Bitcoin.Core
 {
-    [ContractClass(typeof(IBitcoinSerializableContract))]
+    [ContractClass(typeof(Contracts.IBitcoinSerializableContract))]
     public interface IBitcoinSerializable
     {
         [Pure] void Serialize(Stream stream);
         int SerializedByteSize { get; }
     }
 
-    [ContractClassFor(typeof(IBitcoinSerializable))]
-    internal abstract class IBitcoinSerializableContract : IBitcoinSerializable
+    namespace Contracts
     {
-        [Pure]
-        public void Serialize(Stream stream)
+        [ContractClassFor(typeof(IBitcoinSerializable))]
+        internal abstract class IBitcoinSerializableContract : IBitcoinSerializable
         {
-            Contract.Requires<ArgumentNullException>(stream != null, "stream");
-            //Contract.Requires<ArgumentOutOfRangeException>(stream.Position + SerializedByteSize <= stream.Length, "length");
-        }
-
-        public int SerializedByteSize
-        {
-            get
+            [Pure]
+            public void Serialize(Stream stream)
             {
-                Contract.Ensures(Contract.Result<int>() >= 0);
+                ContractsCommon.NotNull(stream, "stream");
+                //Contract.Requires<ArgumentOutOfRangeException>(stream.Position + SerializedByteSize <= stream.Length, "length");
+            }
 
-                return default(int);
+            public int SerializedByteSize
+            {
+                get
+                {
+                    Contract.Ensures(Contract.Result<int>() >= 0);
+
+                    return default(int);
+                }
             }
         }
     }

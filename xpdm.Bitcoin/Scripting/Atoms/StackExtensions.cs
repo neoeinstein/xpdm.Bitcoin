@@ -8,15 +8,15 @@ namespace xpdm.Bitcoin.Scripting.Atoms
     {
         public static T Peek<T>(this IStack<T> stack)
         {
-            Contract.Requires<ArgumentNullException>(stack != null);
+            ContractsCommon.NotNull(stack, "stack");
 
             return stack.Peek(0);
         }
 
         public static T Peek<T>(this IStack<T> stack, int depth)
         {
-            Contract.Requires<ArgumentNullException>(stack != null);
-            Contract.Requires<ArgumentOutOfRangeException>(depth >= 0);
+            ContractsCommon.NotNull(stack, "stack");
+            ContractsCommon.ValidOffset(0, stack.Count, depth, "depth");
 
             return stack[stack.Count - depth - 1];
         }

@@ -18,13 +18,13 @@ namespace xpdm.Bitcoin.Core
         {
             get
             {
-                Contract.Ensures(Contract.Result<IList<Scripting.IScriptAtom>>() != null);
+                ContractsCommon.ResultIsNonNull<IList<Scripting.IScriptAtom>>();
 
                 return _atoms;
             }
             protected set
             {
-                Contract.Requires<ArgumentNullException>(value != null, "value");
+                ContractsCommon.NotNull(value, "value");
                 Contract.Ensures(Atoms != null);
 
                 _atoms = value;
@@ -43,7 +43,7 @@ namespace xpdm.Bitcoin.Core
 
         protected ScriptBase(SCG.IEnumerable<Scripting.IScriptAtom> atoms)
         {
-            Contract.Requires<ArgumentNullException>(atoms != null);
+            ContractsCommon.NotNull(atoms, "atoms");
 
             var atomsList = new ArrayList<Scripting.IScriptAtom>();
             atomsList.AddAll(atoms);
@@ -55,13 +55,11 @@ namespace xpdm.Bitcoin.Core
         protected ScriptBase(byte[] buffer, int offset) : base(buffer, offset) { }
 
         [Pure]
-        protected T Subscript<T>(int index, int length) where T : ScriptBase, new()
+        protected T Subscript<T>(int offset, int length) where T : ScriptBase, new()
         {
-            Contract.Requires<ArgumentOutOfRangeException>(0 <= index && index < Atoms.Count, "index");
-            Contract.Requires<ArgumentOutOfRangeException>(0 <= length && length <= Atoms.Count, "length");
-            Contract.Requires<ArgumentOutOfRangeException>(index + length <= Atoms.Count, "length");
+            ContractsCommon.ValidOffsetLength(0, Atoms.Count, offset, length);
 
-            using (var view = Atoms.View(index, length))
+            using (var view = Atoms.View(offset, length))
             {
                 var script = new T();
                 script._atoms.AddAll(view);

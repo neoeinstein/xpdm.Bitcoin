@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -13,6 +14,8 @@ namespace xpdm.Bitcoin.Core
 
         public TransactionOutpoint(Hash256 sourceTransactionHash, uint outputSequenceNumber)
         {
+            ContractsCommon.NotNull(sourceTransactionHash, "sourceTransactionHash");
+
             SourceTransactionHash = sourceTransactionHash;
             OutputSequenceNumber = outputSequenceNumber;
         }

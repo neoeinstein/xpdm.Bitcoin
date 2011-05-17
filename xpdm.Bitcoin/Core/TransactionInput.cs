@@ -13,6 +13,9 @@ namespace xpdm.Bitcoin.Core
 
         public TransactionInput(TransactionOutpoint source, Script script, uint sequenceNumber)
         {
+            ContractsCommon.NotNull(source, "source");
+            ContractsCommon.NotNull(script, "script");
+
             Source = source;
             Script = script;
             SequenceNumber = sequenceNumber;

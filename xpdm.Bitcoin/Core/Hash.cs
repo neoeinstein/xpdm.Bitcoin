@@ -16,7 +16,7 @@ namespace xpdm.Bitcoin.Core
         {
             get
             {
-                Contract.Ensures(Contract.Result<byte[]>() != null);
+                ContractsCommon.ResultIsNonNull<byte[]>();
 
                 return (byte[])_bytes.Clone();
             }
@@ -26,7 +26,7 @@ namespace xpdm.Bitcoin.Core
         {
             get
             {
-                Contract.Requires(0 <= index && index < _bytes.Length, "index");
+                ContractsCommon.ValidIndex(0, _bytes.Length, index);
 
                 return _bytes[index];
             }
@@ -34,7 +34,7 @@ namespace xpdm.Bitcoin.Core
 
         protected Hash(byte[] hash)
         {
-            Contract.Requires<ArgumentNullException>(hash != null, "hash");
+            ContractsCommon.NotNull(hash, "hash");
             Contract.Assert(hash.Length == HashByteSize);
 
             _bytes = (byte[]) hash.Clone();
@@ -131,11 +131,13 @@ namespace xpdm.Bitcoin.Core
 
         #region IEquatable<> Members
 
+        [Pure]
         public sealed override bool Equals(Hash other)
         {
             return other != null && _bytes.Length == other._bytes.Length && _bytes.SequenceEqual(other._bytes);
         }
 
+        [Pure]
         public sealed override bool Equals(BitcoinObject other)
         {
             return other.Equals(this);

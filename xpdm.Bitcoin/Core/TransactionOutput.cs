@@ -14,6 +14,8 @@ namespace xpdm.Bitcoin.Core
 
         public TransactionOutput(BitcoinValue value, Script script)
         {
+            ContractsCommon.NotNull(script, "script");
+
             Value = value;
             Script = script;
         }

@@ -31,13 +31,11 @@ namespace xpdm.Bitcoin.Core
         public Script(Stream stream) : base(stream) { }
         public Script(byte[] buffer, int offset) : base(buffer, offset) { }
 
-        public Script Subscript(int index, int length)
+        public Script Subscript(int offset, int length)
         {
-            Contract.Requires<ArgumentOutOfRangeException>(0 <= index && index < Atoms.Count, "index");
-            Contract.Requires<ArgumentOutOfRangeException>(0 <= length && length <= Atoms.Count, "length");
-            Contract.Requires<ArgumentOutOfRangeException>(index + length <= Atoms.Count, "length");
+            ContractsCommon.ValidOffsetLength(0, Atoms.Count, offset, length);
 
-            return Subscript<Script>(index, length);
+            return Subscript<Script>(offset, length);
         }
     }
 }

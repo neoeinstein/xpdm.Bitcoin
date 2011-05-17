@@ -15,7 +15,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         {
             get
             {
-                Contract.Ensures(Contract.Result<byte[]>() != null);
+                ContractsCommon.ResultIsNonNull<byte[]>();
 
                 return (byte[])_value.Clone();
             }
@@ -23,6 +23,8 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 
         public ValueAtom(byte[] bytes)
         {
+            ContractsCommon.NotNull(bytes, "bytes");
+
             _value = bytes;
         }
 
@@ -136,11 +138,13 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             return BufferOperations.ToByteString(_value, Endianness.BigEndian);
         }
 
+        [Pure]
         public bool Equals(ValueAtom other)
         {
             return other != null && _value.Length == other._value.Length && _value.SequenceEqual(other._value);
         }
 
+        [Pure]
         public override bool Equals(IScriptAtom other)
         {
             return this.Equals(other as ValueAtom);

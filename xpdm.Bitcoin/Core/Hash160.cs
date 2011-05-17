@@ -27,9 +27,9 @@ namespace xpdm.Bitcoin.Core
 
         public static Hash160 Parse(string hashString)
         {
-            Contract.Requires<ArgumentNullException>(hashString != null, "hashString");
+            ContractsCommon.NotNull(hashString, "hashString");
             Contract.Requires<FormatException>(hashString.Trim().Length == HASH_LEN * 2, "Hash string not of expected length.");
-            Contract.Ensures(Contract.Result<Hash160>() != null);
+            ContractsCommon.ResultIsNonNull<Hash160>();
 
             var bytes = BufferOperations.FromByteString(hashString.Trim(), Endianness.LittleEndian);
             return new Hash160(bytes);

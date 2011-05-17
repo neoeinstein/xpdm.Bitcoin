@@ -6,6 +6,7 @@ using System.IO;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
+    [ContractClass(typeof(Contracts.ScriptAtomContract))]
     public abstract class ScriptAtom : Core.BitcoinSerializable, IScriptAtom
     {
         public static readonly int MaximumAtomSize = 520;
@@ -17,6 +18,8 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         [Pure]
         public bool CanExecute(ExecutionContext context)
         {
+            ContractsCommon.NotNull(context, "context");
+
             return
                 context.ValueStack.Count >= OperandCount
                 && context.AltStack.Count <= AltStackChange
@@ -26,12 +29,16 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         [Pure]
         protected virtual bool CanExecuteImpl(ExecutionContext context)
         {
+            ContractsCommon.NotNull(context, "context");
+
             return true;
         }
 
         [Pure]
         public void Execute(ExecutionContext context)
         {
+            ContractsCommon.NotNull(context, "context");
+
             try
             {
                 ExecuteImpl(context);
@@ -56,5 +63,22 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         public abstract bool Equals(IScriptAtom other);
 
         #endregion
+    }
+
+    namespace Contracts
+    {
+        [ContractClassFor(typeof(ScriptAtom))]
+        internal abstract class ScriptAtomContract : ScriptAtom
+        {
+            protected override void ExecuteImpl(ExecutionContext context)
+            {
+                ContractsCommon.NotNull(context, "context");
+            }
+
+            public override bool Equals(IScriptAtom other)
+            {
+                return default(bool);
+            }
+        }
     }
 }

@@ -101,7 +101,7 @@ namespace xpdm.Bitcoin.Core
         [Pure]
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            Contract.Ensures(Contract.Result<string>() != null);
+            ContractsCommon.ResultIsNonNull<string>();
 
             if (format == null)
             {

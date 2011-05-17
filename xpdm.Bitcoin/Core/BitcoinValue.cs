@@ -57,6 +57,7 @@ namespace xpdm.Bitcoin.Core
 
         #region System.Object overrides
 
+        [Pure]
         public override bool Equals(object obj)
         {
             if (obj == null || !(obj is BitcoinValue))
@@ -64,21 +65,23 @@ namespace xpdm.Bitcoin.Core
             return this.Equals((BitcoinValue) obj);
         }
 
+        [Pure]
         public override int GetHashCode()
         {
             return NanoCoins.GetHashCode();
         }
 
+        [Pure]
         public override string ToString()
         {
-            Contract.Ensures(Contract.Result<string>() != null);
+            ContractsCommon.ResultIsNonNull<string>();
 
             return this.ToString(null, null);
         }
 
         public string ToString(string format)
         {
-            Contract.Ensures(Contract.Result<string>() != null);
+            ContractsCommon.ResultIsNonNull<string>();
 
             return this.ToString(format, null);
         }
@@ -91,7 +94,7 @@ namespace xpdm.Bitcoin.Core
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            Contract.Ensures(Contract.Result<string>() != null);
+            ContractsCommon.ResultIsNonNull<string>();
 
             if (format == null)
             {

@@ -17,7 +17,7 @@ namespace xpdm.Bitcoin.Core
         [Pure]
         public TransactionInput GetInput(int index)
         {
-            Contract.Requires<IndexOutOfRangeException>(0 <= index && index < TransactionInputs.Count);
+            ContractsCommon.ValidIndex(0, TransactionInputs.Count, index);
 
             return TransactionInputs[index];
         }
@@ -25,7 +25,7 @@ namespace xpdm.Bitcoin.Core
         [Pure]
         public TransactionOutput GetOutput(int index)
         {
-            Contract.Requires<IndexOutOfRangeException>(0 <= index && index < TransactionOutputs.Count);
+            ContractsCommon.ValidIndex(0, TransactionOutputs.Count, index);
 
             return TransactionOutputs[index];
         }
