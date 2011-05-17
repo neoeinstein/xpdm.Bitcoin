@@ -1,17 +1,18 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
+using SCG = System.Collections.Generic;
 using xpdm.Bitcoin;
 using xpdm.Bitcoin.Core;
 using xpdm.Bitcoin.Scripting;
-using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin
 {
     internal static class ContractsCommon
     {
         [ContractAbbreviator]
-        public static void NotFrozen(IFreezable freezable)
+        public static void NotFrozen(object freezable)
         {
-            Contract.Requires<ObjectFrozenException>(!freezable.IsFrozen);
+            Contract.Requires<ObjectFrozenException>(!(freezable is IFreezable) || !((IFreezable)freezable).IsFrozen);
         }
 
         [ContractAbbreviator]
@@ -74,6 +75,30 @@ namespace xpdm.Bitcoin
         public static void ResultIsNonNull<T>()
         {
             Contract.Ensures(Contract.Result<T>() != null);
+        }
+
+        [ContractAbbreviator]
+        public static void IsThawed<T>(IFreezable<T> freezable) where T : IFreezable<T>
+        {
+            Contract.Ensures(!freezable.IsFrozen);
+        }
+
+        [ContractAbbreviator]
+        public static void IsThawed<T>(SCG.IEnumerable<IFreezable<T>> freezables) where T : IFreezable<T>
+        {
+            Contract.Ensures(Contract.ForAll(freezables, f => !f.IsFrozen));
+        }
+
+        [ContractAbbreviator]
+        public static void ChildThawed<T>(IFreezable<T> child, bool thawChildren) where T : IFreezable<T>
+        {
+            Contract.Ensures(!thawChildren || !child.IsFrozen);
+        }
+
+        [ContractAbbreviator]
+        public static void ChildrenThawed<T>(SCG.IEnumerable<IFreezable<T>> children, bool thawChildren) where T : IFreezable<T>
+        {
+            Contract.Ensures(!thawChildren || Contract.ForAll(children, child => !child.IsFrozen));
         }
     }
 }

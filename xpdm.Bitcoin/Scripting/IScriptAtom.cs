@@ -53,12 +53,15 @@ namespace xpdm.Bitcoin.Scripting
             [Pure]
             public bool CanExecute(ExecutionContext context)
             {
+                ContractsCommon.NotNull(context, "context");
+
                 return default(bool);
             }
 
             [Pure]
             public void Execute(ExecutionContext context)
             {
+                ContractsCommon.NotNull(context, "context");
                 Contract.Requires(this.CanExecute(context));
                 Contract.Ensures(context.HardFailure || Contract.OldValue(context.ValueStack.Count) - this.OperandCount + this.ResultCount == context.ValueStack.Count);
                 Contract.Ensures(!context.HardFailure || Contract.OldValue(context.ValueStack.Count) == context.ValueStack.Count);

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace xpdm.Bitcoin.Core
 {
-    public sealed class Block : BitcoinObject, IFreezable
+    public sealed class Block : BitcoinObject, IFreezable<Block>
     {
         private uint _version;
         public uint Version
@@ -22,10 +22,15 @@ namespace xpdm.Bitcoin.Core
             }
         }
 
-        private Hash256 _previousBlockHash;
+        private Hash256 _previousBlockHash = Hash256.Empty;
         public Hash256 PreviousBlockHash
         {
-            get { return _previousBlockHash; }
+            get
+            {
+                ContractsCommon.ResultIsNonNull<Hash256>();
+
+                return _previousBlockHash;
+            }
             set
             {
                 ContractsCommon.NotFrozen(this);
@@ -70,7 +75,7 @@ namespace xpdm.Bitcoin.Core
             {
                 ContractsCommon.NotFrozen(this);
                 
-                _nonce = value; 
+                _nonce = value;
                 InvalidateBitcoinHashes();
             }
         }
@@ -100,26 +105,6 @@ namespace xpdm.Bitcoin.Core
 
         public IList<Transaction> Transactions { get; private set; }
 
-        public Transaction this[int index]
-        {
-            get
-            {
-                ContractsCommon.ValidIndex(0, Transactions.Count, index);
-
-                return Transactions[index];
-            }
-            set
-            {
-                ContractsCommon.NotFrozen(this);
-                ContractsCommon.NotNull(value, "value");
-                ContractsCommon.ValidIndex(0, Transactions.Count, index);
-
-                Transactions[index] = value;
-                InvalidateMerkleTree(this);
-            }
-
-        }
-
         public Block()
         {
             Transactions = new HashedArrayList<Transaction>();
@@ -135,6 +120,7 @@ namespace xpdm.Bitcoin.Core
                 if (_merkleTree == null)
                 {
                     _merkleTree = CalculateMerkleTree(Transactions);
+                    InvalidateBitcoinHashes();
                 }
                 return _merkleTree;
             }
@@ -198,7 +184,9 @@ namespace xpdm.Bitcoin.Core
             }
         }
 
-        public Block(Block block)
+        public Block(Block block) : this(block, false) { }
+
+        public Block(Block block, bool thawChildren)
         {
             ContractsCommon.NotNull(block, "block");
             Contract.Ensures(this.Version == block.Version);
@@ -208,6 +196,7 @@ namespace xpdm.Bitcoin.Core
             Contract.Ensures(this.Nonce == block.Nonce);
             Contract.Ensures(this.Transactions.SequencedEquals(block.Transactions));
             Contract.Ensures(this.MerkleRoot == block.MerkleRoot);
+            ContractsCommon.ChildrenThawed(Transactions, thawChildren);
 
             this._version = block._version;
             this._previousBlockHash = block._previousBlockHash;
@@ -220,27 +209,29 @@ namespace xpdm.Bitcoin.Core
                 tree.AddAll(block._merkleTree);
                 this._merkleTree = new GuardedList<Hash256>(tree);
             }
+
             var transactions = new HashedArrayList<Transaction>(block.Transactions.Count);
-            transactions.AddAll(block.Transactions);
+            transactions.AddAll(FreezableExtensions.ThawChildren(block.Transactions, thawChildren));
             transactions.CollectionChanged += InvalidateMerkleTree;
             this.Transactions = transactions;
         }
-        public Block(Stream stream) : base(stream) { Freeze(); }
-        public Block(byte[] buffer, int offset) : base(buffer, offset) { Freeze(); }
+
+        public Block(Stream stream) : base(stream) { }
+        public Block(byte[] buffer, int offset) : base(buffer, offset) { }
 
         protected override void Deserialize(Stream stream)
         {
-            ContractsCommon.NotFrozen(this);
-            
             Version = ReadUInt32(stream);
             PreviousBlockHash = new Hash256(stream);
             new Hash256(stream); // Throw away the Merkle Root
             Timestamp = ReadUInt32(stream);
             DifficultyBits = ReadUInt32(stream);
             Nonce = ReadUInt32(stream);
+
             var transactionsArr = ReadVarArray<Transaction>(stream);
-            var transactions = new HashedLinkedList<Transaction>();
+            var transactions = new HashedArrayList<Transaction>(transactionsArr.Length);
             transactions.AddAll(transactionsArr);
+            transactions.CollectionChanged += InvalidateMerkleTree;
             Transactions = transactions;
 
             Freeze();
@@ -284,6 +275,12 @@ namespace xpdm.Bitcoin.Core
             return ms.ToArray();
         }
 
+        public override string ToString()
+        {
+            return string.Format("v{0} <{1} ^{2} {3:s} 0x{4:x8} {5}", Version, PreviousBlockHash, MerkleRoot, DateTimeExtensions.FromSecondsSinceEpoch(Timestamp), DifficultyBits, Nonce)
+                + (IsBlockHeader ? string.Empty : string.Format("[ {{{0}}} ]", string.Join("}, {", Transactions)));
+        }
+
         public bool IsFrozen { get; private set; }
 
         public void Freeze()
@@ -292,25 +289,43 @@ namespace xpdm.Bitcoin.Core
             {
                 Transactions = new GuardedList<Transaction>(Transactions);
             }
-
-            foreach (var t in Transactions)
+            foreach (var tx in Transactions)
             {
-                //t.Freeze();
+                tx.Freeze();
             }
 
             IsFrozen = true;
         }
 
-        public override string ToString()
+        public Block Thaw()
         {
-            return string.Format("v{0} <{1} ^{2} {3:s} 0x{4:x8} {5}", Version, PreviousBlockHash, MerkleRoot, DateTimeExtensions.FromSecondsSinceEpoch(Timestamp), DifficultyBits, Nonce)
-                + (IsBlockHeader ? string.Empty : string.Format("[ {{{0}}} ]", string.Join("}, {", Transactions)));
+            return new Block(this, false);
         }
+
+        public Block ThawTree()
+        {
+            ContractsCommon.IsThawed(Contract.Result<Block>().Transactions);
+
+            return new Block(this, true);
+        }
+
+        static Block()
+        {
+            var empty = new Block();
+            empty.Freeze();
+            _empty = empty;
+        }
+
+        private static readonly Block _empty;
+        public static Block Empty { get { return _empty; } }
 
         [ContractInvariantMethod]
         private void __Invariant()
         {
+            Contract.Invariant(_previousBlockHash != null);
             Contract.Invariant(_merkleTree == null || _merkleTree is GuardedList<Hash256>);
+            Contract.Invariant(Transactions != null);
+            Contract.Invariant(!IsFrozen || Transactions.IsReadOnly);
         }
     }
 }

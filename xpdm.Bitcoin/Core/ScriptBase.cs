@@ -5,66 +5,72 @@ using System.IO;
 using System.Runtime.Serialization;
 using C5;
 using SCG = System.Collections.Generic;
+using xpdm.Bitcoin.Scripting;
 
 namespace xpdm.Bitcoin.Core
 {
-    public abstract class ScriptBase : BitcoinObject
+    public sealed class Script : BitcoinObject, IFreezable<Script>
     {
         public static readonly int MaximumScriptByteSize = 10000;
 
-        [ContractPublicPropertyName("Atoms")]
-        private IList<Scripting.IScriptAtom> _atoms;
-        public virtual IList<Scripting.IScriptAtom> Atoms
-        {
-            get
-            {
-                ContractsCommon.ResultIsNonNull<IList<Scripting.IScriptAtom>>();
-
-                return _atoms;
-            }
-            protected set
-            {
-                ContractsCommon.NotNull(value, "value");
-                Contract.Ensures(Atoms != null);
-
-                _atoms = value;
-            }
-        }
+        public IList<IScriptAtom> Atoms { get; private set; }
 
         public Scripting.IScriptAtom this[int index]
         {
             get
             {
-                Contract.Requires<IndexOutOfRangeException>(0 <= index && index < _atoms.Count);
+                Contract.Requires<IndexOutOfRangeException>(0 <= index && index < Atoms.Count);
 
-                return _atoms[index];
+                return Atoms[index];
             }
         }
 
-        protected ScriptBase(SCG.IEnumerable<Scripting.IScriptAtom> atoms)
+        public Script()
+        {
+            var newAtoms = new ArrayList<IScriptAtom>();
+            newAtoms.CollectionChanged += AtomsChanged;
+            Atoms = newAtoms;
+        }
+        public Script(SCG.IEnumerable<IScriptAtom> atoms)
         {
             ContractsCommon.NotNull(atoms, "atoms");
 
-            var atomsList = new ArrayList<Scripting.IScriptAtom>();
-            atomsList.AddAll(atoms);
-            Atoms = atomsList;
+            var newAtoms = new ArrayList<IScriptAtom>();
+            newAtoms.AddAll(atoms);
+            newAtoms.CollectionChanged += AtomsChanged;
+            Atoms = newAtoms;
         }
 
-        protected ScriptBase() { }
-        protected ScriptBase(Stream stream) : base(stream) { }
-        protected ScriptBase(byte[] buffer, int offset) : base(buffer, offset) { }
+        public Script(Script script)
+        {
+            ContractsCommon.NotNull(script, "script");
+
+            var atoms = new ArrayList<IScriptAtom>(script.Atoms.Count);
+            atoms.AddAll(script.Atoms);
+            atoms.CollectionChanged += AtomsChanged;
+            Atoms = atoms;
+        }
+        public Script(Stream stream) : base(stream) { }
+        public Script(byte[] buffer, int offset) : base(buffer, offset) { }
 
         [Pure]
-        protected T Subscript<T>(int offset, int length) where T : ScriptBase, new()
+        public Script Subscript(int offset, int length)
         {
             ContractsCommon.ValidOffsetLength(0, Atoms.Count, offset, length);
 
             using (var view = Atoms.View(offset, length))
             {
-                var script = new T();
-                script._atoms.AddAll(view);
+                var script = new Script();
+                script.Atoms.AddAll(view);
                 return script;
             }
+        }
+
+        private void AtomsChanged(object sender)
+        {
+            ContractsCommon.NotFrozen(this);
+
+            InvalidateBitcoinHashes(sender, EventArgs.Empty);
         }
 
         protected sealed override void Deserialize(Stream stream)
@@ -75,12 +81,12 @@ namespace xpdm.Bitcoin.Core
                 throw new SerializationException("Unable to deserialize: Script length greater than maximum allowable script size: " + scriptSize);
             }
 
-            var atoms = new ArrayList<Scripting.IScriptAtom>();
+            var atoms = new ArrayList<IScriptAtom>();
             int read = 0;
 
             while (read < scriptSize)
             {
-                var atom = Scripting.ScriptAtomFactory.GetAtom(stream);
+                var atom = ScriptAtomFactory.GetAtom(stream);
                 read += atom.SerializedByteSize;
                 atoms.Add(atom);
             }
@@ -89,7 +95,10 @@ namespace xpdm.Bitcoin.Core
                 stream.Position -= read - scriptSize;
                 throw new SerializationException("Unable to deserialize: Script longer than expected.");
             }
+            atoms.CollectionChanged += AtomsChanged;
             Atoms = atoms;
+
+            Freeze();
         }
 
         public sealed override void Serialize(Stream stream)
@@ -119,6 +128,45 @@ namespace xpdm.Bitcoin.Core
         public sealed override string ToString()
         {
             return string.Join(" ", Atoms);
+        }
+
+        public bool IsFrozen { get; private set; }
+
+        public void Freeze()
+        {
+            if (!Atoms.IsReadOnly)
+            {
+                Atoms = new GuardedList<IScriptAtom>(Atoms);
+            }
+
+            IsFrozen = true;
+        }
+
+        public Script Thaw()
+        {
+            return new Script(this);
+        }
+
+        public Script ThawTree()
+        {
+            return Thaw();
+        }
+
+        static Script()
+        {
+            var empty = new Script();
+            empty.Freeze();
+            _empty = empty;
+        }
+
+        private static readonly Script _empty;
+        public static Script Empty { get { return _empty; } }
+
+        [ContractInvariantMethod]
+        private void __Invariant()
+        {
+            Contract.Invariant(Atoms != null);
+            Contract.Invariant(!IsFrozen || Atoms.IsReadOnly);
         }
     }
 }

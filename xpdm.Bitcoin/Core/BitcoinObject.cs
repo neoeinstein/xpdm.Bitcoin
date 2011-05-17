@@ -67,9 +67,24 @@ namespace xpdm.Bitcoin.Core
 
         protected void InvalidateBitcoinHashes()
         {
+            ContractsCommon.NotFrozen(this);
+
+            InvalidateBitcoinHashes(this, EventArgs.Empty);
+        }
+
+        protected void InvalidateBitcoinHashes(object sender, EventArgs e)
+        {
+            ContractsCommon.NotFrozen(this); 
+            
             _hash256 = null;
             _hash160 = null;
+            if (HashesInvalidated != null)
+            {
+                HashesInvalidated(this, EventArgs.Empty);
+            }
         }
+
+        public event EventHandler HashesInvalidated;
 
         #endregion
 

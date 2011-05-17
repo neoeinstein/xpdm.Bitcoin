@@ -52,5 +52,7 @@ namespace xpdm.Bitcoin.Core
             hash = default(Hash160);
             return false;
         }
+
+        public static readonly Hash160 Empty = new Hash160();
     }
 }

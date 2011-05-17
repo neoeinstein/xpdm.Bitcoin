@@ -7,55 +7,96 @@ using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin.Core
 {
-    public sealed class Transaction : BitcoinObject
+    public sealed class Transaction : BitcoinObject, IFreezable<Transaction>
     {
-        public uint Version { get; private set; }
+        private uint _version;
+        public uint Version
+        {
+            get { return _version; }
+            set
+            {
+                ContractsCommon.NotFrozen(this);
+
+                _version = value;
+                InvalidateBitcoinHashes();
+            }
+        }
         public IList<TransactionInput> TransactionInputs { get; private set; }
         public IList<TransactionOutput> TransactionOutputs { get; private set; }
-        public uint LockTime { get; private set; }
-
-        [Pure]
-        public TransactionInput GetInput(int index)
+        private uint _lockTime;
+        public uint LockTime
         {
-            ContractsCommon.ValidIndex(0, TransactionInputs.Count, index);
+            get { return _lockTime; }
+            set
+            {
+                ContractsCommon.NotFrozen(this);
 
-            return TransactionInputs[index];
+                _lockTime = value;
+                InvalidateBitcoinHashes();
+            }
         }
 
-        [Pure]
-        public TransactionOutput GetOutput(int index)
+        public Transaction()
         {
-            ContractsCommon.ValidIndex(0, TransactionOutputs.Count, index);
-
-            return TransactionOutputs[index];
-        }
-
-        public Transaction(uint version, SCG.IEnumerable<TransactionInput> inputs, SCG.IEnumerable<TransactionOutput> outputs, uint lockTime)
-        {
-            Version = version;
             var transactionInputs = new ArrayList<TransactionInput>();
-            transactionInputs.AddAll(inputs);
-            TransactionInputs = new GuardedList<TransactionInput>(transactionInputs);
+            transactionInputs.CollectionChanged += InputOutputChanged;
+            TransactionInputs = transactionInputs;
+
             var transactionOutputs = new ArrayList<TransactionOutput>();
-            transactionOutputs.AddAll(outputs);
-            TransactionOutputs = new GuardedList<TransactionOutput>(transactionOutputs);
-            LockTime = lockTime;
+            transactionOutputs.CollectionChanged += InputOutputChanged;
+            TransactionOutputs = transactionOutputs;            
+        }
+        public Transaction(Transaction tx) : this(tx, false) { }
+        public Transaction(Transaction tx, bool thawChildren)
+        {
+            ContractsCommon.NotNull(tx, "tx");
+            ContractsCommon.ChildrenThawed(TransactionInputs, thawChildren);
+            ContractsCommon.ChildrenThawed(TransactionOutputs, thawChildren);
+
+            Version = tx.Version;
+
+            var transactionInputs = new ArrayList<TransactionInput>(tx.TransactionInputs.Count);
+            transactionInputs.AddAll(FreezableExtensions.ThawChildren(tx.TransactionInputs, thawChildren));
+            transactionInputs.CollectionChanged += InputOutputChanged;
+            TransactionInputs = transactionInputs;
+
+            var transactionOutputs = new ArrayList<TransactionOutput>(tx.TransactionOutputs.Count);
+            transactionOutputs.AddAll(FreezableExtensions.ThawChildren(tx.TransactionOutputs, thawChildren));
+            transactionOutputs.CollectionChanged += InputOutputChanged;
+            TransactionOutputs = transactionOutputs;
+
+            LockTime = tx.LockTime;
         }
 
-        public Transaction() { }
         public Transaction(Stream stream) : base(stream) { }
         public Transaction(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        public void InputOutputChanged(object sender)
+        {
+            ContractsCommon.NotFrozen(this);
+
+            InvalidateBitcoinHashes(sender, EventArgs.Empty);
+        }
 
         protected override void Deserialize(Stream stream)
         {
             Version = ReadUInt32(stream);
+
             var transactionInputsArr = ReadVarArray<TransactionInput>(stream);
-            var transactionInputs = new WrappedArray<TransactionInput>(transactionInputsArr);
-            TransactionInputs = new GuardedList<TransactionInput>(transactionInputs);
+            var transactionInputs = new HashedArrayList<TransactionInput>(transactionInputsArr.Length);
+            transactionInputs.AddAll(transactionInputsArr);
+            transactionInputs.CollectionChanged += InputOutputChanged;
+            TransactionInputs = transactionInputs;
+
             var transactionOutputsArr = ReadVarArray<TransactionOutput>(stream);
-            var transactionOutputs = new WrappedArray<TransactionOutput>(transactionOutputsArr);
-            TransactionOutputs = new GuardedList<TransactionOutput>(transactionOutputs);
+            var transactionOutputs = new HashedArrayList<TransactionOutput>(transactionOutputsArr.Length);
+            transactionOutputs.AddAll(transactionOutputsArr);
+            transactionOutputs.CollectionChanged += InputOutputChanged;
+            TransactionOutputs = transactionOutputs;
+
             LockTime = ReadUInt32(stream);
+
+            Freeze();
         }
 
         public override void Serialize(Stream stream)
@@ -82,6 +123,62 @@ namespace xpdm.Bitcoin.Core
         {
             return string.Format("{0} [ {{{1}}} ] => [ {{{2}}} ] @ {3}", 
                 Version, string.Join("}, {", TransactionInputs), string.Join("}, {", TransactionOutputs), LockTime);
+        }
+        public bool IsFrozen { get; private set; }
+
+        public void Freeze()
+        {
+            if (!TransactionInputs.IsReadOnly)
+            {
+                TransactionInputs = new GuardedList<TransactionInput>(TransactionInputs);
+            }
+            foreach (var txIn in TransactionInputs)
+            {
+                txIn.Freeze();
+            }
+
+            if (!TransactionOutputs.IsReadOnly)
+            {
+                TransactionOutputs = new GuardedList<TransactionOutput>(TransactionOutputs);
+            }
+            foreach (var txOut in TransactionOutputs)
+            {
+                txOut.Freeze();
+            }
+
+            IsFrozen = true;
+        }
+
+        public Transaction Thaw()
+        {
+            return new Transaction(this, false);
+        }
+
+        public Transaction ThawTree()
+        {
+            ContractsCommon.IsThawed(Contract.Result<Transaction>().TransactionInputs);
+            ContractsCommon.IsThawed(Contract.Result<Transaction>().TransactionOutputs);
+
+            return new Transaction(this, true);
+        }
+
+        static Transaction()
+        {
+            var empty = new Transaction();
+            empty.Freeze();
+            _empty = empty;
+        }
+
+        private static readonly Transaction _empty;
+        public static Transaction Empty { get { return _empty; } }
+
+        [ContractInvariantMethod]
+        private void __Invariant()
+        {
+            Contract.Invariant(TransactionInputs != null);
+            Contract.Invariant(!IsFrozen || TransactionInputs.IsReadOnly);
+            Contract.Invariant(TransactionOutputs != null);
+            Contract.Invariant(!IsFrozen || TransactionOutputs.IsReadOnly);
         }
     }
 }

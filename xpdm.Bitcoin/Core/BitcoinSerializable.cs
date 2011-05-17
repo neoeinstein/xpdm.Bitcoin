@@ -387,6 +387,7 @@ namespace xpdm.Bitcoin.Core
         {
             protected sealed override void Deserialize(Stream stream)
             {
+                ContractsCommon.NotFrozen(this);
                 ContractsCommon.NotNull(stream, "stream");
                 //Contract.Requires<ArgumentOutOfRangeException>(length <= stream.Length, "length");
                 //Contract.Requires<ArgumentOutOfRangeException>(stream.Position + length <= stream.Length, "length");
