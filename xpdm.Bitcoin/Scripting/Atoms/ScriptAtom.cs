@@ -18,8 +18,6 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         [Pure]
         public bool CanExecute(ExecutionContext context)
         {
-            ContractsCommon.NotNull(context, "context");
-
             return
                 context.ValueStack.Count >= OperandCount
                 && context.AltStack.Count <= AltStackChange
@@ -37,8 +35,6 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         [Pure]
         public void Execute(ExecutionContext context)
         {
-            ContractsCommon.NotNull(context, "context");
-
             try
             {
                 ExecuteImpl(context);

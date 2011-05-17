@@ -154,5 +154,10 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         {
             return this.Equals(obj as ValueAtom);
         }
+
+        public override int GetHashCode()
+        {
+            return _value.GetHashCode();
+        }
     }
 }

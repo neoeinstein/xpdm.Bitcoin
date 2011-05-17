@@ -84,9 +84,7 @@
     <Compile Include="Core\IBitcoinSerializable.cs" />
     <Compile Include="Core\IFreezable.cs" />
     <Compile Include="Core\ObjectFrozenException.cs" />
-    <Compile Include="Core\Script.cs" />
     <Compile Include="Core\ScriptBase.cs" />
-    <Compile Include="Core\ScriptBuilder.cs" />
     <Compile Include="Core\Timestamp.cs" />
     <Compile Include="Core\Transaction.cs" />
     <Compile Include="Core\TransactionInput.cs" />

@@ -1,19 +1,36 @@
 ﻿using System;
+using SCG = System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace xpdm.Bitcoin.Core
 {
-    [ContractClass(typeof(Contracts.IFreezableContract))]
-    public interface IFreezable
+    [ContractClass(typeof(Contracts.IFreezableContract<>))]
+    public interface IFreezable<T> where T : IFreezable<T>
     {
         bool IsFrozen { get; }
         void Freeze();
+        T Thaw();
+        T ThawTree();
+    }
+
+    public static class FreezableExtensions
+    {
+        public static SCG.IEnumerable<T> ThawChildren<T>(SCG.IEnumerable<T> children, bool thawChildren) where T : IFreezable<T>
+        {
+            return thawChildren ? from c in children select c.ThawTree() : children;
+        }
+
+        public static T ThawChild<T>(T child, bool thawChildren) where T : IFreezable<T>
+        {
+            return thawChildren ? child.ThawTree() : child;
+        }
     }
 
     namespace Contracts
     {
-        [ContractClassFor(typeof(IFreezable))]
-        public abstract class IFreezableContract : IFreezable
+        [ContractClassFor(typeof(IFreezable<>))]
+        public abstract class IFreezableContract<T> : IFreezable<T> where T : IFreezable<T>
         {
             public bool IsFrozen
             {
@@ -27,6 +44,24 @@ namespace xpdm.Bitcoin.Core
             {
                 Contract.Ensures(IsFrozen == true);
                 Contract.EnsuresOnThrow<Exception>(IsFrozen == true);
+            }
+
+            public T Thaw()
+            {
+                ContractsCommon.ResultIsNonNull<T>();
+                ContractsCommon.IsThawed(Contract.Result<T>());
+                Contract.Ensures(IsFrozen == Contract.OldValue(IsFrozen));
+
+                return default(T);
+            }
+
+            public T ThawTree()
+            {
+                ContractsCommon.ResultIsNonNull<T>();
+                ContractsCommon.IsThawed(Contract.Result<T>());
+                Contract.Ensures(IsFrozen == Contract.OldValue(IsFrozen));
+
+                return default(T);
             }
 
             [ContractInvariantMethod]
