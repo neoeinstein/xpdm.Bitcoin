@@ -70,20 +70,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\ContractExtensions.cs" />
+    <Compile Include="Contracts\ContractsCommon.cs" />
     <Compile Include="Core\DateTimeExtensions.cs" />
     <Compile Include="Core\BitcoinObject.cs" />
     <Compile Include="Core\BitcoinSerializable.cs" />
     <Compile Include="Core\BitcoinValue.cs" />
     <Compile Include="Core\Block.cs" />
-    <Compile Include="Core\BlockBuilder.cs" />
     <Compile Include="Core\Difficulty.cs" />
     <Compile Include="Core\Hash160.cs" />
     <Compile Include="Core\Hash256.cs" />
     <Compile Include="Core\Hash.cs" />
     <Compile Include="Core\IBitcoinSerializable.cs" />
-    <Compile Include="Core\Script.cs" />
+    <Compile Include="Core\IFreezable.cs" />
+    <Compile Include="Core\ObjectFrozenException.cs" />
     <Compile Include="Core\ScriptBase.cs" />
-    <Compile Include="Core\ScriptBuilder.cs" />
     <Compile Include="Core\Timestamp.cs" />
     <Compile Include="Core\Transaction.cs" />
     <Compile Include="Core\TransactionInput.cs" />

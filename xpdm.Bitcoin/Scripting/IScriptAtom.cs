@@ -5,68 +5,76 @@ using System;
 
 namespace xpdm.Bitcoin.Scripting
 {
-    [ContractClass(typeof(IScriptAtomContract))]
+    [ContractClass(typeof(Contracts.IScriptAtomContract))]
     public interface IScriptAtom : Core.IBitcoinSerializable, IEquatable<IScriptAtom>
     {
         int OperandCount { get; }
         int ResultCount { get; }
         int AltStackChange { get; }
-        [Pure] bool CanExecute(ExecutionContext context);
-        [Pure] void Execute(ExecutionContext context);
+        [Pure]
+        bool CanExecute(ExecutionContext context);
+        [Pure]
+        void Execute(ExecutionContext context);
     }
 
-    [ContractClassFor(typeof(IScriptAtom))]
-    abstract class IScriptAtomContract : IScriptAtom
+    namespace Contracts
     {
-        public int OperandCount
+        [ContractClassFor(typeof(IScriptAtom))]
+        abstract class IScriptAtomContract : IScriptAtom
         {
-            get
+            public int OperandCount
             {
-                Contract.Ensures(Contract.Result<int>() >= 0);
+                get
+                {
+                    Contract.Ensures(Contract.Result<int>() >= 0);
 
-                return default(int);
+                    return default(int);
+                }
             }
-        }
 
-        public int ResultCount
-        {
-            get
+            public int ResultCount
             {
-                Contract.Ensures(Contract.Result<int>() >= 0);
+                get
+                {
+                    Contract.Ensures(Contract.Result<int>() >= 0);
 
-                return default(int);
+                    return default(int);
+                }
             }
-        }
 
-        public int AltStackChange
-        {
-            get
+            public int AltStackChange
             {
-                return default(int);
+                get
+                {
+                    return default(int);
+                }
             }
-        }
 
-        [Pure]
-        public bool CanExecute(ExecutionContext context)
-        {
-            return default(bool);
-        }
+            [Pure]
+            public bool CanExecute(ExecutionContext context)
+            {
+                ContractsCommon.NotNull(context, "context");
 
-        [Pure]
-        public void Execute(ExecutionContext context)
-        {
-            Contract.Requires(this.CanExecute(context));
-            Contract.Ensures(context.HardFailure || Contract.OldValue(context.ValueStack.Count) - this.OperandCount + this.ResultCount == context.ValueStack.Count);
-            Contract.Ensures(!context.HardFailure || Contract.OldValue(context.ValueStack.Count) == context.ValueStack.Count);
-            Contract.Ensures(context.HardFailure || Contract.OldValue(context.AltStack.Count) + this.AltStackChange == context.AltStack.Count);
-            Contract.Ensures(!context.HardFailure || Contract.OldValue(context.AltStack.Count) == context.AltStack.Count);
-            Contract.EnsuresOnThrow<Exception>(Contract.OldValue(context.ValueStack.Count) == context.ValueStack.Count);
-            Contract.EnsuresOnThrow<Exception>(Contract.OldValue(context.AltStack.Count) == context.AltStack.Count);
-            Contract.EnsuresOnThrow<Exception>(context.HardFailure == true);
-        }
+                return default(bool);
+            }
 
-        public abstract void Serialize(System.IO.Stream stream);
-        public abstract int SerializedByteSize { get; }
-        public abstract bool Equals(IScriptAtom other);
+            [Pure]
+            public void Execute(ExecutionContext context)
+            {
+                ContractsCommon.NotNull(context, "context");
+                Contract.Requires(this.CanExecute(context));
+                Contract.Ensures(context.HardFailure || Contract.OldValue(context.ValueStack.Count) - this.OperandCount + this.ResultCount == context.ValueStack.Count);
+                Contract.Ensures(!context.HardFailure || Contract.OldValue(context.ValueStack.Count) == context.ValueStack.Count);
+                Contract.Ensures(context.HardFailure || Contract.OldValue(context.AltStack.Count) + this.AltStackChange == context.AltStack.Count);
+                Contract.Ensures(!context.HardFailure || Contract.OldValue(context.AltStack.Count) == context.AltStack.Count);
+                Contract.EnsuresOnThrow<Exception>(Contract.OldValue(context.ValueStack.Count) == context.ValueStack.Count);
+                Contract.EnsuresOnThrow<Exception>(Contract.OldValue(context.AltStack.Count) == context.AltStack.Count);
+                Contract.EnsuresOnThrow<Exception>(context.HardFailure == true);
+            }
+
+            public abstract void Serialize(System.IO.Stream stream);
+            public abstract int SerializedByteSize { get; }
+            public abstract bool Equals(IScriptAtom other);
+        }
     }
 }

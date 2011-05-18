@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
@@ -9,6 +10,8 @@ namespace xpdm.Bitcoin.Scripting.Atoms
     {
         protected override void ExecuteImpl(ExecutionContext context)
         {
+            Contract.Ensures(context.HardFailure == true);
+
             context.HardFailure = true;
         }
 

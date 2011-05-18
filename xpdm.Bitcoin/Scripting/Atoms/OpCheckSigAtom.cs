@@ -30,8 +30,8 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             var key = context.ValueStack.Peek(0);
             var sig = context.ValueStack.Peek(1);
 
-            var subscript = new ScriptBuilder(context.CurrentScript.Subscript(context.LastSeparatorAtomIndex,
-                                                            context.CurrentAtomIndex - context.LastSeparatorAtomIndex));
+            var subscript = context.CurrentScript.Subscript(context.LastSeparatorAtomIndex,
+                                                            context.CurrentAtomIndex - context.LastSeparatorAtomIndex);
 
             bool isValidSignature = false;
             

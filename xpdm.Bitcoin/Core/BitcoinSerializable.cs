@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 
 namespace xpdm.Bitcoin.Core
 {
-    [ContractClass(typeof(BitcoinSerializableContract))]
+    [ContractClass(typeof(Contracts.BitcoinSerializableContract))]
     public abstract class BitcoinSerializable : IBitcoinSerializable
     {
         protected BitcoinSerializable() { }
@@ -19,7 +19,7 @@ namespace xpdm.Bitcoin.Core
 
         protected BitcoinSerializable(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(stream != null, "stream");
+            ContractsCommon.NotNull(stream, "stream");
             //Contract.Requires<ArgumentOutOfRangeException>(length <= stream.Length, "length");
             //Contract.Requires<ArgumentOutOfRangeException>(stream.Position + length <= stream.Length, "length");
 
@@ -28,8 +28,8 @@ namespace xpdm.Bitcoin.Core
 
         protected BitcoinSerializable(byte[] buffer, int offset)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(0 <= offset && offset <= buffer.Length, "offset");
+            ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffset(0, buffer.Length, offset, "offset");
 
             var stream = new MemoryStream(buffer, offset, buffer.Length - offset);
 
@@ -65,7 +65,8 @@ namespace xpdm.Bitcoin.Core
 
         protected static T[] ReadVarArray<T>(Stream stream) where T : BitcoinSerializable, new()
         {
-            Contract.Requires<ArgumentNullException>(stream != null, "stream");
+            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.ResultIsNonNull<T[]>();
 
             ulong count = ReadVarInt(stream);
             var retArr = new T[count];
@@ -79,6 +80,8 @@ namespace xpdm.Bitcoin.Core
 
         protected static ulong ReadVarInt(Stream stream)
         {
+            ContractsCommon.NotNull(stream, "stream");
+
             ulong val = ReadByte(stream);
             switch (val)
             {
@@ -97,21 +100,25 @@ namespace xpdm.Bitcoin.Core
 
         protected static ulong ReadUInt64(Stream stream)
         {
-            return (ulong) ReadInt64(stream);
+            ContractsCommon.NotNull(stream, "stream");
+            return (ulong)ReadInt64(stream);
         }
 
         protected static long ReadInt64(Stream stream)
         {
+            ContractsCommon.NotNull(stream, "stream");
             return ReadUInt32(stream) | ((long)ReadUInt32(stream) << 32);
         }
 
         protected static uint ReadUInt32(Stream stream)
         {
-            return (uint) ReadInt32(stream);
+            ContractsCommon.NotNull(stream, "stream");
+            return (uint)ReadInt32(stream);
         }
 
         protected static int ReadInt32(Stream stream)
         {
+            ContractsCommon.NotNull(stream, "stream");
             int value = stream.ReadByte();
             value |= stream.ReadByte() << 8;
             value |= stream.ReadByte() << 16;
@@ -121,27 +128,33 @@ namespace xpdm.Bitcoin.Core
 
         protected static ushort ReadUInt16(Stream stream)
         {
-            return (ushort) ReadInt16(stream);
+            ContractsCommon.NotNull(stream, "stream");
+            return (ushort)ReadInt16(stream);
         }
 
         protected static short ReadInt16(Stream stream)
         {
+            ContractsCommon.NotNull(stream, "stream");
             int value = stream.ReadByte() | (stream.ReadByte() << 8);
             return (short) value;
         }
 
         protected static byte ReadByte(Stream stream)
         {
+            ContractsCommon.NotNull(stream, "stream");
             return (byte)stream.ReadByte();
         }
 
         protected static sbyte ReadSByte(Stream stream)
         {
+            ContractsCommon.NotNull(stream, "stream");
             return (sbyte)stream.ReadByte();
         }
 
         protected static byte[] ReadBytes(Stream stream, int length)
         {
+            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.ResultIsNonNull<byte[]>();
             var arr = new byte[length];
             var read = stream.Read(arr, 0, length);
             if (read != length)
@@ -157,6 +170,9 @@ namespace xpdm.Bitcoin.Core
 
         protected static void WriteVarArray<T>(Stream stream, T[] objs) where T : BitcoinSerializable, new()
         {
+            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.NotNull(objs, "objs");
+
             WriteVarInt(stream, objs.Length);
             foreach (var obj in objs)
             {
@@ -166,6 +182,9 @@ namespace xpdm.Bitcoin.Core
 
         protected static void WriteCollection<T>(Stream stream, SCG.ICollection<T> objs) where T : BitcoinSerializable, new()
         {
+            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.NotNull(objs, "objs");
+
             WriteVarInt(stream, objs.Count);
             foreach (var obj in objs)
             {
@@ -175,6 +194,7 @@ namespace xpdm.Bitcoin.Core
 
         protected static void WriteVarInt(Stream stream, ulong value)
         {
+            ContractsCommon.NotNull(stream, "stream");
             if (value < 253)
             {
                 Write(stream, (byte) value);
@@ -198,80 +218,97 @@ namespace xpdm.Bitcoin.Core
 
         protected static void WriteVarInt(Stream stream, long value)
         {
-            WriteVarInt(stream, (ulong) value);
+            ContractsCommon.NotNull(stream, "stream");
+            WriteVarInt(stream, (ulong)value);
         }
 
         protected static void WriteVarInt(Stream stream, int value)
         {
+            ContractsCommon.NotNull(stream, "stream");
             // Prevent sign extension when upconverting to long
             WriteVarInt(stream, (ulong) value);
         }
 
         protected static void WriteVarInt(Stream stream, short value)
         {
+            ContractsCommon.NotNull(stream, "stream");
             // Prevent sign extension when upconverting to long
             WriteVarInt(stream, (ulong)value);
         }
 
         protected static void WriteVarInt(Stream stream, sbyte value)
         {
+            ContractsCommon.NotNull(stream, "stream");
             // Prevent sign extension when upconverting to long
             WriteVarInt(stream, (ulong)value);
         }
 
         protected static void Write(Stream stream, ulong value)
         {
+            ContractsCommon.NotNull(stream, "stream");
             var bytes = BitConverter.GetBytes(value);
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void Write(Stream stream, long value)
         {
+            ContractsCommon.NotNull(stream, "stream");
             var bytes = BitConverter.GetBytes(value);
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void Write(Stream stream, uint value)
         {
+            ContractsCommon.NotNull(stream, "stream");
             var bytes = BitConverter.GetBytes(value);
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void Write(Stream stream, int value)
         {
+            ContractsCommon.NotNull(stream, "stream");
             var bytes = BitConverter.GetBytes(value);
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void Write(Stream stream, ushort value)
         {
+            ContractsCommon.NotNull(stream, "stream");
             var bytes = BitConverter.GetBytes(value);
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void Write(Stream stream, short value)
         {
+            ContractsCommon.NotNull(stream, "stream");
             var bytes = BitConverter.GetBytes(value);
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void Write(Stream stream, byte value)
         {
+            ContractsCommon.NotNull(stream, "stream");
             stream.WriteByte(value);
         }
 
         protected static void Write(Stream stream, sbyte value)
         {
+            ContractsCommon.NotNull(stream, "stream");
             stream.WriteByte((byte)value);
         }
 
         protected static void WriteBytes(Stream stream, byte[] bytes)
         {
+            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.NotNull(bytes, "bytes");
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void WriteBytes(Stream stream, byte[] buffer, int offset, int length)
         {
+            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, length);
             stream.Write(buffer, offset, length);
         }
 
@@ -323,7 +360,7 @@ namespace xpdm.Bitcoin.Core
 
         public static BitcoinSerializable DeserializeFromStream<T>(Stream stream) where T : BitcoinSerializable, new()
         {
-            Contract.Requires<ArgumentNullException>(stream != null, "stream");
+            ContractsCommon.NotNull(stream, "stream");
 
             var ooze = new T();
             ooze.Deserialize(stream);
@@ -332,8 +369,8 @@ namespace xpdm.Bitcoin.Core
 
         public static void Serialize(Stream stream, BitcoinSerializable obj)
         {
-            Contract.Requires<ArgumentNullException>(stream != null, "stream");
-            Contract.Requires<ArgumentNullException>(obj != null, "obj");
+            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.NotNull(obj, "obj");
 
             obj.Serialize(stream);
         }
@@ -343,23 +380,31 @@ namespace xpdm.Bitcoin.Core
         #endregion
     }
 
-    [ContractClassFor(typeof(BitcoinSerializable))]
-    internal abstract class BitcoinSerializableContract : BitcoinSerializable
+    namespace Contracts
     {
-        protected sealed override void Deserialize(Stream stream)
+        [ContractClassFor(typeof(BitcoinSerializable))]
+        internal abstract class BitcoinSerializableContract : BitcoinSerializable
         {
-            Contract.Requires<ArgumentNullException>(stream != null, "stream");
-            //Contract.Requires<ArgumentOutOfRangeException>(length <= stream.Length, "length");
-            //Contract.Requires<ArgumentOutOfRangeException>(stream.Position + length <= stream.Length, "length");
-        }
+            protected sealed override void Deserialize(Stream stream)
+            {
+                ContractsCommon.NotFrozen(this);
+                ContractsCommon.NotNull(stream, "stream");
+                //Contract.Requires<ArgumentOutOfRangeException>(length <= stream.Length, "length");
+                //Contract.Requires<ArgumentOutOfRangeException>(stream.Position + length <= stream.Length, "length");
+            }
 
-        public sealed override void Serialize(Stream stream)
-        {
-        }
+            public sealed override void Serialize(Stream stream)
+            {
+            }
 
-        public sealed override int SerializedByteSize
-        {
-            get { return default(int); }
+            public sealed override int SerializedByteSize
+            {
+                get
+                {
+                    Contract.Ensures(Contract.Result<int>() >= 0);
+                    return default(int);
+                }
+            }
         }
     }
 }

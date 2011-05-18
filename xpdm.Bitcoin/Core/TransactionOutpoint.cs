@@ -3,21 +3,57 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin.Core
 {
-    public sealed class TransactionOutpoint : BitcoinObject
+    public sealed class TransactionOutpoint : BitcoinObject, IFreezable<TransactionOutpoint>
     {
-        public Hash256 SourceTransactionHash { get; private set; }
-        public uint OutputSequenceNumber { get; private set; }
-
-        public TransactionOutpoint(Hash256 sourceTransactionHash, uint outputSequenceNumber)
+        private Hash256 _sourceTransactionHash = Hash256.Empty;
+        public Hash256 SourceTransactionHash
         {
-            SourceTransactionHash = sourceTransactionHash;
-            OutputSequenceNumber = outputSequenceNumber;
+            get
+            {
+                ContractsCommon.ResultIsNonNull<Hash256>();
+
+                return _sourceTransactionHash;
+            }
+            set
+            {
+                ContractsCommon.NotFrozen(this);
+                ContractsCommon.NotNull(value, "value");
+
+                _sourceTransactionHash = value;
+                InvalidateBitcoinHashes();
+            }
+        }
+        private uint _outputSequenceNumber;
+        public uint OutputSequenceNumber
+        {
+            get
+            {
+                return _outputSequenceNumber;
+            }
+            set
+            {
+                ContractsCommon.NotFrozen(this);
+
+                _outputSequenceNumber = value;
+                InvalidateBitcoinHashes();
+            }
         }
 
-        public TransactionOutpoint() { }
+        public TransactionOutpoint()
+        {
+        }
+        public TransactionOutpoint(TransactionOutpoint outpoint)
+        {
+            ContractsCommon.NotNull(outpoint, "outpoint");
+
+            _sourceTransactionHash = outpoint._sourceTransactionHash;
+            _outputSequenceNumber = outpoint._outputSequenceNumber;
+        }
+
         public TransactionOutpoint(Stream stream) : base(stream) { }
         public TransactionOutpoint(byte[] buffer, int offset) : base(buffer, offset) { }
 
@@ -25,6 +61,8 @@ namespace xpdm.Bitcoin.Core
         {
             SourceTransactionHash = new Hash256(stream);
             OutputSequenceNumber = ReadUInt32(stream);
+
+            Freeze();
         }
 
         public override void Serialize(System.IO.Stream stream)
@@ -41,6 +79,39 @@ namespace xpdm.Bitcoin.Core
         public override string ToString()
         {
             return string.Format("{0}:{1}", SourceTransactionHash, OutputSequenceNumber);
+        }
+
+        public bool IsFrozen { get; private set; }
+
+        public void Freeze()
+        {
+            IsFrozen = true;
+        }
+
+        public TransactionOutpoint Thaw()
+        {
+            return new TransactionOutpoint(this);
+        }
+
+        public TransactionOutpoint ThawTree()
+        {
+            return Thaw();
+        }
+
+        static TransactionOutpoint()
+        {
+            var empty = new TransactionOutpoint();
+            empty.Freeze();
+            _empty = empty;
+        }
+
+        private static readonly TransactionOutpoint _empty;
+        public static TransactionOutpoint Empty { get { return _empty; } }
+
+        [ContractInvariantMethod]
+        private void __Invariant()
+        {
+            Contract.Invariant(_sourceTransactionHash != null);
         }
     }
 }

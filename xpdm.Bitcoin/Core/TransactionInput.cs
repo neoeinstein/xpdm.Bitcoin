@@ -3,23 +3,83 @@ using System.IO;
 
 namespace xpdm.Bitcoin.Core
 {
-    public sealed class TransactionInput : BitcoinObject
+    public sealed class TransactionInput : BitcoinObject, IFreezable<TransactionInput>
     {
-        public TransactionOutpoint Source { get; private set; }
-        public Script Script { get; private set; }
-        public uint SequenceNumber { get; private set; }
+        private TransactionOutpoint _source = TransactionOutpoint.Empty;
+        public TransactionOutpoint Source
+        {
+            get
+            {
+                ContractsCommon.ResultIsNonNull<TransactionOutpoint>();
+
+                return _source;
+            }
+            set
+            {
+                ContractsCommon.NotFrozen(this);
+                ContractsCommon.NotNull(value, "value");
+
+                _source.HashesInvalidated -= InvalidateBitcoinHashes;
+                _source = value;
+                _source.HashesInvalidated += InvalidateBitcoinHashes;
+                InvalidateBitcoinHashes();
+            }
+        }
+
+        private Script _script = Script.Empty;
+        public Script Script
+        {
+            get
+            {
+                ContractsCommon.ResultIsNonNull<Script>();
+
+                return _script;
+            }
+            set
+            {
+                ContractsCommon.NotFrozen(this);
+                ContractsCommon.NotNull(value, "value");
+
+                _script.HashesInvalidated -= InvalidateBitcoinHashes;
+                _script = value;
+                _script.HashesInvalidated += InvalidateBitcoinHashes;
+                InvalidateBitcoinHashes();
+            }
+        }
+
+        private uint _sequenceNumber;
+        public uint SequenceNumber
+        {
+            get
+            {
+                return _sequenceNumber;
+            }
+            set
+            {
+                ContractsCommon.NotFrozen(this);
+
+                _sequenceNumber = value;
+                InvalidateBitcoinHashes();
+            }
+        }
 
         private const uint DefaultSequenceNumber = 0xFFFFFFFFU;
 
-        public TransactionInput(TransactionOutpoint source, Script script, uint sequenceNumber)
+        public TransactionInput() 
         {
-            Source = source;
-            Script = script;
-            SequenceNumber = sequenceNumber;
         }
-        public TransactionInput(TransactionOutpoint source, Script script) : this(source, script, DefaultSequenceNumber) { }
+        public TransactionInput(TransactionInput txIn) : this(txIn, false) { }
+        public TransactionInput(TransactionInput txIn, bool thawChildren)
+        {
+            ContractsCommon.NotNull(txIn, "txIn");
+            ContractsCommon.ChildThawed(Source, thawChildren);
+            ContractsCommon.ChildThawed(Script, thawChildren);
 
-        public TransactionInput() { }
+            _source = FreezableExtensions.ThawChild(txIn._source, thawChildren);
+            _script = FreezableExtensions.ThawChild(txIn._script, thawChildren);
+            _sequenceNumber = txIn._sequenceNumber;
+        }
+
         public TransactionInput(Stream stream) : base(stream) { }
         public TransactionInput(byte[] buffer, int offset) : base(buffer, offset) { }
 
@@ -28,6 +88,8 @@ namespace xpdm.Bitcoin.Core
             Source = new TransactionOutpoint(stream);
             Script = new Script(stream);
             SequenceNumber = ReadUInt32(stream);
+
+            Freeze();
         }
 
         public override void Serialize(Stream stream)
@@ -45,6 +107,45 @@ namespace xpdm.Bitcoin.Core
         public override string ToString()
         {
             return string.Format("{0} [ {1} ] {2}", Source, Script, SequenceNumber);
+        }
+
+        public bool IsFrozen { get; private set; }
+
+        public void Freeze()
+        {
+            Source.Freeze();
+            Script.Freeze();
+            IsFrozen = true;
+        }
+
+        public TransactionInput Thaw()
+        {
+            return new TransactionInput(this, false);
+        }
+
+        public TransactionInput ThawTree()
+        {
+            ContractsCommon.IsThawed(Contract.Result<TransactionInput>().Source);
+            ContractsCommon.IsThawed(Contract.Result<TransactionInput>().Script);
+
+            return new TransactionInput(this, true);
+        }
+
+        static TransactionInput()
+        {
+            var empty = new TransactionInput();
+            empty.Freeze();
+            _empty = empty;
+        }
+
+        private static readonly TransactionInput _empty;
+        public static TransactionInput Empty { get { return _empty; } }
+
+        [ContractInvariantMethod]
+        private void __Invariant()
+        {
+            Contract.Invariant(_source != null);
+            Contract.Invariant(_script != null);
         }
     }
 }

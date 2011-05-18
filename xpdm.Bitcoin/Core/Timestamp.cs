@@ -96,12 +96,12 @@ namespace xpdm.Bitcoin.Core
             return this.ToString(format, null);
         }
 
-        private const string _defaultFormat = "D";
+        private const string _defaultFormat = "Ts";
 
         [Pure]
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            Contract.Ensures(Contract.Result<string>() != null);
+            ContractsCommon.ResultIsNonNull<string>();
 
             if (format == null)
             {

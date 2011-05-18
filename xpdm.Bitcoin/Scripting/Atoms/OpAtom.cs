@@ -41,11 +41,13 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             get { return 1; }
         }
 
+        [Pure]
         public bool Equals(OpAtom other)
         {
             return other != null && OpCode.Equals(other.OpCode);
         }
 
+        [Pure]
         public sealed override bool Equals(IScriptAtom other)
         {
             return this.Equals(other as OpAtom);
@@ -54,6 +56,11 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         public sealed override bool Equals(object obj)
         {
             return this.Equals(obj as OpAtom);
+        }
+
+        public override int GetHashCode()
+        {
+            return OpCode.GetHashCode();
         }
     }
 }

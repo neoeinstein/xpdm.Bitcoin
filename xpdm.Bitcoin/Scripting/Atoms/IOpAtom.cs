@@ -2,22 +2,25 @@
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
-    [ContractClass(typeof(IOpAtomContract))]
+    [ContractClass(typeof(Contracts.IOpAtomContract))]
     public interface IOpAtom
     {
         ScriptOpCode OpCode { get; }
     }
 
-    [ContractClassFor(typeof(IOpAtom))]
-    public abstract class IOpAtomContract : IOpAtom
+    namespace Contracts
     {
-        public ScriptOpCode OpCode
+        [ContractClassFor(typeof(IOpAtom))]
+        internal abstract class IOpAtomContract : IOpAtom
         {
-            get
+            public ScriptOpCode OpCode
             {
-                Contract.Ensures(Contract.Result<ScriptOpCode>() >= ScriptOpCode.OP_PUSHDATA1);
+                get
+                {
+                    Contract.Ensures(Contract.Result<ScriptOpCode>() >= ScriptOpCode.OP_PUSHDATA1);
 
-                return default(ScriptOpCode);
+                    return default(ScriptOpCode);
+                }
             }
         }
     }

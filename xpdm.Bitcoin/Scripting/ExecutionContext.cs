@@ -38,11 +38,14 @@ namespace xpdm.Bitcoin.Scripting
                     {
                         ++OpAtomsExecuted;
                     }
+                    ++CurrentAtomIndex;
                 }
             }
             finally
             {
                 CurrentScript = null;
+                CurrentAtomIndex = 0;
+                LastSeparatorAtomIndex = 0;
             }
         }
 
