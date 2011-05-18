@@ -1,0 +1,6 @@
+[submodule "lib/C5"]
+	path = lib/C5
+	url = git@github.com:neoeinstein/c5
+[submodule "lib/bouncycastle"]
+	path = lib/bouncycastle
+	url = git@github.com:neoeinstein/bouncycastle

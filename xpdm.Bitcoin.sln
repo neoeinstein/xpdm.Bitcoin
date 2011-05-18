@@ -3,18 +3,39 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xpdm.Bitcoin", "xpdm.Bitcoin\xpdm.Bitcoin.csproj", "{77C66EA7-C2CE-4C55-A5E2-6ACCDBBF5A40}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C5", "C5", "{7F0E176C-07BC-42FE-91B7-51DB522EFAAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C5", "lib\C5\C5\C5.csproj", "{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		DebugSnk|Any CPU = DebugSnk|Any CPU
 		Release|Any CPU = Release|Any CPU
+		ReleaseSnk|Any CPU = ReleaseSnk|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{77C66EA7-C2CE-4C55-A5E2-6ACCDBBF5A40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{77C66EA7-C2CE-4C55-A5E2-6ACCDBBF5A40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77C66EA7-C2CE-4C55-A5E2-6ACCDBBF5A40}.DebugSnk|Any CPU.ActiveCfg = Debug|Any CPU
+		{77C66EA7-C2CE-4C55-A5E2-6ACCDBBF5A40}.DebugSnk|Any CPU.Build.0 = Debug|Any CPU
 		{77C66EA7-C2CE-4C55-A5E2-6ACCDBBF5A40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77C66EA7-C2CE-4C55-A5E2-6ACCDBBF5A40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77C66EA7-C2CE-4C55-A5E2-6ACCDBBF5A40}.ReleaseSnk|Any CPU.ActiveCfg = Release|Any CPU
+		{77C66EA7-C2CE-4C55-A5E2-6ACCDBBF5A40}.ReleaseSnk|Any CPU.Build.0 = Release|Any CPU
+		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.DebugSnk|Any CPU.ActiveCfg = DebugSnk|Any CPU
+		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.DebugSnk|Any CPU.Build.0 = DebugSnk|Any CPU
+		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.ReleaseSnk|Any CPU.ActiveCfg = ReleaseSnk|Any CPU
+		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.ReleaseSnk|Any CPU.Build.0 = ReleaseSnk|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71} = {7F0E176C-07BC-42FE-91B7-51DB522EFAAE}
 	EndGlobalSection
 EndGlobal
