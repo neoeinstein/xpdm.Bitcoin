@@ -7,7 +7,7 @@ using System.Text;
 
 namespace xpdm.Bitcoin.Core
 {
-    public sealed class TransactionOutput : BitcoinObject, IFreezable<TransactionOutput>
+    public sealed class TransactionOutput : BitcoinObject, IFreezable, IThawable<TransactionOutput>
     {
         private BitcoinValue _value;
         public BitcoinValue Value

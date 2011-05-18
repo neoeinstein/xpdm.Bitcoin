@@ -3,7 +3,7 @@ using System.IO;
 
 namespace xpdm.Bitcoin.Core
 {
-    public sealed class TransactionInput : BitcoinObject, IFreezable<TransactionInput>
+    public sealed class TransactionInput : BitcoinObject, IFreezable, IThawable<TransactionInput>
     {
         private TransactionOutpoint _source = TransactionOutpoint.Empty;
         public TransactionOutpoint Source

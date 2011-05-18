@@ -7,7 +7,7 @@ using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin.Core
 {
-    public sealed class TransactionOutpoint : BitcoinObject, IFreezable<TransactionOutpoint>
+    public sealed class TransactionOutpoint : BitcoinObject, IFreezable, IThawable<TransactionOutpoint>
     {
         private Hash256 _sourceTransactionHash = Hash256.Empty;
         public Hash256 SourceTransactionHash
