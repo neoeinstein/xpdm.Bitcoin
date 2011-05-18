@@ -7,7 +7,7 @@ using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin.Core
 {
-    public sealed class Transaction : BitcoinObject, IFreezable<Transaction>
+    public sealed class Transaction : BitcoinObject, IFreezable, IThawable<Transaction>
     {
         private uint _version;
         public uint Version

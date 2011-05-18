@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace xpdm.Bitcoin.Core
 {
-    public sealed class Block : BitcoinObject, IFreezable<Block>
+    public sealed class Block : BitcoinObject, IFreezable, IThawable<Block>
     {
         private uint _version;
         public uint Version

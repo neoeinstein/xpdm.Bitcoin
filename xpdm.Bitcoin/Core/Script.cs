@@ -9,7 +9,7 @@ using xpdm.Bitcoin.Scripting;
 
 namespace xpdm.Bitcoin.Core
 {
-    public sealed class Script : BitcoinObject, IFreezable<Script>
+    public sealed class Script : BitcoinObject, IFreezable, IThawable<Script>
     {
         public static readonly int MaximumScriptByteSize = 10000;
 

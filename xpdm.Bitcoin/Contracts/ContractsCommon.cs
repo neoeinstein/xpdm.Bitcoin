@@ -78,25 +78,25 @@ namespace xpdm.Bitcoin
         }
 
         [ContractAbbreviator]
-        public static void IsThawed<T>(IFreezable<T> freezable) where T : IFreezable<T>
+        public static void IsThawed<T>(IThawable<T> freezable) where T : IThawable<T>
         {
             Contract.Ensures(!freezable.IsFrozen);
         }
 
         [ContractAbbreviator]
-        public static void IsThawed<T>(SCG.IEnumerable<IFreezable<T>> freezables) where T : IFreezable<T>
+        public static void IsThawed<T>(SCG.IEnumerable<IThawable<T>> freezables) where T : IThawable<T>
         {
             Contract.Ensures(Contract.ForAll(freezables, f => !f.IsFrozen));
         }
 
         [ContractAbbreviator]
-        public static void ChildThawed<T>(IFreezable<T> child, bool thawChildren) where T : IFreezable<T>
+        public static void ChildThawed<T>(IThawable<T> child, bool thawChildren) where T : IThawable<T>
         {
             Contract.Ensures(!thawChildren || !child.IsFrozen);
         }
 
         [ContractAbbreviator]
-        public static void ChildrenThawed<T>(SCG.IEnumerable<IFreezable<T>> children, bool thawChildren) where T : IFreezable<T>
+        public static void ChildrenThawed<T>(SCG.IEnumerable<IThawable<T>> children, bool thawChildren) where T : IThawable<T>
         {
             Contract.Ensures(!thawChildren || Contract.ForAll(children, child => !child.IsFrozen));
         }
