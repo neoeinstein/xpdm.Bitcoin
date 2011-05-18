@@ -22,9 +22,42 @@ namespace xpdm.Bitcoin.Core
         public static bool VerifySignature(byte[] publicKey, byte[] sigHash,
             Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
         {
+            // Cng ECC Public Key Blob format [72 bytes]:
+            //6fbfcf5da60c7e59dfe724f4fb1b4e73f12bc48f17fb90f1e74f0d058c65e77c76aa75787f18ddd8be32b08014046ff62fef598011583e6f2d77e2b2ab850e5f0000002031534345
+            //coordY[cBytes]BIG-ENDIAN coordX[cBytes]BIG-ENDIAN cBytes[4]LITTLE-ENDIAN magic[4]LITTLE-ENDIAN
+            // For ECDsaP256, that magic number is: 0x31534345U, and cBytes will be 0x00000020
+
+            // Bitcoin ECC Public Key Blob format [65 bytes]:
+            //04e77ae594d5932f11547eea049b526044cbf8ac938fabfa97d3ab37732822572bd7d71c77a8ac1f5ca46fd73260f5aecc7270efbbf283bacd64ef0a9bb41e3ab9
+            //type[1] coordX[cBytes] coordY[cBytes] (all LITTLE-ENDIAN)
+            // type = 04 means curve points are uncompressed. No other value is expected.
+            // For secp256k1, cBytes = 0x00000020
+
+            // Probable issue here: Cng supports the NIST P-256 curve (alias of secp256r1), but Bitcoin uses the secp256k1 curve.
+
+            if (signatureType == 0)
+            {
+                signatureType = (SignatureHashType) sigHash[sigHash.Length - 1];
+            }
+            var signature = new byte[72];
+            Array.Copy(sigHash, signature, signature.Length);
             //var cs = System.Security.Cryptography.ECDsa.Create();
-            var hash = new ECDsaCng(CngKey.Import(publicKey, CngKeyBlobFormat.EccPublicBlob));
-            var valid = hash.VerifyHash(HashTransactionForSigning(script, transaction, transactionInputIndex, signatureType).Bytes, sigHash);
+            var x = new byte[0x20];
+            var y = new byte[0x20];
+            Array.Copy(publicKey, 0x01, x, 0, 0x20);
+            Array.Copy(publicKey, 0x21, y, 0, 0x20);
+            Array.Reverse(x);
+            Array.Reverse(y);
+            var key = new byte[0x48];
+            y.CopyTo(key, 0x28);
+            x.CopyTo(key, 0x08);
+            //key[67] = 0x20;
+            0x20U.WriteBytes(key, 4);
+            0x31534345U.WriteBytes(key, 0);
+            Array.Reverse(key);
+            var cngKey = CngKey.Import(key, CngKeyBlobFormat.EccPublicBlob);
+            var hash = new ECDsaCng(cngKey);
+            var valid = hash.VerifyHash(HashTransactionForSigning(script, transaction, transactionInputIndex, signatureType).Bytes, signature);
             return valid;
         }
 
