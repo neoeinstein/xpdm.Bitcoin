@@ -90,6 +90,7 @@
     <Compile Include="Core\TransactionInput.cs" />
     <Compile Include="Core\TransactionOutput.cs" />
     <Compile Include="Core\TransactionOutpoint.cs" />
+    <Compile Include="Core\TransactionSignatureOperations.cs" />
     <Compile Include="Endianness.cs" />
     <Compile Include="HashUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

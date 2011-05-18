@@ -11,7 +11,7 @@ namespace xpdm.Bitcoin.Core
     public class TransactionSignatureOperations
     {
         public static byte[] SignTransaction(byte[] privateKey,
-            ScriptBase script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
+            Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
         {
             //var cs = System.Security.Cryptography.ECDsa.Create();
             var hash = new ECDsaCng(CngKey.Import(privateKey, CngKeyBlobFormat.EccPrivateBlob));
@@ -20,7 +20,7 @@ namespace xpdm.Bitcoin.Core
         }
 
         public static bool VerifySignature(byte[] publicKey, byte[] sigHash,
-            ScriptBase script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
+            Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
         {
             //var cs = System.Security.Cryptography.ECDsa.Create();
             var hash = new ECDsaCng(CngKey.Import(publicKey, CngKeyBlobFormat.EccPublicBlob));
@@ -28,7 +28,7 @@ namespace xpdm.Bitcoin.Core
             return valid;
         }
 
-        public static Hash256 HashTransactionForSigning(ScriptBase script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
+        public static Hash256 HashTransactionForSigning(Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
         {
             var t = TransformTransactionForSigning(script, transaction, transactionInputIndex, signatureType);
             var bytes = new byte[t.SerializedByteSize + 1];
@@ -38,15 +38,15 @@ namespace xpdm.Bitcoin.Core
             return HashUtil.Hash256(bytes);
         }
 
-        public static Transaction TransformTransactionForSigning(ScriptBase script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
+        public static Transaction TransformTransactionForSigning(Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
         {
-            var tb = new TransactionBuilder(transaction);
+            var tb = transaction.ThawTree();
 
-            script.Atoms.RemoveAllCopies(Scripting.Atoms.OpCodeSeparatorAtom.Atom);
+            //script.Atoms.RemoveAllCopies(Scripting.Atoms.OpCodeSeparatorAtom.Atom);
 
             ClearAllScripts(tb.TransactionInputs);
 
-            tb.TransactionInputs[transactionInputIndex].Script.AddAll(script.Atoms);
+            tb.TransactionInputs[transactionInputIndex].Script.Atoms.AddAll(script.Atoms);
 
             // By default, signing a transaction with SignatureHashType = 0 means the signer
             // agrees with the transaction only if the inputs and outputs are exactly the same
@@ -75,18 +75,20 @@ namespace xpdm.Bitcoin.Core
                 OnlyUseSingleInput(tb.TransactionInputs, transactionInputIndex);
             }
 
-            return tb.FreezeToTransaction();
+            tb.Freeze();
+
+            return tb;
         }
 
-        public static void ClearAllScripts(SCG.IEnumerable<TransactionInputBuilder> tis)
+        public static void ClearAllScripts(SCG.IEnumerable<TransactionInput> tis)
         {
             foreach (var ti in tis)
             {
-                ti.Script.Clear();
+                ti.Script.Atoms.Clear();
             }
         }
 
-        public static void OnlyUseSingleOutput(IList<TransactionOutputBuilder> tos, int indexToUse)
+        public static void OnlyUseSingleOutput(IList<TransactionOutput> tos, int indexToUse)
         {
             if (indexToUse >= tos.Count)
             {
@@ -94,18 +96,18 @@ namespace xpdm.Bitcoin.Core
             }
             var to = tos[indexToUse];
             tos.Clear();
-            tos.AddAll(Enumerable.Repeat(TransactionOutputBuilder.Empty, indexToUse));
+            tos.AddAll(Enumerable.Repeat(new TransactionOutput { Value = -1 }, indexToUse));
             tos.Add(to);
         }
 
-        public static void OnlyUseSingleInput(IList<TransactionInputBuilder> tis, int indexToUse)
+        public static void OnlyUseSingleInput(IList<TransactionInput> tis, int indexToUse)
         {
             var ti = tis[indexToUse];
             tis.Clear();
             tis.Add(ti);
         }
 
-        public static void SetSequenceNumbersToZero(IList<TransactionInputBuilder> tis, int indexToLeaveAlone)
+        public static void SetSequenceNumbersToZero(IList<TransactionInput> tis, int indexToLeaveAlone)
         {
             for (int i = 0; i < tis.Count; ++i)
             {

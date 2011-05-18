@@ -34,6 +34,9 @@ namespace xpdm.Bitcoin.Scripting.Atoms
                                                             context.CurrentAtomIndex - context.LastSeparatorAtomIndex);
 
             bool isValidSignature = false;
+
+            isValidSignature = TransactionSignatureOperations.VerifySignature(
+                key, sig, subscript, context.CurrentTransaction, context.CurrentTransactionInputIndex, 0);
             
             ExecuteVerify(context, isValidSignature);
         }

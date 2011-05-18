@@ -16,11 +16,13 @@ namespace xpdm.Bitcoin.Scripting
 
         public int OpAtomsExecuted { get; private set; }
 
-        public void ExecutePartial(Core.Script script)
+        public void ExecutePartial(Core.Script script, Core.Transaction transaction, int transactionInputIndex)
         {
             try
             {
                 CurrentScript = script;
+                CurrentTransaction = transaction;
+                CurrentTransactionInputIndex = transactionInputIndex;
 
                 foreach (var atom in script.Atoms)
                 {
@@ -44,14 +46,16 @@ namespace xpdm.Bitcoin.Scripting
             finally
             {
                 CurrentScript = null;
+                CurrentTransaction = null;
+                CurrentTransactionInputIndex = 0;
                 CurrentAtomIndex = 0;
                 LastSeparatorAtomIndex = 0;
             }
         }
 
-        public bool Execute(Core.Script script)
+        public bool Execute(Core.Script script, Core.Transaction transaction, int transactionInputIndex)
         {
-            ExecutePartial(script);
+            ExecutePartial(script, transaction, transactionInputIndex);
 
             this.InFinalState = true;
 
@@ -129,6 +133,8 @@ namespace xpdm.Bitcoin.Scripting
         }
 
         public Core.Script CurrentScript { get; private set; }
+        public Core.Transaction CurrentTransaction { get; private set; }
+        public int CurrentTransactionInputIndex { get; private set; }
         public int CurrentAtomIndex { get; set; }
         public int LastSeparatorAtomIndex { get; set; }
 
@@ -172,6 +178,8 @@ namespace xpdm.Bitcoin.Scripting
         private void __Invariant()
         {
             Contract.Invariant(CurrentScript == null);
+            Contract.Invariant(CurrentTransaction == null);
+            Contract.Invariant(CurrentTransactionInputIndex == 0);
             Contract.Invariant(CurrentAtomIndex == 0);
             Contract.Invariant(LastSeparatorAtomIndex == 0);
         }
