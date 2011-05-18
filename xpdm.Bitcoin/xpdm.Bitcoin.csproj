@@ -150,6 +150,10 @@
     <Compile Include="SignatureHashType.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\lib\bouncycastle\crypto\crypto.csproj">
+      <Project>{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}</Project>
+      <Name>crypto</Name>
+    </ProjectReference>
     <ProjectReference Include="..\lib\C5\C5\C5.csproj">
       <Project>{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}</Project>
       <Name>C5 %28C5\C5%29</Name>

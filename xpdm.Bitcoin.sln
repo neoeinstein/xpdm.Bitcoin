@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C5", "C5", "{7F0E176C-07BC-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C5", "lib\C5\C5\C5.csproj", "{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bouncy Castle", "Bouncy Castle", "{4FD1E66E-2DA9-4365-90CB-727971F0E010}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "crypto", "lib\bouncycastle\crypto\crypto.csproj", "{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,11 +35,20 @@ Global
 		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.ReleaseSnk|Any CPU.ActiveCfg = ReleaseSnk|Any CPU
 		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.ReleaseSnk|Any CPU.Build.0 = ReleaseSnk|Any CPU
+		{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}.DebugSnk|Any CPU.ActiveCfg = Debug|Any CPU
+		{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}.DebugSnk|Any CPU.Build.0 = Debug|Any CPU
+		{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}.ReleaseSnk|Any CPU.ActiveCfg = Release|Any CPU
+		{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}.ReleaseSnk|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71} = {7F0E176C-07BC-42FE-91B7-51DB522EFAAE}
+		{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0} = {4FD1E66E-2DA9-4365-90CB-727971F0E010}
 	EndGlobalSection
 EndGlobal
