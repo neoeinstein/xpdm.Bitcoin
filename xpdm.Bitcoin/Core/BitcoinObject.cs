@@ -3,6 +3,7 @@ using SCG=System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.Serialization;
+using xpdm.Bitcoin.Cryptography;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -33,7 +34,7 @@ namespace xpdm.Bitcoin.Core
         {
             ContractsCommon.ResultIsNonNull<Hash256>();
 
-            return HashUtil.Hash256(this.BuildBitcoinHashByteArray());
+            return CryptoFunctionProviderFactory.Default.Hash256(this.BuildBitcoinHashByteArray());
         }
 
         private Hash160 _hash160;
@@ -54,7 +55,7 @@ namespace xpdm.Bitcoin.Core
         {
             ContractsCommon.ResultIsNonNull<Hash160>();
 
-            return HashUtil.Hash160(this.BuildBitcoinHashByteArray());
+            return CryptoFunctionProviderFactory.Default.Hash160(this.BuildBitcoinHashByteArray());
         }
 
         [Pure]

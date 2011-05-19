@@ -5,6 +5,7 @@ using SCG = System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
+using xpdm.Bitcoin.Cryptography;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -68,7 +69,7 @@ namespace xpdm.Bitcoin.Core
             bytes[t.SerializedByteSize] = (byte)signatureType;
             var ms = new MemoryStream(bytes);
             t.Serialize(ms);
-            return HashUtil.Hash256(bytes);
+            return CryptoFunctionProviderFactory.Default.Hash256(bytes);
         }
 
         public static Transaction TransformTransactionForSigning(Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)

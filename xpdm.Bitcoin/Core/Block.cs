@@ -4,6 +4,7 @@ using C5;
 using SCG = System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using xpdm.Bitcoin.Cryptography;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -142,7 +143,7 @@ namespace xpdm.Bitcoin.Core
                 for (int i = 0; i < size; i += 2)
                 {
                     int i2 = Math.Min(i + 1, size - 1);
-                    tree.Add(HashUtil.Hash256(tree[j + i].Bytes, tree[j + i2].Bytes));
+                    tree.Add(CryptoFunctionProviderFactory.Default.Hash256(tree[j + i].Bytes, tree[j + i2].Bytes));
                 }
                 j += size;
             }

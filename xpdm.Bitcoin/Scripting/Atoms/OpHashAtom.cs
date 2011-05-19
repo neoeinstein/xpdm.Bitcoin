@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using xpdm.Bitcoin.Cryptography;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
@@ -31,19 +32,19 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             switch (OpCode)
             {
                 case ScriptOpCode.OP_RIPEMD160:
-                    result = HashUtil.Ripemd160(context.ValueStack.Peek()).Bytes;
+                    result = CryptoFunctionProviderFactory.Default.Ripemd160(context.ValueStack.Peek()).Bytes;
                     break;
                 case ScriptOpCode.OP_SHA1:
-                    result = HashUtil.Sha1(context.ValueStack.Peek()).Bytes;
+                    result = CryptoFunctionProviderFactory.Default.Sha1(context.ValueStack.Peek()).Bytes;
                     break;
                 case ScriptOpCode.OP_SHA256:
-                    result = HashUtil.Sha256(context.ValueStack.Peek()).Bytes;
+                    result = CryptoFunctionProviderFactory.Default.Sha256(context.ValueStack.Peek()).Bytes;
                     break;
                 case ScriptOpCode.OP_HASH160:
-                    result = HashUtil.Hash160(context.ValueStack.Peek()).Bytes;
+                    result = CryptoFunctionProviderFactory.Default.Hash160(context.ValueStack.Peek()).Bytes;
                     break;
                 case ScriptOpCode.OP_HASH256:
-                    result = HashUtil.Hash256(context.ValueStack.Peek()).Bytes;
+                    result = CryptoFunctionProviderFactory.Default.Hash256(context.ValueStack.Peek()).Bytes;
                     break;
                 default:
                     context.HardFailure = true;
