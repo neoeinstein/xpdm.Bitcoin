@@ -4,8 +4,13 @@ using C5;
 using SCG = System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Security.Cryptography;
 using xpdm.Bitcoin.Cryptography;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Signers;
+using Org.BouncyCastle.Asn1;
+using Org.BouncyCastle.Asn1.Sec;
+using Org.BouncyCastle.Math;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -14,10 +19,19 @@ namespace xpdm.Bitcoin.Core
         public static byte[] SignTransaction(byte[] privateKey,
             Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
         {
-            //var cs = System.Security.Cryptography.ECDsa.Create();
-            var hash = new ECDsaCng(CngKey.Import(privateKey, CngKeyBlobFormat.EccPrivateBlob));
-            var sigHash = hash.SignHash(HashTransactionForSigning(script, transaction, transactionInputIndex, signatureType).Bytes);
-            return sigHash;
+            var hash = HashTransactionForSigning(script, transaction, transactionInputIndex, signatureType).Bytes;
+
+            var secp256k1 = SecNamedCurves.GetByName("secp256k1");
+            var p = new ECDomainParameters(secp256k1.Curve, secp256k1.G, secp256k1.N, secp256k1.H, secp256k1.GetSeed());
+
+            var kp = new ECPrivateKeyParameters(new BigInteger(privateKey), p);
+
+            var ecdsa = new ECDsaSigner();
+            ecdsa.Init(true, kp);
+
+            var pq = ecdsa.GenerateSignature(hash);
+
+            return pq[0].ToByteArrayUnsigned();
         }
 
         public static bool VerifySignature(byte[] publicKey, byte[] sigHash,
@@ -42,24 +56,26 @@ namespace xpdm.Bitcoin.Core
             }
             var signature = new byte[72];
             Array.Copy(sigHash, signature, signature.Length);
-            //var cs = System.Security.Cryptography.ECDsa.Create();
-            var x = new byte[0x20];
-            var y = new byte[0x20];
-            Array.Copy(publicKey, 0x01, x, 0, 0x20);
-            Array.Copy(publicKey, 0x21, y, 0, 0x20);
-            Array.Reverse(x);
-            Array.Reverse(y);
-            var key = new byte[0x48];
-            y.CopyTo(key, 0x28);
-            x.CopyTo(key, 0x08);
-            //key[67] = 0x20;
-            0x20U.WriteBytes(key, 4);
-            0x31534345U.WriteBytes(key, 0);
-            Array.Reverse(key);
-            var cngKey = CngKey.Import(key, CngKeyBlobFormat.EccPublicBlob);
-            var hash = new ECDsaCng(cngKey);
-            var valid = hash.VerifyHash(HashTransactionForSigning(script, transaction, transactionInputIndex, signatureType).Bytes, signature);
-            return valid;
+
+            var hash = HashTransactionForSigning(script, transaction, transactionInputIndex, signatureType).Bytes;
+
+            var secp256k1 = SecNamedCurves.GetByName("secp256k1");
+            var p = new ECDomainParameters(secp256k1.Curve, secp256k1.G, secp256k1.N, secp256k1.H, secp256k1.GetSeed());
+
+            var kp = new ECPublicKeyParameters(p.Curve.DecodePoint(publicKey), p);
+
+            var ecdsa = new ECDsaSigner();
+            ecdsa.Init(false, kp);
+
+            BigInteger r, s;
+            using (var asnIn = new Asn1InputStream(signature))
+            {
+                var derSeq = (DerSequence)asnIn.ReadObject();
+                r = ((DerInteger)derSeq[0]).Value;
+                s = ((DerInteger)derSeq[1]).Value;
+            }
+
+            return ecdsa.VerifySignature(hash, r, s);
         }
 
         public static Hash256 HashTransactionForSigning(Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
