@@ -31,7 +31,7 @@ namespace xpdm.Bitcoin.Core
             Contract.Requires<FormatException>(hashString.Trim().Length == HASH_LEN * 2, "Hash string not of expected length.");
             ContractsCommon.ResultIsNonNull<Hash160>();
 
-            var bytes = BufferOperations.FromByteString(hashString.Trim(), Endianness.LittleEndian);
+            var bytes = BufferOperations.FromByteString(hashString.Trim(), Endianness.BigEndian);
             return new Hash160(bytes);
         }
 
