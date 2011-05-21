@@ -17,14 +17,6 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             }
         }
 
-        public override int ResultCount
-        {
-            get
-            {
-                return 1 - (VerifyOrFail ? base.OperandCount : 0);
-            }
-        }
-
         protected override void ExecuteImpl(ExecutionContext context)
         {
             bool equal = context.ValueStack.Peek(0).Length == context.ValueStack.Peek(1).Length

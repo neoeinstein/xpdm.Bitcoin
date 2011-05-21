@@ -19,7 +19,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         {
             get
             {
-                return 0;
+                return (VerifyOrFail ? 0 : 1);
             }
         }
 
