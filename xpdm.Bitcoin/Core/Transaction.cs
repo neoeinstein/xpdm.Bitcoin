@@ -71,9 +71,9 @@ namespace xpdm.Bitcoin.Core
             get
             {
                 var tiSize = TransactionInputs.Sum(ti => ti.SerializedByteSize);
-                tiSize += VarIntByteSize(tiSize);
+                tiSize += VarIntByteSize(TransactionInputs.Count);
                 var toSize = TransactionOutputs.Sum(to => to.SerializedByteSize);
-                toSize += VarIntByteSize(toSize);
+                toSize += VarIntByteSize(TransactionOutputs.Count);
                 return BufferOperations.UINT32_SIZE*2 + tiSize + toSize;
             }
         }
