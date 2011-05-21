@@ -164,7 +164,7 @@
     <Compile Include="Scripting\Atoms\OpEqualAtom.cs" />
     <Compile Include="Scripting\Atoms\OpInvalidAtom.cs" />
     <Compile Include="Scripting\Atoms\OpVerifyAtom.cs" />
-    <Compile Include="Scripting\Atoms\StackExtensions.cs" />
+    <Compile Include="Scripting\StackExtensions.cs" />
     <Compile Include="Scripting\Atoms\ValueAtom.cs" />
     <Compile Include="Scripting\ExecutionContext.cs" />
     <Compile Include="Scripting\Atoms\IOpAtom.cs" />

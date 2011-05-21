@@ -2,7 +2,7 @@
 using System.Diagnostics.Contracts;
 using C5;
 
-namespace xpdm.Bitcoin.Scripting.Atoms
+namespace xpdm.Bitcoin.Scripting
 {
     static class StackExtensions
     {

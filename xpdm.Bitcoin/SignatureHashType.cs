@@ -5,9 +5,10 @@ namespace xpdm.Bitcoin
     [Flags]
     public enum SignatureHashType : byte
     {
-        All = 0x00,
-        None = 0x01,
-        Single = 0x02,
+        Unknown = 0x00,
+        All = 0x01,
+        None = 0x02,
+        Single = 0x03,
         OutputMask = 0x1f,
         AnyoneCanPay = 0x80,
     }

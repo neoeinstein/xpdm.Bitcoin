@@ -105,9 +105,7 @@ namespace xpdm.Bitcoin.Scripting
                 {
                     if (ValueStack.Count == 1 && AltStack.Count == 0 && ControlStack.Count == 0)
                     {
-                        new Atoms.OpVerifyAtom().Execute(this);
-
-                        return !HardFailure && IsValid;
+                        return !HardFailure && IsValid && ExecutionContext.ToBool(ValueStack.Peek());
                     }
                     return false;
                 }

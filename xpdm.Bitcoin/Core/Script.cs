@@ -75,7 +75,7 @@ namespace xpdm.Bitcoin.Core
 
         protected sealed override void Deserialize(Stream stream)
         {
-            var scriptSize = (int)ReadVarInt(stream);
+            var scriptSize = (uint)ReadVarInt(stream);
             if (scriptSize > Script.MaximumScriptByteSize)
             {
                 throw new SerializationException("Unable to deserialize: Script length greater than maximum allowable script size: " + scriptSize);

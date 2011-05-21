@@ -11,6 +11,8 @@ using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Sec;
 using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Asn1.X9;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -50,42 +52,48 @@ namespace xpdm.Bitcoin.Core
 
             // Probable issue here: Cng supports the NIST P-256 curve (alias of secp256r1), but Bitcoin uses the secp256k1 curve.
 
+            script.Atoms.Remove(new Scripting.Atoms.ValueAtom(sigHash));
+
             if (signatureType == 0)
             {
                 signatureType = (SignatureHashType) sigHash[sigHash.Length - 1];
             }
+            else if (signatureType != (SignatureHashType)sigHash[sigHash.Length - 1])
+            {
+                return false;
+            }
             var signature = new byte[72];
             Array.Copy(sigHash, signature, signature.Length);
 
-            var hash = HashTransactionForSigning(script, transaction, transactionInputIndex, signatureType).Bytes;
+            var hash = HashTransactionForSigning(script, transaction, transactionInputIndex, signatureType);
+            var hashBytes = hash.Bytes;
 
             var secp256k1 = SecNamedCurves.GetByName("secp256k1");
             var p = new ECDomainParameters(secp256k1.Curve, secp256k1.G, secp256k1.N, secp256k1.H, secp256k1.GetSeed());
 
             var kp = new ECPublicKeyParameters(p.Curve.DecodePoint(publicKey), p);
 
-            var ecdsa = new ECDsaSigner();
+            var ecdsa = SignerUtilities.GetSigner("NONEwithECDSA");
             ecdsa.Init(false, kp);
 
-            BigInteger r, s;
-            using (var asnIn = new Asn1InputStream(signature))
-            {
-                var derSeq = (DerSequence)asnIn.ReadObject();
-                r = ((DerInteger)derSeq[0]).Value;
-                s = ((DerInteger)derSeq[1]).Value;
-            }
+            ecdsa.BlockUpdate(hashBytes, 0, hashBytes.Length);
 
-            return ecdsa.VerifySignature(hash, r, s);
+            return ecdsa.VerifySignature(signature);
         }
 
         public static Hash256 HashTransactionForSigning(Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
         {
             var t = TransformTransactionForSigning(script, transaction, transactionInputIndex, signatureType);
-            var bytes = new byte[t.SerializedByteSize + 1];
-            bytes[t.SerializedByteSize] = (byte)signatureType;
-            var ms = new MemoryStream(bytes);
-            t.Serialize(ms);
-            return CryptoFunctionProviderFactory.Default.Hash256(bytes);
+            using (var ms = new MemoryStream(t.SerializedByteSize + BufferOperations.UINT32_SIZE))
+            {
+                t.Serialize(ms);
+                var sigType = (int)signatureType;
+                ms.WriteByte((byte)sigType);
+                ms.WriteByte((byte)(sigType >> 8));
+                ms.WriteByte((byte)(sigType >> 16));
+                ms.WriteByte((byte)(sigType >> 24));
+                return CryptoFunctionProviderFactory.Default.Hash256(ms.ToArray());
+            }
         }
 
         public static Transaction TransformTransactionForSigning(Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
