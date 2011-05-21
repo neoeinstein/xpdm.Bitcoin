@@ -28,19 +28,11 @@ namespace xpdm.Bitcoin.Core
             ContractsCommon.ValidIndex(0, transaction.TransactionInputs.Count, transactionInputIndex, "transactionInputIndex");
             ContractsCommon.ResultIsNonNull<byte[]>();
 
-            var hash = HashTransactionForSigning(script, transaction, transactionInputIndex, signatureType).Bytes;
+            var hash = HashTransactionForSigning(script, transaction, transactionInputIndex, signatureType);
 
-            var secp256k1 = SecNamedCurves.GetByName("secp256k1");
-            var p = new ECDomainParameters(secp256k1.Curve, secp256k1.G, secp256k1.N, secp256k1.H, secp256k1.GetSeed());
+            var ecdsa = new ECDsaBouncyCastle(privateKey, true);
 
-            var kp = new ECPrivateKeyParameters(new BigInteger(privateKey), p);
-
-            var ecdsa = SignerUtilities.GetSigner("NONEwithECDSA");
-            ecdsa.Init(true, kp);
-
-            ecdsa.BlockUpdate(hash, 0, hash.Length);
-
-            return ecdsa.GenerateSignature();
+            return ecdsa.SignHash(hash.Bytes);
         }
 
         public static bool VerifySignature(byte[] publicKey, byte[] sigHash,
@@ -77,19 +69,10 @@ namespace xpdm.Bitcoin.Core
             Array.Copy(sigHash, signature, signature.Length);
 
             var hash = HashTransactionForSigning(script, transaction, transactionInputIndex, signatureType);
-            var hashBytes = hash.Bytes;
 
-            var secp256k1 = SecNamedCurves.GetByName("secp256k1");
-            var p = new ECDomainParameters(secp256k1.Curve, secp256k1.G, secp256k1.N, secp256k1.H, secp256k1.GetSeed());
+            var ecdsa = new ECDsaBouncyCastle(publicKey, false);
 
-            var kp = new ECPublicKeyParameters(p.Curve.DecodePoint(publicKey), p);
-
-            var ecdsa = SignerUtilities.GetSigner("NONEwithECDSA");
-            ecdsa.Init(false, kp);
-
-            ecdsa.BlockUpdate(hashBytes, 0, hashBytes.Length);
-
-            return ecdsa.VerifySignature(signature);
+            return ecdsa.VerifyHash(hash.Bytes, signature);
         }
 
         public static Hash256 HashTransactionForSigning(Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)

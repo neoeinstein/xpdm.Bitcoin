@@ -85,6 +85,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -92,6 +93,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByteArrayComparer.cs" />
     <Compile Include="Contracts\ContractExtensions.cs" />
     <Compile Include="Contracts\ContractsCommon.cs" />
     <Compile Include="Core\DateTimeExtensions.cs" />
@@ -117,7 +119,9 @@
     <Compile Include="Cryptography\BouncyCastleCryptoFunctionProvider.cs" />
     <Compile Include="Cryptography\CryptoFunctionProviderBase.cs" />
     <Compile Include="Cryptography\CryptoFunctionProviderFactory.cs" />
+    <Compile Include="Cryptography\ECDsaSigningKey.cs" />
     <Compile Include="Cryptography\ICryptoFunctionProvider.cs" />
+    <Compile Include="Cryptography\ISigningKey.cs" />
     <Compile Include="Cryptography\SystemCryptoFunctionProvider.cs" />
     <Compile Include="Endianness.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
