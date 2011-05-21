@@ -13,6 +13,7 @@ using Org.BouncyCastle.Asn1.Sec;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Asn1.X9;
+using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -21,6 +22,12 @@ namespace xpdm.Bitcoin.Core
         public static byte[] SignTransaction(byte[] privateKey,
             Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
         {
+            ContractsCommon.NotNull(privateKey, "privateKey");
+            ContractsCommon.NotNull(script, "script");
+            ContractsCommon.NotNull(transaction, "transaction");
+            ContractsCommon.ValidIndex(0, transaction.TransactionInputs.Count, transactionInputIndex, "transactionInputIndex");
+            ContractsCommon.ResultIsNonNull<byte[]>();
+
             var hash = HashTransactionForSigning(script, transaction, transactionInputIndex, signatureType).Bytes;
 
             var secp256k1 = SecNamedCurves.GetByName("secp256k1");
@@ -28,17 +35,23 @@ namespace xpdm.Bitcoin.Core
 
             var kp = new ECPrivateKeyParameters(new BigInteger(privateKey), p);
 
-            var ecdsa = new ECDsaSigner();
+            var ecdsa = SignerUtilities.GetSigner("NONEwithECDSA");
             ecdsa.Init(true, kp);
 
-            var pq = ecdsa.GenerateSignature(hash);
+            ecdsa.BlockUpdate(hash, 0, hash.Length);
 
-            return pq[0].ToByteArrayUnsigned();
+            return ecdsa.GenerateSignature();
         }
 
         public static bool VerifySignature(byte[] publicKey, byte[] sigHash,
             Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
         {
+            ContractsCommon.NotNull(publicKey, "publicKey");
+            ContractsCommon.NotNull(sigHash, "sigHash");
+            ContractsCommon.NotNull(script, "script");
+            ContractsCommon.NotNull(transaction, "transaction");
+            ContractsCommon.ValidIndex(0, transaction.TransactionInputs.Count, transactionInputIndex, "transactionInputIndex");
+
             // Cng ECC Public Key Blob format [72 bytes]:
             //6fbfcf5da60c7e59dfe724f4fb1b4e73f12bc48f17fb90f1e74f0d058c65e77c76aa75787f18ddd8be32b08014046ff62fef598011583e6f2d77e2b2ab850e5f0000002031534345
             //coordY[cBytes]BIG-ENDIAN coordX[cBytes]BIG-ENDIAN cBytes[4]LITTLE-ENDIAN magic[4]LITTLE-ENDIAN
@@ -51,8 +64,6 @@ namespace xpdm.Bitcoin.Core
             // For secp256k1, cBytes = 0x00000020
 
             // Probable issue here: Cng supports the NIST P-256 curve (alias of secp256r1), but Bitcoin uses the secp256k1 curve.
-
-            script.Atoms.Remove(new Scripting.Atoms.ValueAtom(sigHash));
 
             if (signatureType == 0)
             {
@@ -83,6 +94,11 @@ namespace xpdm.Bitcoin.Core
 
         public static Hash256 HashTransactionForSigning(Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
         {
+            ContractsCommon.NotNull(script, "script");
+            ContractsCommon.NotNull(transaction, "transaction");
+            ContractsCommon.ValidIndex(0, transaction.TransactionInputs.Count, transactionInputIndex, "transactionInputIndex");
+            ContractsCommon.ResultIsNonNull<Hash256>();
+
             var t = TransformTransactionForSigning(script, transaction, transactionInputIndex, signatureType);
             using (var ms = new MemoryStream(t.SerializedByteSize + BufferOperations.UINT32_SIZE))
             {
@@ -98,6 +114,11 @@ namespace xpdm.Bitcoin.Core
 
         public static Transaction TransformTransactionForSigning(Script script, Transaction transaction, int transactionInputIndex, SignatureHashType signatureType)
         {
+            ContractsCommon.NotNull(script, "script");
+            ContractsCommon.NotNull(transaction, "transaction");
+            ContractsCommon.ValidIndex(0, transaction.TransactionInputs.Count, transactionInputIndex, "transactionInputIndex");
+            ContractsCommon.ResultIsNonNull<Transaction>();
+
             var tb = transaction.ThawTree();
 
             //script.Atoms.RemoveAllCopies(Scripting.Atoms.OpCodeSeparatorAtom.Atom);
@@ -140,6 +161,9 @@ namespace xpdm.Bitcoin.Core
 
         public static void ClearAllScripts(SCG.IEnumerable<TransactionInput> tis)
         {
+            ContractsCommon.NotNull(tis, "tis");
+            Contract.Ensures(Contract.ForAll(tis, ti => ti.Script.Atoms.IsEmpty));
+
             foreach (var ti in tis)
             {
                 ti.Script.Atoms.Clear();
@@ -148,10 +172,9 @@ namespace xpdm.Bitcoin.Core
 
         public static void OnlyUseSingleOutput(IList<TransactionOutput> tos, int indexToUse)
         {
-            if (indexToUse >= tos.Count)
-            {
-                throw new Exception();
-            }
+            ContractsCommon.NotNull(tos, "tos");
+            ContractsCommon.ValidIndex(0, tos.Count, indexToUse, "indexToUse");
+
             var to = tos[indexToUse];
             tos.Clear();
             tos.AddAll(Enumerable.Repeat(new TransactionOutput { Value = -1 }, indexToUse));
@@ -160,6 +183,9 @@ namespace xpdm.Bitcoin.Core
 
         public static void OnlyUseSingleInput(IList<TransactionInput> tis, int indexToUse)
         {
+            ContractsCommon.NotNull(tis, "tis");
+            ContractsCommon.ValidIndex(0, tis.Count, indexToUse, "indexToUse");
+
             var ti = tis[indexToUse];
             tis.Clear();
             tis.Add(ti);
@@ -167,6 +193,9 @@ namespace xpdm.Bitcoin.Core
 
         public static void SetSequenceNumbersToZero(IList<TransactionInput> tis, int indexToLeaveAlone)
         {
+            ContractsCommon.NotNull(tis, "tis");
+            Contract.Ensures(Contract.ForAll(0, tis.Count, i => i == indexToLeaveAlone || tis[i].SequenceNumber == 0));
+
             for (int i = 0; i < tis.Count; ++i)
             {
                 if (i != indexToLeaveAlone)

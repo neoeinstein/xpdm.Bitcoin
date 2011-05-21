@@ -37,6 +37,11 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             }
         }
 
+        public OpDupAtom()
+            : this(ScriptOpCode.OP_DUP)
+        {
+        }
+
         public OpDupAtom(int depth)
             : base(depth == 3 ? ScriptOpCode.OP_3DUP : depth == 2 ? ScriptOpCode.OP_2DUP : ScriptOpCode.OP_DUP)
         {

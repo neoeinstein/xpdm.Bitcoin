@@ -33,6 +33,8 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             var subscript = context.CurrentScript.Subscript(context.LastSeparatorAtomIndex,
                                                             context.CurrentAtomIndex - context.LastSeparatorAtomIndex + 1);
 
+            subscript.Atoms.RemoveAllCopies(new Scripting.Atoms.ValueAtom(sig));
+
             bool isValidSignature = TransactionSignatureOperations.VerifySignature(
                 key, sig, subscript, context.CurrentTransaction, context.CurrentTransactionInputIndex, 0);
             

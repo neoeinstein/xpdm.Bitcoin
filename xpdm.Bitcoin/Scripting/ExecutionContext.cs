@@ -16,7 +16,7 @@ namespace xpdm.Bitcoin.Scripting
 
         public int OpAtomsExecuted { get; private set; }
 
-        public void ExecutePartial(Core.Script script, Core.Transaction transaction, int transactionInputIndex)
+        public bool Execute(Core.Script script, Core.Transaction transaction, int transactionInputIndex)
         {
             try
             {
@@ -51,15 +51,28 @@ namespace xpdm.Bitcoin.Scripting
                 CurrentAtomIndex = 0;
                 LastSeparatorAtomIndex = 0;
             }
+
+            return this.ExecutionResult != false;
         }
 
-        public bool Execute(Core.Script script, Core.Transaction transaction, int transactionInputIndex)
+        public bool ExecuteFinal(Core.Script script, Core.Transaction transaction, int transactionInputIndex)
         {
-            ExecutePartial(script, transaction, transactionInputIndex);
+            Contract.Ensures(InFinalState);
+            Contract.Ensures(ExecutionResult != null);
 
-            this.InFinalState = true;
+            Execute(script, transaction, transactionInputIndex);
+
+            Finish();
 
             return this.ExecutionResult == true;
+        }
+
+        public void Finish()
+        {
+            Contract.Ensures(InFinalState);
+            Contract.Ensures(ExecutionResult != null);
+
+            this.InFinalState = true;
         }
 
         private bool _hardFailure = false;
@@ -81,6 +94,7 @@ namespace xpdm.Bitcoin.Scripting
             set
             {
                 Contract.Ensures(Contract.OldValue<bool>(InFinalState) == true || InFinalState == value);
+                Contract.Ensures(!value || ExecutionResult != null);
 
                 _inFinalState |= value;
             }
@@ -97,19 +111,21 @@ namespace xpdm.Bitcoin.Scripting
         {
             get
             {
+                Contract.Ensures(!InFinalState || Contract.Result<bool?>() != null);
+
                 if (HardFailure || !IsValid)
                 {
                     return false;
                 }
-                if (InFinalState)
+                if (!InFinalState)
                 {
-                    if (ValueStack.Count == 1 && AltStack.Count == 0 && ControlStack.Count == 0)
-                    {
-                        return !HardFailure && IsValid && ExecutionContext.ToBool(ValueStack.Peek());
-                    }
-                    return false;
+                    return null;
                 }
-                return null;
+                if (ValueStack.Count == 1 && AltStack.Count == 0 && ControlStack.Count == 0)
+                {
+                    return !HardFailure && IsValid && ExecutionContext.ToBool(ValueStack.Peek());
+                }
+                return false;
             }
         }
 
@@ -180,6 +196,7 @@ namespace xpdm.Bitcoin.Scripting
             Contract.Invariant(CurrentTransactionInputIndex == 0);
             Contract.Invariant(CurrentAtomIndex == 0);
             Contract.Invariant(LastSeparatorAtomIndex == 0);
+            Contract.Invariant(!InFinalState || ExecutionResult.HasValue);
         }
     }
 }

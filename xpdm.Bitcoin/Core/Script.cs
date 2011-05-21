@@ -54,16 +54,23 @@ namespace xpdm.Bitcoin.Core
         public Script(byte[] buffer, int offset) : base(buffer, offset) { }
 
         [Pure]
+        public Script Subscript(int offset)
+        {
+            ContractsCommon.ValidOffset(0, Atoms.Count, offset);
+
+            var script = new Script();
+            script.Atoms.AddAll(this.Atoms.Skip(offset));
+            return script;
+        }
+
+        [Pure]
         public Script Subscript(int offset, int length)
         {
             ContractsCommon.ValidOffsetLength(0, Atoms.Count, offset, length);
 
-            using (var view = Atoms.View(offset, length))
-            {
-                var script = new Script();
-                script.Atoms.AddAll(view);
-                return script;
-            }
+            var script = new Script();
+            script.Atoms.AddAll(this.Atoms.Skip(offset).Take(length));
+            return script;
         }
 
         private void AtomsChanged(object sender)
