@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using C5;
 using xpdm.Bitcoin.Scripting;
+using xpdm.Bitcoin.Scripting.Atoms;
 using SCG = System.Collections.Generic;
 
 namespace xpdm.Bitcoin.Core
@@ -52,6 +53,29 @@ namespace xpdm.Bitcoin.Core
         }
         public Script(Stream stream) : base(stream) { }
         public Script(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        public static Script Parse(string scriptString)
+        {
+            var atoms = scriptString.Split(' ');
+            var script = new Script();
+            foreach (var atom in atoms)
+            {
+                IScriptAtom newAtom;
+                if (atom.StartsWith("OP_"))
+                {
+                    var opcode = (ScriptOpCode)Enum.Parse(typeof(ScriptOpCode), atom, false);
+                    newAtom = ScriptAtomFactory.GetOpAtom(opcode);
+                }
+                else
+                {
+                    var valueBytes = BufferOperations.FromByteString(atom, Endianness.BigEndian);
+                    newAtom = new ValueAtom(valueBytes);
+                }
+                script.Atoms.Add(newAtom);
+            }
+            script.Freeze();
+            return script;
+        }
 
         [Pure]
         public Script Subscript(int offset)
