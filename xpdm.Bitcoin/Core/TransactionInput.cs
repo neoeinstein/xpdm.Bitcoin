@@ -65,7 +65,7 @@ namespace xpdm.Bitcoin.Core
 
         private const uint DefaultSequenceNumber = 0xFFFFFFFFU;
 
-        public TransactionInput() 
+        public TransactionInput()
         {
         }
         public TransactionInput(TransactionInput txIn) : this(txIn, false) { }

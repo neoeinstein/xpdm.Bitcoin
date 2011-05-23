@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin.Core
@@ -12,7 +9,8 @@ namespace xpdm.Bitcoin.Core
         {
             _secondsSinceEpoch = seconds;
         }
-        public Timestamp(DateTime datetime) : this((uint)(datetime - EpochDateTime).TotalSeconds)
+        public Timestamp(DateTime datetime)
+            : this((uint)(datetime - EpochDateTime).TotalSeconds)
         {
             Contract.Requires<ArgumentOutOfRangeException>(MinValue.DateTime <= datetime && datetime <= MaxValue.DateTime, "datetime");
         }

@@ -2,7 +2,6 @@
 using System.Diagnostics.Contracts;
 using System.Net;
 using System.Net.Sockets;
-using xpdm.Bitcoin;
 
 namespace xpdm.Bitcoin.Protocol
 {
@@ -50,7 +49,7 @@ namespace xpdm.Bitcoin.Protocol
         {
             ((ulong)Services).WriteBytes(buffer, offset);
             var subOffset = offset;
-            switch(Endpoint.AddressFamily)
+            switch (Endpoint.AddressFamily)
             {
                 case AddressFamily.InterNetwork:
                     ((ushort)0xFFFF).WriteBytes(buffer, AddressIPv4Marker_Offset(ref subOffset));

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin.Cryptography
 {
@@ -33,7 +32,7 @@ namespace xpdm.Bitcoin.Cryptography
 
             public byte[] PublicKey
             {
-                get 
+                get
                 {
                     ContractsCommon.ResultIsNonNull<byte[]>();
 

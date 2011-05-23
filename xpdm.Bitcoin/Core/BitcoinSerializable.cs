@@ -1,10 +1,9 @@
 ﻿using System;
-using SCG = System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics.Contracts;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
+using SCG = System.Collections.Generic;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -139,7 +138,7 @@ namespace xpdm.Bitcoin.Core
         {
             ContractsCommon.NotNull(stream, "stream");
             int value = stream.ReadByte() | (stream.ReadByte() << 8);
-            return (short) value;
+            return (short)value;
         }
 
         protected static byte ReadByte(Stream stream)
@@ -200,17 +199,17 @@ namespace xpdm.Bitcoin.Core
             ContractsCommon.CanWriteToStream(stream, VarIntByteSize(value));
             if (value < 253)
             {
-                Write(stream, (byte) value);
+                Write(stream, (byte)value);
             }
             else if (value < 65536)
             {
-                Write(stream, (byte) 253);
-                Write(stream, (ushort) value);
+                Write(stream, (byte)253);
+                Write(stream, (ushort)value);
             }
             else if (value < 4294967296L)
             {
-                Write(stream, (byte) 254);
-                Write(stream, (uint) value);
+                Write(stream, (byte)254);
+                Write(stream, (uint)value);
             }
             else
             {
@@ -229,7 +228,7 @@ namespace xpdm.Bitcoin.Core
         {
             ContractsCommon.CanWriteToStream(stream, VarIntByteSize(value));
             // Prevent sign extension when upconverting to long
-            WriteVarInt(stream, (ulong) value);
+            WriteVarInt(stream, (ulong)value);
         }
 
         protected static void WriteVarInt(Stream stream, short value)

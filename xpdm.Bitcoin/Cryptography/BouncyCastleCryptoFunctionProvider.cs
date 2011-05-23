@@ -1,7 +1,5 @@
-﻿using System;
-using Org.BouncyCastle.Crypto;
+﻿using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Digests;
-using SN = System.Numerics;
 using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Cryptography

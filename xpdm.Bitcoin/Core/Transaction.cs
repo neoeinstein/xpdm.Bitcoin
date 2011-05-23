@@ -1,9 +1,8 @@
-﻿using C5;
-using SCG = System.Collections.Generic;
+﻿using System;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
-using System;
-using System.Diagnostics.Contracts;
+using C5;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -44,7 +43,7 @@ namespace xpdm.Bitcoin.Core
 
             var transactionOutputs = new ArrayList<TransactionOutput>();
             transactionOutputs.CollectionChanged += InputOutputChanged;
-            TransactionOutputs = transactionOutputs;            
+            TransactionOutputs = transactionOutputs;
         }
         public Transaction(Transaction tx) : this(tx, false) { }
         public Transaction(Transaction tx, bool thawChildren)
@@ -115,13 +114,13 @@ namespace xpdm.Bitcoin.Core
                 tiSize += VarIntByteSize(TransactionInputs.Count);
                 var toSize = TransactionOutputs.Sum(to => to.SerializedByteSize);
                 toSize += VarIntByteSize(TransactionOutputs.Count);
-                return BufferOperations.UINT32_SIZE*2 + tiSize + toSize;
+                return BufferOperations.UINT32_SIZE * 2 + tiSize + toSize;
             }
         }
 
         public override string ToString()
         {
-            return string.Format("{0} [ {{{1}}} ] => [ {{{2}}} ] @ {3}", 
+            return string.Format("{0} [ {{{1}}} ] => [ {{{2}}} ] @ {3}",
                 Version, string.Join("}, {", TransactionInputs), string.Join("}, {", TransactionOutputs), LockTime);
         }
         public bool IsFrozen { get; private set; }

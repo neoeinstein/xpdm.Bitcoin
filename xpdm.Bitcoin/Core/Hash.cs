@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Numerics;
 
 namespace xpdm.Bitcoin.Core
@@ -37,7 +35,7 @@ namespace xpdm.Bitcoin.Core
             ContractsCommon.NotNull(hash, "hash");
             Contract.Assert(hash.Length == HashByteSize);
 
-            _bytes = (byte[]) hash.Clone();
+            _bytes = (byte[])hash.Clone();
         }
         protected Hash(BigInteger bi, int hashSize)
         {

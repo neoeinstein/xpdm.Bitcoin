@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using xpdm.Bitcoin;
 
 namespace xpdm.Bitcoin.Protocol
 {
@@ -24,7 +23,7 @@ namespace xpdm.Bitcoin.Protocol
                    convertToHeader ? VarArray<Tx>.Empty : block.Transactions)
         {
         }
-        
+
         public Block(uint version, Hash previousBlock, Hash merkleRoot, uint timestamp, uint bits, uint nonce, VarArray<Tx> transactions)
         {
             Contract.Requires<ArgumentNullException>(previousBlock != null);

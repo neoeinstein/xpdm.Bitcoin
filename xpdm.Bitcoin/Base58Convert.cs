@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using System.IO;
 using System.Numerics;
 using System.Text;
 
@@ -22,7 +21,7 @@ namespace xpdm.Bitcoin
             {
                 BigInteger remainder;
                 workingValue = BigInteger.DivRem(workingValue, Base, out remainder);
-                sb.Insert(0, Alphabet[(int) remainder]);
+                sb.Insert(0, Alphabet[(int)remainder]);
             }
             sb.Insert(0, Alphabet[0]);
 
@@ -57,7 +56,7 @@ namespace xpdm.Bitcoin
             for (int i = 0; i < enc.Length; ++i)
             {
                 var index = new BigInteger(Alphabet.IndexOf(enc[i]));
-                workingValue = workingValue + index*BigInteger.Pow(Base, enc.Length - 1 - i);
+                workingValue = workingValue + index * BigInteger.Pow(Base, enc.Length - 1 - i);
             }
             return workingValue;
         }

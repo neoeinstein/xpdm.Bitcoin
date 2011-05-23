@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
-using System.Numerics;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
@@ -33,7 +29,8 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 
         public OpEqualAtom() : this(false) { }
         public OpEqualAtom(bool verifyOrFail) : base(verifyOrFail ? ScriptOpCode.OP_EQUALVERIFY : ScriptOpCode.OP_EQUAL, verifyOrFail) { }
-        public OpEqualAtom(ScriptOpCode opcode) : base(opcode, opcode == ScriptOpCode.OP_EQUALVERIFY)
+        public OpEqualAtom(ScriptOpCode opcode)
+            : base(opcode, opcode == ScriptOpCode.OP_EQUALVERIFY)
         {
             Contract.Requires(opcode == ScriptOpCode.OP_EQUAL || opcode == ScriptOpCode.OP_EQUALVERIFY);
         }

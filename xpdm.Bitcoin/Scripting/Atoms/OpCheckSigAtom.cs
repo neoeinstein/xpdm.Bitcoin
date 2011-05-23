@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
@@ -29,7 +25,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 
             bool isValidSignature = TransactionSignatureOperations.VerifySignature(
                 key, sig, subscript, context.CurrentTransaction, context.CurrentTransactionInputIndex, 0);
-            
+
             ExecuteVerify(context, isValidSignature);
         }
 
@@ -41,7 +37,8 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 
         public OpCheckSigAtom() : this(false) { }
         public OpCheckSigAtom(bool verifyOrFail) : base(verifyOrFail ? ScriptOpCode.OP_CHECKSIGVERIFY : ScriptOpCode.OP_CHECKSIG, verifyOrFail) { }
-        public OpCheckSigAtom(ScriptOpCode opcode) : base(opcode, opcode == ScriptOpCode.OP_CHECKSIGVERIFY)
+        public OpCheckSigAtom(ScriptOpCode opcode)
+            : base(opcode, opcode == ScriptOpCode.OP_CHECKSIGVERIFY)
         {
             Contract.Requires(opcode == ScriptOpCode.OP_CHECKSIG || opcode == ScriptOpCode.OP_CHECKSIGVERIFY);
         }

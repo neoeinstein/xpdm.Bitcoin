@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using C5;
-using SCG = System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using C5;
 using xpdm.Bitcoin.Cryptography;
+using SCG = System.Collections.Generic;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -62,7 +62,7 @@ namespace xpdm.Bitcoin.Core
             set
             {
                 ContractsCommon.NotFrozen(this);
-                
+
                 _difficultyBits = value;
                 InvalidateBitcoinHashes();
             }
@@ -75,7 +75,7 @@ namespace xpdm.Bitcoin.Core
             set
             {
                 ContractsCommon.NotFrozen(this);
-                
+
                 _nonce = value;
                 InvalidateBitcoinHashes();
             }
@@ -154,7 +154,7 @@ namespace xpdm.Bitcoin.Core
         private void InvalidateMerkleTree(object sender)
         {
             ContractsCommon.NotFrozen(this);
-            
+
             _merkleTree = null;
             InvalidateBitcoinHashes();
         }

@@ -296,7 +296,7 @@ namespace xpdm.Bitcoin
 
             for (int i = offset; i < ba.Length; i++)
             {
-                ba[end  + (endianness == Endianness.LittleEndian ? -i : i)] = byte.Parse(byteString.Substring(i * 2 - offset, 2), NumberStyles.AllowHexSpecifier);
+                ba[end + (endianness == Endianness.LittleEndian ? -i : i)] = byte.Parse(byteString.Substring(i * 2 - offset, 2), NumberStyles.AllowHexSpecifier);
             }
 
             return ba;

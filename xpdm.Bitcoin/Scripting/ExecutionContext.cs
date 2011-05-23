@@ -1,7 +1,5 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using C5;
-using System.Numerics;
 
 namespace xpdm.Bitcoin.Scripting
 {
@@ -83,7 +81,7 @@ namespace xpdm.Bitcoin.Scripting
             {
                 Contract.Ensures(Contract.OldValue<bool>(HardFailure) == true || HardFailure == value);
 
-                _hardFailure |= value; 
+                _hardFailure |= value;
             }
         }
 

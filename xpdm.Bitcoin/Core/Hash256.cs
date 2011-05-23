@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Numerics;
 
 namespace xpdm.Bitcoin.Core
@@ -11,7 +8,8 @@ namespace xpdm.Bitcoin.Core
     public sealed class Hash256 : Hash
     {
         public Hash256() : base(new byte[HASH_LEN]) { }
-        public Hash256(byte[] hash) : base(hash)
+        public Hash256(byte[] hash)
+            : base(hash)
         {
             ContractsCommon.NotNull(hash, "hash");
             Contract.Requires<ArgumentException>(hash.Length == HASH_LEN, "hash");

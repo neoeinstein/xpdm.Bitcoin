@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using C5;
-using System.Numerics;
 using System.IO;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
@@ -14,7 +12,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         public virtual int OperandCount { get { return 0; } }
         public virtual int ResultCount { get { return 1; } }
         public virtual int AltStackChange { get { return 0; } }
-        
+
         [Pure]
         public bool CanExecute(ExecutionContext context)
         {

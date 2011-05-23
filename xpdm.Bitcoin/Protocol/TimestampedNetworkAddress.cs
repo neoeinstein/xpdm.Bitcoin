@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using System.Net;
-using System.Net.Sockets;
-using xpdm.Bitcoin;
 
 namespace xpdm.Bitcoin.Protocol
 {

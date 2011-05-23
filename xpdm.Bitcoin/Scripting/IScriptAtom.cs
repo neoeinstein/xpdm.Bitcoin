@@ -1,7 +1,5 @@
-﻿using System.Diagnostics.Contracts;
-using C5;
-using System.Numerics;
-using System;
+﻿using System;
+using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin.Scripting
 {

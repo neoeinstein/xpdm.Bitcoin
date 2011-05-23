@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Numerics;
-using xpdm.Bitcoin.Core;
+﻿using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Cryptography
 {

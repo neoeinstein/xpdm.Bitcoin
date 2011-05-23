@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using xpdm.Bitcoin;
 
 namespace xpdm.Bitcoin.Protocol
 {
@@ -65,7 +64,7 @@ namespace xpdm.Bitcoin.Protocol
 
         public static int MinimumByteSize
         {
-            get { return BufferOperations.UINT32_SIZE + VarArray<Hash>.MinimumByteSize +  Hash.ConstantByteSize; }
+            get { return BufferOperations.UINT32_SIZE + VarArray<Hash>.MinimumByteSize + Hash.ConstantByteSize; }
         }
     }
 }

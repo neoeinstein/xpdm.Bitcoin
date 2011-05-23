@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using xpdm.Bitcoin;
 
 namespace xpdm.Bitcoin.Protocol
 {
@@ -35,7 +34,7 @@ namespace xpdm.Bitcoin.Protocol
 
         public static T ReadFromBitcoinBuffer<T>(byte[] buffer, int offset)
         {
-            return (T) typeof (T).GetConstructor(new[] {typeof (byte[]), typeof (int)}).Invoke(new object[] {buffer, offset});
+            return (T)typeof(T).GetConstructor(new[] { typeof(byte[]), typeof(int) }).Invoke(new object[] { buffer, offset });
         }
     }
 }

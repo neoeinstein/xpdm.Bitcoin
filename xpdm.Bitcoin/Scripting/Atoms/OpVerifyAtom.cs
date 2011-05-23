@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
     public class OpVerifyAtom : OpAtom
@@ -54,7 +50,8 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 
         public OpVerifyAtom() : this(ScriptOpCode.OP_VERIFY, true) { }
 
-        protected OpVerifyAtom(ScriptOpCode opcode, bool verifyOrFail) : base(opcode)
+        protected OpVerifyAtom(ScriptOpCode opcode, bool verifyOrFail)
+            : base(opcode)
         {
             VerifyOrFail = verifyOrFail;
         }

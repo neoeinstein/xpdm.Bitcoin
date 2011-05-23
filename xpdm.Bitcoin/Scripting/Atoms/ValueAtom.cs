@@ -1,9 +1,8 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System;
+using System.Diagnostics.Contracts;
+using System.IO;
 using System.Linq;
 using System.Numerics;
-using C5;
-using System;
-using System.IO;
 using System.Runtime.Serialization;
 
 namespace xpdm.Bitcoin.Scripting.Atoms

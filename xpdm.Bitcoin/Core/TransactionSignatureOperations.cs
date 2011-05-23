@@ -1,19 +1,10 @@
 ﻿using System;
-using System.IO;
-using C5;
-using SCG = System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using xpdm.Bitcoin.Cryptography;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Crypto.Signers;
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Sec;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Asn1.X9;
 using System.Diagnostics.Contracts;
+using System.IO;
+using System.Linq;
+using C5;
+using xpdm.Bitcoin.Cryptography;
+using SCG = System.Collections.Generic;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -59,7 +50,7 @@ namespace xpdm.Bitcoin.Core
 
             if (signatureType == 0)
             {
-                signatureType = (SignatureHashType) sigHash[sigHash.Length - 1];
+                signatureType = (SignatureHashType)sigHash[sigHash.Length - 1];
             }
             else if (signatureType != (SignatureHashType)sigHash[sigHash.Length - 1])
             {
@@ -115,7 +106,7 @@ namespace xpdm.Bitcoin.Core
             // as they were when originally signed, except input scripts, which are cleared and
             // the input script for this index set as passed above.
 
-            switch(signatureType & SignatureHashType.OutputMask)
+            switch (signatureType & SignatureHashType.OutputMask)
             {
                 // Signer accepts transaction regardless of the outputs specified in the transaction
                 // or the sequence numbers of the other inputs.

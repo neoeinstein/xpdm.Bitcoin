@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-using xpdm.Bitcoin;
-
+﻿
 namespace xpdm.Bitcoin.Protocol
 {
     public abstract class MessagePayloadBase : BitcoinSerializableBase, IMessagePayload

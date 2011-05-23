@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using System.IO;
 
 namespace xpdm.Bitcoin.Core
@@ -7,7 +6,8 @@ namespace xpdm.Bitcoin.Core
     [ContractClass(typeof(Contracts.IBitcoinSerializableContract))]
     public interface IBitcoinSerializable
     {
-        [Pure] void Serialize(Stream stream);
+        [Pure]
+        void Serialize(Stream stream);
         int SerializedByteSize { get; }
     }
 

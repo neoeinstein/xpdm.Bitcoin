@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.Text;
-using xpdm.Bitcoin;
 
 namespace xpdm.Bitcoin.Protocol
 {

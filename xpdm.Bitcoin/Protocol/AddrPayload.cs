@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using xpdm.Bitcoin;
 
 namespace xpdm.Bitcoin.Protocol
 {
@@ -18,7 +17,7 @@ namespace xpdm.Bitcoin.Protocol
             Contract.Requires<ArgumentNullException>(addressList != null);
 
             AddressList = new VarArray<TimestampedNetworkAddress>(addressList);
-            
+
             ByteSize = AddressList.ByteSize;
         }
 

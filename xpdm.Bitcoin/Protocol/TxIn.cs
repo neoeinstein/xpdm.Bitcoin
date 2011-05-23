@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using xpdm.Bitcoin;
 
 namespace xpdm.Bitcoin.Protocol
 {
@@ -35,7 +34,7 @@ namespace xpdm.Bitcoin.Protocol
         }
 
         public TxIn(byte[] buffer, int offset)
-            :base(buffer, offset)
+            : base(buffer, offset)
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
             Contract.Requires<ArgumentException>(buffer.Length >= TxIn.MinimumByteSize, "buffer");
@@ -45,7 +44,7 @@ namespace xpdm.Bitcoin.Protocol
             Outpoint = new TxOutpoint(buffer, offset);
             ScriptLength = new VarInt(buffer, offset + SCRIPTLEN_OFFSET);
             var script = new byte[ScriptLength];
-            Array.Copy(buffer, offset + SCRIPTLEN_OFFSET + (int) ScriptLength.ByteSize, script, 0, (int)ScriptLength.Value);
+            Array.Copy(buffer, offset + SCRIPTLEN_OFFSET + (int)ScriptLength.ByteSize, script, 0, (int)ScriptLength.Value);
             _script = script;
             Sequence = buffer.ReadUInt32(offset + SCRIPTLEN_OFFSET + (int)ScriptLength.ByteSize + (int)ScriptLength.Value * BufferOperations.UINT8_SIZE);
 

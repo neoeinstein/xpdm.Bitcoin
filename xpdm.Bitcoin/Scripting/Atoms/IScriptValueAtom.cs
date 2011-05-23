@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin.Scripting.Atoms
 {

@@ -1,8 +1,6 @@
 ﻿using System;
-using SCG=System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
-using System.Runtime.Serialization;
 using xpdm.Bitcoin.Cryptography;
 
 namespace xpdm.Bitcoin.Core
@@ -75,8 +73,8 @@ namespace xpdm.Bitcoin.Core
 
         protected void InvalidateBitcoinHashes(object sender, EventArgs e)
         {
-            ContractsCommon.NotFrozen(this); 
-            
+            ContractsCommon.NotFrozen(this);
+
             _hash256 = null;
             _hash160 = null;
             if (HashesInvalidated != null)

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.Numerics;
+﻿using System.Diagnostics.Contracts;
 using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Cryptography

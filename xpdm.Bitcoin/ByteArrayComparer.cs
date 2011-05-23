@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
 
 namespace xpdm.Bitcoin
 {
@@ -27,7 +26,7 @@ namespace xpdm.Bitcoin
             int i = Math.Max(x.Length, y.Length) - 1;
             while (compare == 0 && i >= 0)
             {
-                compare = (i < x.Length ? x[i] : (byte)0).CompareTo(i < y.Length? y[i] : (byte)0);
+                compare = (i < x.Length ? x[i] : (byte)0).CompareTo(i < y.Length ? y[i] : (byte)0);
                 --i;
             }
             return compare;

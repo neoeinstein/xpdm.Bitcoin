@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using SCG = System.Collections.Generic;
-using xpdm.Bitcoin;
 using xpdm.Bitcoin.Core;
-using xpdm.Bitcoin.Scripting;
+using SCG = System.Collections.Generic;
 
 namespace xpdm.Bitcoin
 {

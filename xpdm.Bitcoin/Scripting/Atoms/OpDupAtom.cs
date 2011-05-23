@@ -1,5 +1,5 @@
-﻿using System.Diagnostics.Contracts;
-using System;
+﻿using System;
+using System.Diagnostics.Contracts;
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
     public sealed class OpDupAtom : OpAtom

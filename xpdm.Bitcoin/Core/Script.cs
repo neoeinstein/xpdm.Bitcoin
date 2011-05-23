@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using C5;
-using SCG = System.Collections.Generic;
 using xpdm.Bitcoin.Scripting;
+using SCG = System.Collections.Generic;
 
 namespace xpdm.Bitcoin.Core
 {

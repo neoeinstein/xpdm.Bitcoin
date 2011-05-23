@@ -1,17 +1,8 @@
-﻿using System;
-using System.Xml;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Signers;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.Parameters;
+﻿using System.Security.Cryptography;
 using Org.BouncyCastle.Asn1.Sec;
+using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
-using System.Security.Cryptography;
-using System.IO;
-using System.Text;
 using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Math.EC;
-using System.Diagnostics.Contracts;
 
 namespace xpdm.Bitcoin.Cryptography
 {
@@ -58,8 +49,8 @@ namespace xpdm.Bitcoin.Cryptography
 
         public ECDsaBouncyCastle(byte[] encodedKey, bool isPrivateKey)
         {
-            ContractsCommon.NotNull(encodedKey, "encodedKey"); 
-            
+            ContractsCommon.NotNull(encodedKey, "encodedKey");
+
             var secp256k1 = SecP256k1;
             if (isPrivateKey)
             {
@@ -76,8 +67,8 @@ namespace xpdm.Bitcoin.Cryptography
 
         public ECDsaBouncyCastle(byte[] encodedPublicKey)
         {
-            ContractsCommon.NotNull(encodedPublicKey, "encodedPublicKey"); 
-            
+            ContractsCommon.NotNull(encodedPublicKey, "encodedPublicKey");
+
             var secp256k1 = SecP256k1;
             _publicKey = new ECPublicKeyParameters(secp256k1.Curve.DecodePoint(encodedPublicKey), secp256k1);
         }
@@ -96,7 +87,7 @@ namespace xpdm.Bitcoin.Cryptography
 
         public byte[] PublicKey
         {
-            get 
+            get
             {
                 ContractsCommon.ResultIsNonNull<byte[]>();
 

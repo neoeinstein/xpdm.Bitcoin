@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.Text;
-using xpdm.Bitcoin;
 
 namespace xpdm.Bitcoin.Protocol
 {
@@ -70,7 +69,7 @@ namespace xpdm.Bitcoin.Protocol
             if (MessagePayloadFactory.PayloadRequiresChecksum(Command))
             {
                 Checksum = buffer.ReadUInt32(Checksum_Offset(ref offset));
-            
+
                 ByteSize += Checksum.ByteSize();
             }
 

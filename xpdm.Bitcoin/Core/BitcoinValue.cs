@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Numerics;
-using System.Text;
 
 namespace xpdm.Bitcoin.Core
 {
@@ -17,20 +14,23 @@ namespace xpdm.Bitcoin.Core
         public BigInteger NanoCoins { get; private set; }
         public decimal WholeCoins
         {
-            get { return (decimal) NanoCoins / NanoCoinsPerWholeCoin; }
+            get { return (decimal)NanoCoins / NanoCoinsPerWholeCoin; }
         }
 
-        public BitcoinValue(BigInteger value) : this()
+        public BitcoinValue(BigInteger value)
+            : this()
         {
             NanoCoins = value;
         }
 
-        public BitcoinValue(long value) : this()
+        public BitcoinValue(long value)
+            : this()
         {
             NanoCoins = value;
         }
 
-        public BitcoinValue(ulong value) : this()
+        public BitcoinValue(ulong value)
+            : this()
         {
             NanoCoins = value;
         }
@@ -62,7 +62,7 @@ namespace xpdm.Bitcoin.Core
         {
             if (obj == null || !(obj is BitcoinValue))
                 return false;
-            return this.Equals((BitcoinValue) obj);
+            return this.Equals((BitcoinValue)obj);
         }
 
         [Pure]
