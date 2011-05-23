@@ -99,10 +99,20 @@ namespace xpdm.Bitcoin.Core
             var empty = new TransactionOutpoint();
             empty.Freeze();
             _empty = empty;
+            var coinbase = new TransactionOutpoint
+                               {
+                                   SourceTransactionHash = Hash256.Empty,
+                                   OutputSequenceNumber = uint.MaxValue,
+                               };
+            coinbase.Freeze();
+            _coinbase = coinbase;
         }
 
         private static readonly TransactionOutpoint _empty;
         public static TransactionOutpoint Empty { get { return _empty; } }
+
+        private static readonly TransactionOutpoint _coinbase;
+        public static TransactionOutpoint Coinbase { get { return _coinbase; } }
 
         [ContractInvariantMethod]
         private void __Invariant()
