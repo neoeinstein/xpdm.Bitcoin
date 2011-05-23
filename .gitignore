@@ -1,7 +1,10 @@
 bin/
 obj/
 TestResults/
+_UpgradeReport_Files/
 *.suo
 *.user
 *.vs10x
+*.docstates
 _ReSharper*
+UpgradeLog.XML
