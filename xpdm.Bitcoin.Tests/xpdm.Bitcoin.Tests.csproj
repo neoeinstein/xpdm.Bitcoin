@@ -49,6 +49,7 @@
   <ItemGroup>
     <Reference Include="Gallio" />
     <Reference Include="MbUnit" />
+    <Reference Include="NHamcrest, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31c3ea0b6fcf8c4a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Numerics" />
@@ -69,6 +70,7 @@
     <Compile Include="BufferOperationsTest.cs" />
     <Compile Include="Converters\StringToByteArrayConverter.cs" />
     <Compile Include="Converters\Core\StringToScriptConverter.cs" />
+    <Compile Include="Core\Hash256Test.cs" />
     <Compile Include="Core\TransactionSignatureOperationsTest.cs" />
     <Compile Include="Factories\Core\Blocks.cs" />
     <Compile Include="Factories\Core\Hash160Factory.cs" />
