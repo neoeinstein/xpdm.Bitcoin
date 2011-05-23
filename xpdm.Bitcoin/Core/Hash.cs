@@ -134,7 +134,7 @@ namespace xpdm.Bitcoin.Core
         [Pure]
         public sealed override bool Equals(Hash other)
         {
-            return other != null && _bytes.Length == other._bytes.Length && _bytes.SequenceEqual(other._bytes);
+            return other != null && other._bytes != null && _bytes.Length == other._bytes.Length && _bytes.SequenceEqual(other._bytes);
         }
 
         [Pure]
@@ -147,6 +147,8 @@ namespace xpdm.Bitcoin.Core
 
         public static explicit operator BigInteger(Hash hash)
         {
+            ContractsCommon.NotNull(hash, "hash");
+
             return new BigInteger(hash._bytes);
         }
 
@@ -169,6 +171,12 @@ namespace xpdm.Bitcoin.Core
         public int CompareTo(object obj)
         {
             return (obj is Hash ? CompareTo((Hash)obj) : 1);
+        }
+
+        [ContractInvariantMethod]
+        private void __Invariant()
+        {
+            Contract.Invariant(_bytes != null);
         }
     }
 }

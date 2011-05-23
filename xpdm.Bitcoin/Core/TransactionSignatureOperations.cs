@@ -145,6 +145,7 @@ namespace xpdm.Bitcoin.Core
         public static void ClearAllScripts(SCG.IEnumerable<TransactionInput> tis)
         {
             ContractsCommon.NotNull(tis, "tis");
+            Contract.Requires(Contract.ForAll(tis, ti => ti != null));
             Contract.Ensures(Contract.ForAll(tis, ti => ti.Script.Atoms.IsEmpty));
 
             foreach (var ti in tis)

@@ -19,7 +19,7 @@ namespace xpdm.Bitcoin.Core
             [Pure]
             public void Serialize(Stream stream)
             {
-                ContractsCommon.NotNull(stream, "stream");
+                ContractsCommon.CanWriteToStream(stream, SerializedByteSize);
                 //Contract.Requires<ArgumentOutOfRangeException>(stream.Position + SerializedByteSize <= stream.Length, "length");
             }
 

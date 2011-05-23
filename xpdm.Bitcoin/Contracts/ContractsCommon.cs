@@ -22,6 +22,19 @@ namespace xpdm.Bitcoin
         }
 
         [ContractAbbreviator]
+        public static void CanWriteToStream(System.IO.Stream stream, int expectedWriteLength)
+        {
+            ContractsCommon.CanWriteToStream(stream, "stream", expectedWriteLength);
+        }
+
+        [ContractAbbreviator]
+        public static void CanWriteToStream(System.IO.Stream stream, string streamParamName, int expectedWriteLength)
+        {
+            ContractsCommon.NotNull(stream, streamParamName);
+            Contract.Requires<ArgumentException>(stream.CanWrite, "Stream does not support writing: '" + streamParamName + "'.");
+        }
+
+        [ContractAbbreviator]
         public static void ValidIndex(int minimumInclusive, int maximumExclusive, int indexParam)
         {
             ValidIndex(minimumInclusive, maximumExclusive, indexParam, "index");

@@ -11,6 +11,8 @@ namespace xpdm.Bitcoin.Cryptography
     {
         public static ICryptoFunctionProvider GetProvider(string typeName)
         {
+            ContractsCommon.NotNull(typeName, "typeName");
+
             var type = Type.GetType(typeName, true);
             var constructor = type.GetConstructor(new Type[0]);
             if (constructor == null || !type.IsSubclassOf(typeof(ICryptoFunctionProvider)))

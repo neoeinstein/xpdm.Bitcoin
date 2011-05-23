@@ -9,9 +9,8 @@ namespace xpdm.Bitcoin
     {
         public static void WriteBytes(this ulong val, byte[] buffer, int offset)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(buffer.Length >= offset + UINT64_SIZE);
+            ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, UINT64_SIZE, "offset", "offset");
 
             buffer[offset] = (byte)val;
             buffer[offset + 1] = (byte)(val >> 8);
@@ -25,9 +24,8 @@ namespace xpdm.Bitcoin
 
         public static void WriteBytesBE(this ulong val, byte[] buffer, int offset)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(buffer.Length >= offset + UINT64_SIZE);
+            ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, UINT64_SIZE, "offset", "offset");
 
             buffer[offset] = (byte)(val >> 56);
             buffer[offset + 1] = (byte)(val >> 48);
@@ -41,9 +39,8 @@ namespace xpdm.Bitcoin
 
         public static ulong ReadUInt64(this byte[] buffer, int offset)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(buffer.Length >= offset + UINT64_SIZE);
+            ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, UINT64_SIZE, "offset", "offset");
 
             ulong val = buffer[offset];
             val |= ((ulong)buffer[offset + 1]) << 8;
@@ -59,9 +56,8 @@ namespace xpdm.Bitcoin
 
         public static ulong ReadUInt64BE(this byte[] buffer, int offset)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(buffer.Length >= offset + UINT64_SIZE);
+            ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, UINT64_SIZE, "offset", "offset");
 
             ulong val = ((ulong)buffer[offset]) << 56;
             val |= ((ulong)buffer[offset + 1]) << 48;
@@ -77,9 +73,8 @@ namespace xpdm.Bitcoin
 
         public static void WriteBytes(this uint val, byte[] buffer, int offset)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(buffer.Length >= offset + UINT32_SIZE);
+            ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, UINT32_SIZE, "offset", "offset");
 
             buffer[offset] = (byte)val;
             buffer[offset + 1] = (byte)(val >> 8);
@@ -89,9 +84,8 @@ namespace xpdm.Bitcoin
 
         public static uint ReadUInt32(this byte[] buffer, int offset)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(buffer.Length >= offset + UINT32_SIZE);
+            ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, UINT32_SIZE, "offset", "offset");
 
             uint val = buffer[offset];
             val |= ((uint)buffer[offset + 1]) << 8;
@@ -103,9 +97,8 @@ namespace xpdm.Bitcoin
 
         public static void WriteBytes(this ushort val, byte[] buffer, int offset)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(buffer.Length >= offset + UINT16_SIZE);
+            ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, UINT16_SIZE, "offset", "offset");
 
             buffer[offset] = (byte)val;
             buffer[offset + 1] = (byte)(val >> 8);
@@ -113,9 +106,8 @@ namespace xpdm.Bitcoin
 
         public static void WriteBytesBE(this ushort val, byte[] buffer, int offset)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(buffer.Length >= offset + UINT16_SIZE);
+            ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, UINT16_SIZE, "offset", "offset");
 
             buffer[offset] = (byte)(val >> 8);
             buffer[offset + 1] = (byte)val;
@@ -123,9 +115,8 @@ namespace xpdm.Bitcoin
 
         public static ushort ReadUInt16(this byte[] buffer, int offset)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(buffer.Length >= offset + UINT16_SIZE);
+            ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, UINT16_SIZE, "offset", "offset");
 
             ushort val = buffer[offset];
             val |= (ushort)(((uint)buffer[offset + 1]) << 8);
@@ -135,9 +126,8 @@ namespace xpdm.Bitcoin
 
         public static ushort ReadUInt16BE(this byte[] buffer, int offset)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(buffer.Length >= offset + UINT16_SIZE);
+            ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, UINT16_SIZE, "offset", "offset");
 
             ushort val = (ushort)(((uint)buffer[offset]) << 8);
             val |= buffer[offset + 1];
@@ -171,7 +161,7 @@ namespace xpdm.Bitcoin
 
         public static byte[] ToBytesArrayBE(this BigInteger bi)
         {
-            Contract.Ensures(Contract.Result<byte[]>() != null);
+            ContractsCommon.ResultIsNonNull<byte[]>();
             Contract.Ensures(Contract.Result<byte[]>().Length == bi.ToByteArray().Length);
 
             var resultArray = bi.ToByteArray();
@@ -255,6 +245,11 @@ namespace xpdm.Bitcoin
         {
             Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
             Contract.Ensures(Contract.Result<string>() != null);
+
+            if (buffer.Length == 0)
+            {
+                return string.Empty;
+            }
 
             var sb = new System.Text.StringBuilder();
             int i = (endianness == Endianness.LittleEndian ? buffer.Length : 0);

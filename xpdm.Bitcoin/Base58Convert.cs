@@ -30,7 +30,7 @@ namespace xpdm.Bitcoin
             {
                 if (b == 0)
                 {
-                    sb.Insert(0, Alphabet[(int)workingValue]);
+                    sb.Insert(0, Alphabet[0]);
                 }
                 else break;
             }
@@ -41,6 +41,7 @@ namespace xpdm.Bitcoin
         public static byte[] Decode(string enc)
         {
             Contract.Requires<ArgumentNullException>(enc != null);
+            Contract.Requires(Contract.ForAll(0, enc.Length, i => Alphabet.IndexOf(enc[i]) != -1));
             Contract.Ensures(Contract.Result<byte[]>() != null);
 
             return DecodeToBigInteger(enc).ToByteArray();
@@ -49,10 +50,11 @@ namespace xpdm.Bitcoin
         public static BigInteger DecodeToBigInteger(string enc)
         {
             Contract.Requires<ArgumentNullException>(enc != null);
+            Contract.Requires(Contract.ForAll(0, enc.Length, i => Alphabet.IndexOf(enc[i]) != -1));
             Contract.Ensures(Contract.Result<BigInteger>() >= 0);
 
             var workingValue = BigInteger.Zero;
-            for (int i = 0; i <= enc.Length; ++i)
+            for (int i = 0; i < enc.Length; ++i)
             {
                 var index = new BigInteger(Alphabet.IndexOf(enc[i]));
                 workingValue = workingValue + index*BigInteger.Pow(Base, enc.Length - 1 - i);

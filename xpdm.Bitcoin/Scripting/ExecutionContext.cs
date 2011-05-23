@@ -154,6 +154,8 @@ namespace xpdm.Bitcoin.Scripting
 
         public static bool ToBool(byte[] val)
         {
+            ContractsCommon.NotNull(val, "val");
+
             for (int i = 0; i < val.Length; ++i)
             {
                 if (val[i] != 0)
@@ -191,6 +193,9 @@ namespace xpdm.Bitcoin.Scripting
         [ContractInvariantMethod]
         private void __Invariant()
         {
+            Contract.Invariant(ValueStack != null);
+            Contract.Invariant(ControlStack != null);
+            Contract.Invariant(AltStack != null);
             Contract.Invariant(CurrentScript == null);
             Contract.Invariant(CurrentTransaction == null);
             Contract.Invariant(CurrentTransactionInputIndex == 0);

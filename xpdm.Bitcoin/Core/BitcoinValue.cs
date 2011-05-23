@@ -207,41 +207,57 @@ namespace xpdm.Bitcoin.Core
 
         public static BitcoinValue operator /(BitcoinValue a, decimal b)
         {
+            Contract.Requires(b != 0m);
+
             return new BitcoinValue(new BigInteger((decimal)a.NanoCoins / b));
         }
 
         public static BitcoinValue operator /(decimal a, BitcoinValue b)
         {
+            Contract.Requires(b.NanoCoins != 0);
+
             return new BitcoinValue(new BigInteger(a / (decimal)b.NanoCoins));
         }
 
         public static BitcoinValue operator /(BitcoinValue a, double b)
         {
+            Contract.Requires(b != 0);
+
             return new BitcoinValue(new BigInteger((decimal)a.NanoCoins / (decimal)b));
         }
 
         public static BitcoinValue operator /(double a, BitcoinValue b)
         {
+            Contract.Requires(b.NanoCoins != 0);
+
             return new BitcoinValue(new BigInteger((decimal)a / (decimal)b.NanoCoins));
         }
 
         public static BitcoinValue operator /(BitcoinValue a, ulong b)
         {
+            Contract.Requires(b != 0);
+
             return new BitcoinValue(a.NanoCoins / b);
         }
 
         public static BitcoinValue operator /(BitcoinValue a, long b)
         {
+            Contract.Requires(b != 0);
+
             return new BitcoinValue(a.NanoCoins / b);
         }
 
         public static BitcoinValue operator /(ulong a, BitcoinValue b)
         {
+            Contract.Requires(b.NanoCoins != 0);
+
             return new BitcoinValue(a / b.NanoCoins);
         }
 
         public static BitcoinValue operator /(long a, BitcoinValue b)
         {
+            Contract.Requires(b.NanoCoins != 0);
+
             return new BitcoinValue(a / b.NanoCoins);
         }
 

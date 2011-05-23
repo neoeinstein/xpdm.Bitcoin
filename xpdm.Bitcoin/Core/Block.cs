@@ -130,6 +130,7 @@ namespace xpdm.Bitcoin.Core
         public static IList<Hash256> CalculateMerkleTree(SCG.IEnumerable<Transaction> transactions)
         {
             ContractsCommon.NotNull(transactions, "transactions");
+            Contract.Requires(Contract.ForAll(transactions, tx => tx != null));
             ContractsCommon.ResultIsNonNull<IList<Hash256>>();
 
             var tree = new ArrayList<Hash256>();

@@ -9,6 +9,7 @@ namespace xpdm.Bitcoin.Scripting
     {
         public static IScriptAtom GetAtom(Stream stream)
         {
+            ContractsCommon.NotNull(stream, "stream");
             ContractsCommon.ResultIsNonNull<IScriptAtom>();
 
             var opcode = (ScriptOpCode)stream.ReadByte();
@@ -25,6 +26,7 @@ namespace xpdm.Bitcoin.Scripting
         public static IScriptAtom GetAtom(byte[] buffer, int offset)
         {
             ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffset(0, buffer.Length, offset);
             ContractsCommon.ResultIsNonNull<IScriptAtom>();
             Contract.Ensures(Contract.ValueAtReturn(out offset) <= buffer.Length);
 

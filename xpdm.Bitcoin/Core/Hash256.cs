@@ -10,9 +10,10 @@ namespace xpdm.Bitcoin.Core
 {
     public sealed class Hash256 : Hash
     {
-        public Hash256() { }
+        public Hash256() : base(new byte[HASH_LEN]) { }
         public Hash256(byte[] hash) : base(hash)
         {
+            ContractsCommon.NotNull(hash, "hash");
             Contract.Requires<ArgumentException>(hash.Length == HASH_LEN, "hash");
         }
         public Hash256(BigInteger bi) : base(bi, HASH_LEN) { }

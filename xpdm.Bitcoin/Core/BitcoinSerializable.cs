@@ -46,6 +46,9 @@ namespace xpdm.Bitcoin.Core
 
         public void SerializeToBuffer(byte[] buffer, int offset)
         {
+            ContractsCommon.NotNull(buffer, "buffer");
+            ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, this.SerializedByteSize, "offset", "offset");
+
             var stream = new MemoryStream(buffer, offset, buffer.Length - offset);
             this.Serialize(stream);
         }
@@ -170,8 +173,8 @@ namespace xpdm.Bitcoin.Core
 
         protected static void WriteVarArray<T>(Stream stream, T[] objs) where T : BitcoinSerializable, new()
         {
-            ContractsCommon.NotNull(stream, "stream");
             ContractsCommon.NotNull(objs, "objs");
+            ContractsCommon.CanWriteToStream(stream, VarIntByteSize(objs.Length) + objs.Sum(o => o.SerializedByteSize));
 
             WriteVarInt(stream, objs.Length);
             foreach (var obj in objs)
@@ -182,8 +185,8 @@ namespace xpdm.Bitcoin.Core
 
         protected static void WriteCollection<T>(Stream stream, SCG.ICollection<T> objs) where T : BitcoinSerializable, new()
         {
-            ContractsCommon.NotNull(stream, "stream");
             ContractsCommon.NotNull(objs, "objs");
+            ContractsCommon.CanWriteToStream(stream, VarIntByteSize(objs.Count) + objs.Sum(o => o.SerializedByteSize));
 
             WriteVarInt(stream, objs.Count);
             foreach (var obj in objs)
@@ -194,7 +197,7 @@ namespace xpdm.Bitcoin.Core
 
         protected static void WriteVarInt(Stream stream, ulong value)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, VarIntByteSize(value));
             if (value < 253)
             {
                 Write(stream, (byte) value);
@@ -218,95 +221,95 @@ namespace xpdm.Bitcoin.Core
 
         protected static void WriteVarInt(Stream stream, long value)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, VarIntByteSize(value));
             WriteVarInt(stream, (ulong)value);
         }
 
         protected static void WriteVarInt(Stream stream, int value)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, VarIntByteSize(value));
             // Prevent sign extension when upconverting to long
             WriteVarInt(stream, (ulong) value);
         }
 
         protected static void WriteVarInt(Stream stream, short value)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, VarIntByteSize(value));
             // Prevent sign extension when upconverting to long
             WriteVarInt(stream, (ulong)value);
         }
 
         protected static void WriteVarInt(Stream stream, sbyte value)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, VarIntByteSize(value));
             // Prevent sign extension when upconverting to long
             WriteVarInt(stream, (ulong)value);
         }
 
         protected static void Write(Stream stream, ulong value)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, BufferOperations.UINT64_SIZE);
             var bytes = BitConverter.GetBytes(value);
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void Write(Stream stream, long value)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, BufferOperations.UINT64_SIZE);
             var bytes = BitConverter.GetBytes(value);
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void Write(Stream stream, uint value)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, BufferOperations.UINT32_SIZE);
             var bytes = BitConverter.GetBytes(value);
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void Write(Stream stream, int value)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, BufferOperations.UINT32_SIZE);
             var bytes = BitConverter.GetBytes(value);
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void Write(Stream stream, ushort value)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, BufferOperations.UINT16_SIZE);
             var bytes = BitConverter.GetBytes(value);
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void Write(Stream stream, short value)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, BufferOperations.UINT16_SIZE);
             var bytes = BitConverter.GetBytes(value);
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void Write(Stream stream, byte value)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, BufferOperations.UINT8_SIZE);
             stream.WriteByte(value);
         }
 
         protected static void Write(Stream stream, sbyte value)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, BufferOperations.UINT8_SIZE);
             stream.WriteByte((byte)value);
         }
 
         protected static void WriteBytes(Stream stream, byte[] bytes)
         {
-            ContractsCommon.NotNull(stream, "stream");
             ContractsCommon.NotNull(bytes, "bytes");
+            ContractsCommon.CanWriteToStream(stream, BufferOperations.UINT8_SIZE * bytes.Length);
             stream.Write(bytes, 0, bytes.Length);
         }
 
         protected static void WriteBytes(Stream stream, byte[] buffer, int offset, int length)
         {
-            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.CanWriteToStream(stream, BufferOperations.UINT8_SIZE * length);
             ContractsCommon.NotNull(buffer, "buffer");
             ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, length);
             stream.Write(buffer, offset, length);
