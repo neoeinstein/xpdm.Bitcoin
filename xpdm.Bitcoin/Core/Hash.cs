@@ -39,7 +39,7 @@ namespace xpdm.Bitcoin.Core
         }
         protected Hash(BigInteger bi, int hashSize)
         {
-            Contract.Requires<ArgumentOutOfRangeException>(0 <= bi && bi <= BigInteger.Pow(2, hashSize * 8), "bi");
+            Contract.Requires<ArgumentOutOfRangeException>(-BigInteger.Pow(2, hashSize * 8 - 1) <= bi && bi <= BigInteger.Pow(2, hashSize * 8 - 1) - 1, "bi");
 
             var bytes = bi.ToByteArray();
             if (bytes.Length < hashSize
