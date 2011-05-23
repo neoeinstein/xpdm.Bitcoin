@@ -51,12 +51,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BufferOperationsTest.cs" />
     <Compile Include="Converters\StringToByteArrayConverter.cs" />
     <Compile Include="Converters\Core\StringToScriptConverter.cs" />
     <Compile Include="Core\TransactionSignatureOperationsTest.cs" />
     <Compile Include="Factories\Core\Hash160Factory.cs" />
     <Compile Include="Factories\Core\Hash256Factory.cs" />
     <Compile Include="Factories\Core\TransactionOutpointFactory.cs" />
+    <Compile Include="Formatters\ByteArrayFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
