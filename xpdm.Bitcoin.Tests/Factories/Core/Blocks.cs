@@ -26,9 +26,9 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
             Nonce = 3826166152,
             Transactions =
                 {
-                    Transactions.Block103958_Tx0,
-                    Transactions.Block103958_Tx1,
-                    Transactions.Block103958_Tx2,
+                    Transactions.Block103958.Tx0,
+                    Transactions.Block103958.Tx1,
+                    Transactions.Block103958.Tx2,
                 },
         };
 

@@ -76,7 +76,7 @@
     <Compile Include="Factories\Core\Hash160Factory.cs" />
     <Compile Include="Factories\Core\Hash256Factory.cs" />
     <Compile Include="Factories\Core\TransactionOutpointFactory.cs" />
-    <Compile Include="Factories\Core\Transactions.cs" />
+    <Compile Include="Factories\Core\Transactions.Block103958.cs" />
     <Compile Include="Formatters\ByteArrayFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripting\ExecutionContextTest.cs" />

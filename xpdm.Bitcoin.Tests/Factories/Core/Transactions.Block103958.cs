@@ -2,15 +2,17 @@
 
 namespace xpdm.Bitcoin.Tests.Factories.Core
 {
-    public static class Transactions
+    public static partial class Transactions
     {
-        public static readonly Hash256 Block103958_Tx0_Hash = Hash256.Parse("f2dedefe5222786abd6cb2223c89e50d590f234dbba69002d5ad5cd6e438abfd");
-
-        public static readonly Transaction Block103958_Tx0 = new Transaction
+        public static class Block103958
         {
-            Version = 1,
-            LockTime = 0,
-            TransactionInputs =
+            public static readonly Hash256 Tx0_Hash = Hash256.Parse("f2dedefe5222786abd6cb2223c89e50d590f234dbba69002d5ad5cd6e438abfd");
+
+            public static readonly Transaction Tx0 = new Transaction
+            {
+                Version = 1,
+                LockTime = 0,
+                TransactionInputs =
                     {
                         new TransactionInput
                             {
@@ -19,7 +21,7 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                                 SequenceNumber = uint.MaxValue,
                             },
                     },
-            TransactionOutputs =
+                TransactionOutputs =
                     {
                         new TransactionOutput
                             {
@@ -27,15 +29,15 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                                 Script = Script.Parse("044e65470b43854073a647bb88b337e1c4f0ea7553147805715674888a0030fe4c6dd5afec5317919fbab57cc3abfd11168ebdcce469acb5c1db345e8d79269302 OP_CHECKSIG"),
                             },
                     }
-        };
+            };
 
-        public static readonly Hash256 Block103958_Tx1_Hash = Hash256.Parse("ff954e099764d192c5bb531c9c14c18c230b0c0a63f02cd168a4ea94548c890f");
+            public static readonly Hash256 Tx1_Hash = Hash256.Parse("ff954e099764d192c5bb531c9c14c18c230b0c0a63f02cd168a4ea94548c890f");
 
-        public static readonly Transaction Block103958_Tx1 = new Transaction
-            {
-                Version = 1,
-                LockTime = 0,
-                TransactionInputs =
+            public static readonly Transaction Tx1 = new Transaction
+                {
+                    Version = 1,
+                    LockTime = 0,
+                    TransactionInputs =
                     {
                         new TransactionInput
                             {
@@ -68,7 +70,7 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                                 SequenceNumber = uint.MaxValue,
                             },
                     },
-                TransactionOutputs =
+                    TransactionOutputs =
                     {
                         new TransactionOutput
                             {
@@ -76,9 +78,9 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                                 Script = Script.Parse("OP_DUP OP_HASH160 9e35d93c7792bdcaad5697ddebf04353d9a5e196 OP_EQUALVERIFY OP_CHECKSIG"),
                             },
                     }
-            };
+                };
 
-        public static readonly byte[] Block103958_Tx1_Serialized = new byte[] {
+            public static readonly byte[] Tx1_Serialized = new byte[] {
             0x01, 0x00, 0x00, 0x00, 0x03, 0x30, 0xf3, 0x70, 0x1f, 0x9b, 0xc4, 0x64, 0x55, 0x2f, 0x70, 0x49, 
             0x57, 0x91, 0x04, 0x08, 0x17, 0xce, 0x77, 0x7a, 0xd5, 0xed, 0xe1, 0x6e, 0x52, 0x9f, 0xcd, 0x0c, 
             0x0e, 0x94, 0x91, 0x56, 0x94, 0x00, 0x00, 0x00, 0x00, 0x8c, 0x49, 0x30, 0x46, 0x02, 0x21, 0x00, 
@@ -109,13 +111,13 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
             0x77, 0x92, 0xbd, 0xca, 0xad, 0x56, 0x97, 0xdd, 0xeb, 0xf0, 0x43, 0x53, 0xd9, 0xa5, 0xe1, 0x96, 
             0x88, 0xac, 0x00, 0x00, 0x00, 0x00 };
 
-        public static readonly Hash256 Block103958_Tx2_Hash = Hash256.Parse("69ea9cf5e3e116cffe595d16b3258cd3508768fe3a1ce087ed8479f3d78ef91a");
+            public static readonly Hash256 Tx2_Hash = Hash256.Parse("69ea9cf5e3e116cffe595d16b3258cd3508768fe3a1ce087ed8479f3d78ef91a");
 
-        public static readonly Transaction Block103958_Tx2 = new Transaction
-        {
-            Version = 1,
-            LockTime = 0,
-            TransactionInputs =
+            public static readonly Transaction Tx2 = new Transaction
+            {
+                Version = 1,
+                LockTime = 0,
+                TransactionInputs =
                     {
                         new TransactionInput
                             {
@@ -128,7 +130,7 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                                 SequenceNumber = uint.MaxValue,
                             },
                     },
-            TransactionOutputs =
+                TransactionOutputs =
                     {
                         new TransactionOutput
                             {
@@ -141,13 +143,14 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                                 Script = Script.Parse("OP_DUP OP_HASH160 7fefa10049b41709fc930fb6582c8a1236ad15eb OP_EQUALVERIFY OP_CHECKSIG"),
                             },
                     }
-        };
+            };
 
-        static Transactions()
-        {
-            Block103958_Tx0.Freeze();
-            Block103958_Tx1.Freeze();
-            Block103958_Tx2.Freeze();
+            static Block103958()
+            {
+                Tx0.Freeze();
+                Tx1.Freeze();
+                Tx2.Freeze();
+            }
         }
     }
 }

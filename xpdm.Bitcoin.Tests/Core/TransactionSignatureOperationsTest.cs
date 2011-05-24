@@ -28,8 +28,8 @@ namespace xpdm.Bitcoin.Tests.Core
                 var sig = "3046022100f5746b0b254f5a37e75251459c7a23b6dfcb868ac7467edd9a6fdd1d969871be02210088948aea29b69161ca341c49c02686a81d8cbb73940f917fa0ed7154686d3e5b01";
                 var s = "OP_DUP OP_HASH160 02bf4b2889c6ada8190c252e70bde1a1909f9617 OP_EQUALVERIFY OP_CHECKSIG";
 
-                yield return new DataRow(key, sig, s, new Transaction(Transactions.Block103958_Tx1_Serialized, 0), 0);
-                yield return new DataRow(key, sig, s, Transactions.Block103958_Tx1, 0);
+                yield return new DataRow(key, sig, s, new Transaction(Transactions.Block103958.Tx1_Serialized, 0), 0);
+                yield return new DataRow(key, sig, s, Transactions.Block103958.Tx1, 0);
             }
         }
     }
