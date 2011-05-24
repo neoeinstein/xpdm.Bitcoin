@@ -7,7 +7,14 @@ namespace xpdm.Bitcoin.Tests.Converters
         [Converter]
         public static byte[] ConvertStringToByteArray(string s)
         {
-            return BufferOperations.FromByteString(s, Endianness.BigEndian);
+            if (s.StartsWith("0x"))
+            {
+                return BufferOperations.FromByteString(s.Substring(2), Endianness.BigEndian);
+            }
+            else
+            {
+                return BufferOperations.FromByteString(s, Endianness.LittleEndian);
+            }
         }
     }
 }
