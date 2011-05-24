@@ -5,6 +5,39 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
 {
     public static class Blocks
     {
+        #region Block 0
+
+        public static readonly Hash256 Block000000_Hash = Hash256.Parse("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+
+        public static readonly Block Block000000_Header = new Block
+        {
+            Version = 1,
+            PreviousBlockHash = Hash256.Empty,
+            MerkleRoot = Hash256.Parse("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"),
+            Timestamp = 1231006505,
+            DifficultyBits = 486604799, //0x1d00ffff
+            Nonce = 2083236893,
+        };
+
+        public static readonly Block Block000000 = new Block
+        {
+            Version = 1,
+            PreviousBlockHash = Hash256.Empty,
+            Timestamp = 1231006505,
+            DifficultyBits = 486604799, //0x1d00ffff
+            Nonce = 2083236893,
+            Transactions =
+                {
+                    Transactions.Block000000.Tx0,
+                },
+        };
+
+        public static readonly Hash256[] Block000000_MerkleTree = new[]
+        {
+            Hash256.Parse("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"),
+        };
+
+        #endregion
         #region Block 72783
 
         public static readonly Hash256 Block072783_Hash = Hash256.Parse("000000000074672e28f2049c94c5d7fe3b20753f0ed6a8aa168e1c103cc48388");
