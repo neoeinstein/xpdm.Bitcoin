@@ -56,6 +56,11 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         public ValueAtom(Stream stream) : base(stream) { }
         public ValueAtom(byte[] buffer, int offset) : base(buffer, offset) { }
 
+        public bool IsLikelyString
+        {
+            get { return _value.Length > 2 && _value.All(b => 0x20 <= b && b < 0x7F); }
+        }
+
         public override void Serialize(Stream stream)
         {
             //Contract.Ensures(Contract.Result<byte[]>() != null);
@@ -139,6 +144,10 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 
         public override string ToString()
         {
+            if (IsLikelyString)
+            {
+                return "'" + System.Text.Encoding.ASCII.GetString(Value) + "'";
+            }
             return _value.ToByteString(Endianness.BigEndian);
         }
 
