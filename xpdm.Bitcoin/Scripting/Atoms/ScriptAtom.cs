@@ -9,16 +9,25 @@ namespace xpdm.Bitcoin.Scripting.Atoms
     {
         public static readonly int MaximumAtomSize = 520;
 
-        public virtual int OperandCount { get { return 0; } }
-        public virtual int ResultCount { get { return 1; } }
-        public virtual int AltStackChange { get { return 0; } }
+        public virtual int OperandCount(ExecutionContext context)
+        {
+            return 0;
+        }
+        public virtual int ResultCount(ExecutionContext context)
+        {
+            return 0;
+        }
+        public virtual int AltStackChange(ExecutionContext context)
+        {
+            return 0;
+        }
 
         [Pure]
         public bool CanExecute(ExecutionContext context)
         {
             return
-                context.ValueStack.Count >= OperandCount
-                && context.AltStack.Count <= AltStackChange
+                context.ValueStack.Count >= OperandCount(context)
+                && context.AltStack.Count <= AltStackChange(context)
                 && CanExecuteImpl(context);
         }
 

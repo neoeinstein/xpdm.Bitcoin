@@ -55,6 +55,16 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             return this.Equals(obj as OpAtom);
         }
 
+        public static bool operator ==(OpAtom atom, OpAtom other)
+        {
+            return object.ReferenceEquals(atom, other) || !object.ReferenceEquals(atom, null) && atom.Equals(other);
+        }
+
+        public static bool operator !=(OpAtom atom, OpAtom other)
+        {
+            return !(atom == other);
+        }
+
         public override int GetHashCode()
         {
             return OpCode.GetHashCode();

@@ -39,8 +39,6 @@ namespace xpdm.Bitcoin
 
         public int GetHashCode(byte[] obj)
         {
-            ContractsCommon.NotNull(obj, "obj");
-
             int hashCode = 0;
             foreach (byte b in obj)
             {

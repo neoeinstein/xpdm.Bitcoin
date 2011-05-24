@@ -79,6 +79,7 @@
     <Compile Include="Factories\Core\Transactions.cs" />
     <Compile Include="Formatters\ByteArrayFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripting\ExecutionContextTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\lib\bouncycastle\crypto\crypto.csproj">

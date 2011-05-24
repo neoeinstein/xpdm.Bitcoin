@@ -17,7 +17,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             {
                 get
                 {
-                    Contract.Ensures(Contract.Result<ScriptOpCode>() >= ScriptOpCode.OP_PUSHDATA1);
+                    Contract.Ensures(Contract.Result<ScriptOpCode>() >= ScriptOpCode.OP_PUSHDATA1 || Contract.Result<ScriptOpCode>() == ScriptOpCode.OP_0);
 
                     return default(ScriptOpCode);
                 }

@@ -6,20 +6,14 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 {
     public sealed class OpHashAtom : OpAtom
     {
-        public override int OperandCount
+        public override int OperandCount(ExecutionContext context)
         {
-            get
-            {
-                return 1;
-            }
+            return 1;
         }
 
-        public override int ResultCount
+        public override int ResultCount(ExecutionContext context)
         {
-            get
-            {
-                return 1;
-            }
+            return 1;
         }
 
         protected override void ExecuteImpl(ExecutionContext context)

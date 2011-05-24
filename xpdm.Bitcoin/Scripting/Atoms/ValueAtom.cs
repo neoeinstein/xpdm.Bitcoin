@@ -9,6 +9,11 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 {
     public sealed class ValueAtom : ScriptAtom, IScriptValueAtom, IEquatable<ValueAtom>
     {
+        public override int ResultCount(ExecutionContext context)
+        {
+            return 1;
+        }
+
         private byte[] _value;
         public byte[] Value
         {
@@ -134,7 +139,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 
         public override string ToString()
         {
-            return BufferOperations.ToByteString(_value, Endianness.BigEndian);
+            return _value.ToByteString(Endianness.BigEndian);
         }
 
         [Pure]
@@ -152,6 +157,16 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         public override bool Equals(object obj)
         {
             return this.Equals(obj as ValueAtom);
+        }
+
+        public static bool operator ==(ValueAtom atom, ValueAtom other)
+        {
+            return object.ReferenceEquals(atom, other) || !object.ReferenceEquals(atom, null) && atom.Equals(other);
+        }
+
+        public static bool operator !=(ValueAtom atom, ValueAtom other)
+        {
+            return !(atom == other);
         }
 
         public override int GetHashCode()

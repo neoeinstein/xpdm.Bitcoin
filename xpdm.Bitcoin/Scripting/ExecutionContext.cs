@@ -34,6 +34,11 @@ namespace xpdm.Bitcoin.Scripting
                     }
                     atom.Execute(this);
 
+                    if (atom is Atoms.IVerifyAtom && (atom as Atoms.IVerifyAtom).MustVerify)
+                    {
+                        ExecuteVerify();
+                    }
+
                     if (atom is Atoms.OpAtom)
                     {
                         ++OpAtomsExecuted;
@@ -51,6 +56,26 @@ namespace xpdm.Bitcoin.Scripting
             }
 
             return this.ExecutionResult != false;
+        }
+
+        private void ExecuteVerify()
+        {
+            Contract.Ensures(Contract.OldValue(ToBool(ValueStack.Peek()))
+                                && ValueStack.Count == Contract.OldValue(ValueStack.Count) - 1
+                                && Contract.OldValue(HardFailure) == HardFailure
+                          || !Contract.OldValue(ToBool(ValueStack.Peek()))
+                                && ValueStack.Count == Contract.OldValue(ValueStack.Count)
+                                && HardFailure == true
+                                && ByteArrayComparer.Instance.Compare(ValueStack.Peek(), Contract.OldValue(ValueStack.Peek())) == 0);
+            var valid = ToBool(ValueStack.Peek());
+            if (valid)
+            {
+                ValueStack.Pop();
+            }
+            else
+            {
+                HardFailure = true;
+            }
         }
 
         public bool ExecuteFinal(Core.Script script, Core.Transaction transaction, int transactionInputIndex)
@@ -150,6 +175,7 @@ namespace xpdm.Bitcoin.Scripting
         public int CurrentAtomIndex { get; set; }
         public int LastSeparatorAtomIndex { get; set; }
 
+        [Pure]
         public static bool ToBool(byte[] val)
         {
             ContractsCommon.NotNull(val, "val");
@@ -167,6 +193,7 @@ namespace xpdm.Bitcoin.Scripting
             return false;
         }
 
+        [Pure]
         public static byte[] ToStackValue(bool val)
         {
             return val ? ExecutionContext.True : ExecutionContext.False;

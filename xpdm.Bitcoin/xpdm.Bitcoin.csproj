@@ -161,6 +161,7 @@
     <Compile Include="Protocol\VarString.cs" />
     <Compile Include="Protocol\VersionPayload.cs" />
     <Compile Include="Protocol\VerAckPayload.cs" />
+    <Compile Include="Scripting\Atoms\IVerifyAtom.cs" />
     <Compile Include="Scripting\Atoms\OpAtom.cs" />
     <Compile Include="Scripting\Atoms\OpCheckSigAtom.cs" />
     <Compile Include="Scripting\Atoms\OpDupAtom.cs" />

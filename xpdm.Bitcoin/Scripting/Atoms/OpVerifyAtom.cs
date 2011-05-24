@@ -1,59 +1,26 @@
 ﻿
+using System;
+using System.Diagnostics.Contracts;
+
 namespace xpdm.Bitcoin.Scripting.Atoms
 {
-    public class OpVerifyAtom : OpAtom
+    public sealed class OpVerifyAtom : OpAtom, IVerifyAtom
     {
-        public override int OperandCount
+        public bool MustVerify
         {
-            get
-            {
-                return 1;
-            }
+            get { return true; }
         }
-
-        public override int ResultCount
-        {
-            get
-            {
-                return (VerifyOrFail ? 0 : 1);
-            }
-        }
-
-        protected bool VerifyOrFail { get; private set; }
 
         protected override void ExecuteImpl(ExecutionContext context)
         {
-            ExecuteVerify(context, ExecutionContext.ToBool(context.ValueStack.Peek()));
         }
 
-        protected void ExecuteVerify(ExecutionContext context, bool valid)
-        {
-            if (!VerifyOrFail)
-            {
-                PopArguments(context);
-                context.ValueStack.Push(ExecutionContext.ToStackValue(valid));
-            }
-            else if (valid)
-            {
-                PopArguments(context);
-            }
-            else
-            {
-                context.HardFailure = true;
-            }
-        }
+        public OpVerifyAtom() : this(ScriptOpCode.OP_VERIFY) { }
 
-        protected virtual void PopArguments(ExecutionContext context)
-        {
-            context.ValueStack.Pop();
-        }
-
-        public OpVerifyAtom() : this(ScriptOpCode.OP_VERIFY, true) { }
-
-        protected OpVerifyAtom(ScriptOpCode opcode, bool verifyOrFail)
+        public OpVerifyAtom(ScriptOpCode opcode)
             : base(opcode)
         {
-            VerifyOrFail = verifyOrFail;
+            Contract.Requires<ArgumentException>(opcode == ScriptOpCode.OP_VERIFY);
         }
     }
 }

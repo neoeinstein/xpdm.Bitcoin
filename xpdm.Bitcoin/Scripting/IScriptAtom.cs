@@ -6,9 +6,12 @@ namespace xpdm.Bitcoin.Scripting
     [ContractClass(typeof(Contracts.IScriptAtomContract))]
     public interface IScriptAtom : Core.IBitcoinSerializable, IEquatable<IScriptAtom>
     {
-        int OperandCount { get; }
-        int ResultCount { get; }
-        int AltStackChange { get; }
+        [Pure]
+        int OperandCount(ExecutionContext context);
+        [Pure]
+        int ResultCount(ExecutionContext context);
+        [Pure]
+        int AltStackChange(ExecutionContext context);
         [Pure]
         bool CanExecute(ExecutionContext context);
         [Pure]
@@ -20,32 +23,27 @@ namespace xpdm.Bitcoin.Scripting
         [ContractClassFor(typeof(IScriptAtom))]
         abstract class IScriptAtomContract : IScriptAtom
         {
-            public int OperandCount
+            public int OperandCount(ExecutionContext context)
             {
-                get
-                {
-                    Contract.Ensures(Contract.Result<int>() >= 0);
+                ContractsCommon.NotNull(context, "context");
+                Contract.Ensures(Contract.Result<int>() >= 0);
 
-                    return default(int);
-                }
+                return default(int);
             }
 
-            public int ResultCount
+            public int ResultCount(ExecutionContext context)
             {
-                get
-                {
-                    Contract.Ensures(Contract.Result<int>() >= 0);
+                ContractsCommon.NotNull(context, "context");
+                Contract.Ensures(Contract.Result<int>() >= 0);
 
-                    return default(int);
-                }
+                return default(int);
             }
 
-            public int AltStackChange
+            public int AltStackChange(ExecutionContext context)
             {
-                get
-                {
-                    return default(int);
-                }
+                ContractsCommon.NotNull(context, "context");
+
+                return default(int);
             }
 
             [Pure]
@@ -61,9 +59,9 @@ namespace xpdm.Bitcoin.Scripting
             {
                 ContractsCommon.NotNull(context, "context");
                 Contract.Requires(this.CanExecute(context));
-                Contract.Ensures(context.HardFailure || Contract.OldValue(context.ValueStack.Count) - this.OperandCount + this.ResultCount == context.ValueStack.Count);
+                Contract.Ensures(context.HardFailure || Contract.OldValue(context.ValueStack.Count) - Contract.OldValue(this.OperandCount(context)) + Contract.OldValue(this.ResultCount(context)) == context.ValueStack.Count);
                 Contract.Ensures(!context.HardFailure || Contract.OldValue(context.ValueStack.Count) == context.ValueStack.Count);
-                Contract.Ensures(context.HardFailure || Contract.OldValue(context.AltStack.Count) + this.AltStackChange == context.AltStack.Count);
+                Contract.Ensures(context.HardFailure || Contract.OldValue(context.AltStack.Count) + Contract.OldValue(this.AltStackChange(context)) == context.AltStack.Count);
                 Contract.Ensures(!context.HardFailure || Contract.OldValue(context.AltStack.Count) == context.AltStack.Count);
                 Contract.EnsuresOnThrow<Exception>(Contract.OldValue(context.ValueStack.Count) == context.ValueStack.Count);
                 Contract.EnsuresOnThrow<Exception>(Contract.OldValue(context.AltStack.Count) == context.AltStack.Count);
