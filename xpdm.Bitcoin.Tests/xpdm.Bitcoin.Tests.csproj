@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base58ConvertTest.cs" />
     <Compile Include="BufferOperationsTest.cs" />
     <Compile Include="Converters\StringToByteArrayConverter.cs" />
     <Compile Include="Converters\Core\StringToScriptConverter.cs" />
