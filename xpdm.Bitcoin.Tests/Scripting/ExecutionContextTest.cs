@@ -34,12 +34,14 @@ namespace xpdm.Bitcoin.Tests.Scripting
         {
             get
             {
-                yield return
-                    new DataRow(
-                        Transactions.Block103958.Tx1.TransactionInputs[0].Script,
-                        "OP_DUP OP_HASH160 02bf4b2889c6ada8190c252e70bde1a1909f9617 OP_EQUALVERIFY OP_CHECKSIG",
-                        Transactions.Block103958.Tx1,
-                        0);
+                yield return new DataRow(Transactions.Block103958.Tx1.TransactionInputs[0].Script,
+                                         Transactions.Block103640.Tx1.TransactionOutputs[0].Script,
+                                         Transactions.Block103958.Tx1,
+                                         0);
+                yield return new DataRow(Transactions.Block072785.Tx2.TransactionInputs[0].Script,
+                                         Transactions.Block072783.Tx1.TransactionOutputs[0].Script,
+                                         Transactions.Block072785.Tx2,
+                                         0);
             }
         }
     }

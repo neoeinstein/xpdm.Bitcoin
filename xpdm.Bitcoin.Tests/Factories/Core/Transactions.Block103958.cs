@@ -6,6 +6,8 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
     {
         public static class Block103958
         {
+            #region Coinbase
+
             public static readonly Hash256 Tx0_Hash = Hash256.Parse("f2dedefe5222786abd6cb2223c89e50d590f234dbba69002d5ad5cd6e438abfd");
 
             public static readonly Transaction Tx0 = new Transaction
@@ -18,7 +20,6 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                             {
                                 Source = TransactionOutpoint.Coinbase,
                                 Script = Script.Parse("1b038dee 39"),
-                                SequenceNumber = uint.MaxValue,
                             },
                     },
                 TransactionOutputs =
@@ -30,6 +31,9 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                             },
                     }
             };
+
+            #endregion
+            #region Tx 1
 
             public static readonly Hash256 Tx1_Hash = Hash256.Parse("ff954e099764d192c5bb531c9c14c18c230b0c0a63f02cd168a4ea94548c890f");
 
@@ -47,7 +51,6 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                                         OutputSequenceNumber = 0,
                                     },
                                 Script = Script.Parse("3046022100f5746b0b254f5a37e75251459c7a23b6dfcb868ac7467edd9a6fdd1d969871be02210088948aea29b69161ca341c49c02686a81d8cbb73940f917fa0ed7154686d3e5b01 0447d490561f396c8a9efc14486bc198884ba18379bcac2e0be2d8525134ab742f301a9aca36606e5d29aa238a9e2993003150423df6924563642d4afe9bf4fe28"),
-                                SequenceNumber = uint.MaxValue,
                             },
                         new TransactionInput
                             {
@@ -57,7 +60,6 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                                         OutputSequenceNumber = 0,
                                     },
                                 Script = Script.Parse("3046022100bce43ad3acbc79b0247e54c8c91eac1cf9037505000e01d1fd811854d85bc21a022100992a6f6f2feb6f62d3706f3b9aaab88d9f1132956a1dffa926cd556ed55360df01"),
-                                SequenceNumber = uint.MaxValue,
                             },
                         new TransactionInput
                             {
@@ -67,7 +69,6 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                                         OutputSequenceNumber = 0,
                                     },
                                 Script = Script.Parse("30450220209757368161537708fd29d89bb1e9d648007949ecfded789b51a96324cb6518022100cd0f7c30213916482b6e166d8a4f2b981f777eb184cd8a495f1b3d3690fbbf2d01"),
-                                SequenceNumber = uint.MaxValue,
                             },
                     },
                     TransactionOutputs =
@@ -111,6 +112,9 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
             0x77, 0x92, 0xbd, 0xca, 0xad, 0x56, 0x97, 0xdd, 0xeb, 0xf0, 0x43, 0x53, 0xd9, 0xa5, 0xe1, 0x96, 
             0x88, 0xac, 0x00, 0x00, 0x00, 0x00 };
 
+            #endregion
+            #region Tx 2
+
             public static readonly Hash256 Tx2_Hash = Hash256.Parse("69ea9cf5e3e116cffe595d16b3258cd3508768fe3a1ce087ed8479f3d78ef91a");
 
             public static readonly Transaction Tx2 = new Transaction
@@ -127,7 +131,6 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                                         OutputSequenceNumber = 0,
                                     },
                                 Script = Script.Parse("304402201e4456d4b9ce0fc7828364fbd70fed283d8eb1361974a7cf058d9568efe7474202201caeeebf6631e9eb38ef33fbf50fe40146e2fa9b830b8b75fb6008dad8fbe97c01 04207efd639399acd3645e891c5a88f702677c08f52812d088108cf22a64ed17a0713589364f1c603d8c10f3c284eb4457e4550c4bf1f833c23abad73c107f7b70"),
-                                SequenceNumber = uint.MaxValue,
                             },
                     },
                 TransactionOutputs =
@@ -144,6 +147,8 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                             },
                     }
             };
+
+            #endregion
 
             static Block103958()
             {

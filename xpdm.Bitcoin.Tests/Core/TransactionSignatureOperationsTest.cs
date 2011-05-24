@@ -3,6 +3,7 @@ using Gallio.Framework;
 using Gallio.Framework.Data;
 using MbUnit.Framework;
 using xpdm.Bitcoin.Core;
+using xpdm.Bitcoin.Scripting.Atoms;
 using xpdm.Bitcoin.Tests.Factories.Core;
 
 namespace xpdm.Bitcoin.Tests.Core
@@ -30,6 +31,16 @@ namespace xpdm.Bitcoin.Tests.Core
 
                 yield return new DataRow(key, sig, s, new Transaction(Transactions.Block103958.Tx1_Serialized, 0), 0);
                 yield return new DataRow(key, sig, s, Transactions.Block103958.Tx1, 0);
+                yield return new DataRow(((ValueAtom)Transactions.Block103958.Tx1.TransactionInputs[0].Script.Atoms[1]).Value,
+                                         ((ValueAtom)Transactions.Block103958.Tx1.TransactionInputs[0].Script.Atoms[0]).Value,
+                                         Transactions.Block103640.Tx1.TransactionOutputs[0].Script,
+                                         Transactions.Block103958.Tx1,
+                                         0);
+                yield return new DataRow(((ValueAtom)Transactions.Block072785.Tx2.TransactionInputs[0].Script.Atoms[1]).Value,
+                                         ((ValueAtom)Transactions.Block072785.Tx2.TransactionInputs[0].Script.Atoms[0]).Value,
+                                         Transactions.Block072783.Tx1.TransactionOutputs[0].Script,
+                                         Transactions.Block072785.Tx2,
+                                         0);
             }
         }
     }

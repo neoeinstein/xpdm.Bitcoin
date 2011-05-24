@@ -73,9 +73,12 @@
     <Compile Include="Core\Hash256Test.cs" />
     <Compile Include="Core\TransactionSignatureOperationsTest.cs" />
     <Compile Include="Factories\Core\Blocks.cs" />
+    <Compile Include="Factories\Core\Transactions.Block103640.cs" />
     <Compile Include="Factories\Core\Hash160Factory.cs" />
     <Compile Include="Factories\Core\Hash256Factory.cs" />
     <Compile Include="Factories\Core\TransactionOutpointFactory.cs" />
+    <Compile Include="Factories\Core\Transactions.Block072783.cs" />
+    <Compile Include="Factories\Core\Transactions.Block072785.cs" />
     <Compile Include="Factories\Core\Transactions.Block103958.cs" />
     <Compile Include="Formatters\ByteArrayFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
