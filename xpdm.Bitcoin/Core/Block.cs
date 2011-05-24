@@ -2,6 +2,7 @@
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
+using System.Text;
 using C5;
 using xpdm.Bitcoin.Cryptography;
 using SCG = System.Collections.Generic;
@@ -279,8 +280,20 @@ namespace xpdm.Bitcoin.Core
 
         public override string ToString()
         {
-            return string.Format("v{0} <{1} ^{2} {3:s} 0x{4:x8} {5}", Version, PreviousBlockHash, MerkleRoot, DateTimeExtensions.FromSecondsSinceEpoch(Timestamp), DifficultyBits, Nonce)
-                + (IsBlockHeader ? string.Empty : string.Format("[ {{{0}}} ]", string.Join("}, {", Transactions)));
+            var blockStr = new StringBuilder();
+            blockStr.AppendFormat("CBlock(hash={0:S20}, ver={1}, hashPrevBlock={2:S20}, hashMerkleRoot={3:S}, nTime={4}, nBits={5:x8}, nNonce={6}, vtx={7})",
+                Hash256, Version, PreviousBlockHash, MerkleRoot, Timestamp.SecondsSinceEpoch, DifficultyBits, Nonce, Transactions.Count);
+            foreach (var tx in Transactions)
+            {
+                foreach (var line in tx.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    blockStr.AppendLine();
+                    blockStr.AppendFormat("\t{0}", line);
+                }
+            }
+            blockStr.AppendLine();
+            blockStr.AppendFormat("\tvMerkleTree: {0}", string.Join(" ", MerkleTree.Select(h => h.ToString("S6"))));
+            return blockStr.ToString();
         }
 
         public bool IsFrozen { get; private set; }

@@ -10,7 +10,7 @@ using SCG = System.Collections.Generic;
 
 namespace xpdm.Bitcoin.Core
 {
-    public sealed class Script : BitcoinObject, IFreezable, IThawable<Script>
+    public sealed class Script : BitcoinObject, IFreezable, IThawable<Script>, IFormattable
     {
         public static readonly int MaximumScriptByteSize = 10000;
 
@@ -158,7 +158,57 @@ namespace xpdm.Bitcoin.Core
 
         public sealed override string ToString()
         {
-            return string.Join(" ", Atoms);
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            return this.ToString(null, null);
+        }
+
+        public string ToString(string format)
+        {
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            return this.ToString(format, null);
+        }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            format = format ?? "";
+
+            string scriptString;
+            if (format.StartsWith("X", StringComparison.InvariantCultureIgnoreCase))
+            {
+                scriptString = this.SerializeToByteArray().ToByteString(Endianness.BigEndian).Substring(2);
+
+                int length = 0;
+                if (format.Length > 1)
+                {
+                    int.TryParse(format.Substring(1), out length);
+                    if (length != 0)
+                    {
+                        scriptString = scriptString.Substring(0, length);
+                    }
+                }
+            }
+            else
+            {
+                scriptString = string.Join(" ", Atoms);
+
+                if (format.StartsWith("S", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    int length = 30;
+                    if (format.Length > 1)
+                    {
+                        if (!int.TryParse(format.Substring(1), out length))
+                        {
+                            length = 30;
+                        }
+                    }
+                    scriptString = scriptString.Substring(0, length);
+                }
+            }
+            return scriptString;
         }
 
         public bool IsFrozen { get; private set; }

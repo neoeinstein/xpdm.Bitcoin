@@ -2,6 +2,7 @@
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
+using System.Text;
 using C5;
 
 namespace xpdm.Bitcoin.Core
@@ -120,8 +121,20 @@ namespace xpdm.Bitcoin.Core
 
         public override string ToString()
         {
-            return string.Format("{0} [ {{{1}}} ] => [ {{{2}}} ] @ {3}",
-                Version, string.Join("}, {", TransactionInputs), string.Join("}, {", TransactionOutputs), LockTime);
+            var txStr = new StringBuilder();
+            txStr.AppendFormat("CTransaction(hash={0:S6} ver={1} vin.size={2} vout.size={3}, nLockTime={4})",
+                 Hash256, Version, TransactionInputs.Count, TransactionOutputs.Count, LockTime);
+            foreach (var input in TransactionInputs)
+            {
+                txStr.AppendLine();
+                txStr.AppendFormat("\t{0}", input);
+            }
+            foreach (var output in TransactionOutputs)
+            {
+                txStr.AppendLine();
+                txStr.AppendFormat("\t{0}", output);
+            }
+            return txStr.ToString();
         }
         public bool IsFrozen { get; private set; }
 

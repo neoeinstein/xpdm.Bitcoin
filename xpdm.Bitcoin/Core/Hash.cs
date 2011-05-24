@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace xpdm.Bitcoin.Core
 {
-    public abstract class Hash : BitcoinObject, IEquatable<Hash>, IEquatable<BitcoinObject>, IComparable<Hash>, IComparable
+    public abstract class Hash : BitcoinObject, IEquatable<Hash>, IEquatable<BitcoinObject>, IComparable<Hash>, IComparable, IFormattable
     {
         [ContractPublicPropertyName("Bytes")]
         private byte[] _bytes;
@@ -111,18 +111,33 @@ namespace xpdm.Bitcoin.Core
             return _bytes.ToByteString();
         }
 
-        public string ToString(string byteFormat)
+        public string ToString(string format)
         {
             Contract.Ensures(Contract.Result<string>() != null);
 
-            return _bytes.ToByteString(byteFormat);
+            return this.ToString(format, null);
         }
 
-        public string ToString(string byteFormat, string byteJoin)
+        public string ToString(string format, IFormatProvider formatProvider)
         {
             Contract.Ensures(Contract.Result<string>() != null);
 
-            return _bytes.ToByteString(byteFormat, byteJoin);
+            format = format ?? "";
+
+            var byteString = _bytes.ToByteString();
+            if (format.StartsWith("S", StringComparison.InvariantCultureIgnoreCase))
+            {
+                int length = 6;
+                if (format.Length > 1)
+                {
+                    if (!int.TryParse(format.Substring(1), out length))
+                    {
+                        length = 6;
+                    }
+                }
+                return byteString.Substring(0, length);
+            }
+            return byteString;
         }
 
         #endregion

@@ -83,6 +83,14 @@ namespace xpdm.Bitcoin.Core
         public TransactionInput(Stream stream) : base(stream) { }
         public TransactionInput(byte[] buffer, int offset) : base(buffer, offset) { }
 
+        public bool IsCoinbase
+        {
+            get
+            {
+                return Source.IsCoinbase;
+            }
+        }
+
         protected override void Deserialize(Stream stream)
         {
             Source = new TransactionOutpoint(stream);
@@ -106,7 +114,15 @@ namespace xpdm.Bitcoin.Core
 
         public override string ToString()
         {
-            return string.Format("{0} [ {1} ] {2}", Source, Script, SequenceNumber);
+            if (IsCoinbase)
+            {
+                return string.Format("CTxIn({0}, coinbase {1:x})", Source, Script, SequenceNumber);
+            }
+            if (SequenceNumber == DefaultSequenceNumber)
+            {
+                return string.Format("CTxIn({0}, scriptSig={1:S})", Source, Script, SequenceNumber);
+            }
+            return string.Format("CTxIn({0}, scriptSig={1:S}, nSequence={2})", Source, Script, SequenceNumber);
         }
 
         public bool IsFrozen { get; private set; }

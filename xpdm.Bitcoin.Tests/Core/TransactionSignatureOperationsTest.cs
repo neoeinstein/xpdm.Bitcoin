@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Gallio.Framework;
 using Gallio.Framework.Data;
 using MbUnit.Framework;
 using xpdm.Bitcoin.Core;
@@ -13,6 +14,7 @@ namespace xpdm.Bitcoin.Tests.Core
         [Factory("SignatureVerifyFactory")]
         public void VerifySignature(byte[] publicKey, byte[] sigHash, Script script, Transaction transaction, int index)
         {
+            TestLog.WriteLine(transaction.ToString());
             var verify = TransactionSignatureOperations.VerifySignature(
                 publicKey, sigHash, script, transaction, index, SignatureHashType.Unknown);
             Assert.IsTrue(verify);

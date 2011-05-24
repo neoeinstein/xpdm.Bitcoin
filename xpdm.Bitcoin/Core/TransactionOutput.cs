@@ -78,7 +78,7 @@ namespace xpdm.Bitcoin.Core
 
         public override string ToString()
         {
-            return string.Format("{0} [ {1} ]", Value, Script);
+            return string.Format("CTxOut(nValue={0:0.00000000}, scriptPubKey={1:S30})", Value, Script);
         }
 
         public bool IsFrozen { get; private set; }

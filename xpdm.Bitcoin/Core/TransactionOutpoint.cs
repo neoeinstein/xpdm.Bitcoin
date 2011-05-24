@@ -53,6 +53,15 @@ namespace xpdm.Bitcoin.Core
         public TransactionOutpoint(Stream stream) : base(stream) { }
         public TransactionOutpoint(byte[] buffer, int offset) : base(buffer, offset) { }
 
+        public bool IsCoinbase
+        {
+            get
+            {
+                return Coinbase.SourceTransactionHash.Equals(this.SourceTransactionHash) &&
+                    Coinbase.OutputSequenceNumber == this.OutputSequenceNumber;
+            }
+        }
+
         protected override void Deserialize(System.IO.Stream stream)
         {
             SourceTransactionHash = new Hash256(stream);
@@ -74,7 +83,7 @@ namespace xpdm.Bitcoin.Core
 
         public override string ToString()
         {
-            return string.Format("{0}:{1}", SourceTransactionHash, OutputSequenceNumber);
+            return string.Format("COutPoint({0:S}, {1})", SourceTransactionHash, OutputSequenceNumber);
         }
 
         public bool IsFrozen { get; private set; }
