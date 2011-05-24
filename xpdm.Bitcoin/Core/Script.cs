@@ -56,7 +56,7 @@ namespace xpdm.Bitcoin.Core
 
         public static Script Parse(string scriptString)
         {
-            var atoms = scriptString.Split(' ');
+            var atoms = scriptString.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var script = new Script();
             foreach (var atom in atoms)
             {

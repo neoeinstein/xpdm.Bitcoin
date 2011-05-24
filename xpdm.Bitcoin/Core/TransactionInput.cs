@@ -47,7 +47,7 @@ namespace xpdm.Bitcoin.Core
             }
         }
 
-        private uint _sequenceNumber;
+        private uint _sequenceNumber = DefaultSequenceNumber;
         public uint SequenceNumber
         {
             get
@@ -116,11 +116,11 @@ namespace xpdm.Bitcoin.Core
         {
             if (IsCoinbase)
             {
-                return string.Format("CTxIn({0}, coinbase {1:x})", Source, Script, SequenceNumber);
+                return string.Format("CTxIn({0}, coinbase {1:x})", Source, Script);
             }
             if (SequenceNumber == DefaultSequenceNumber)
             {
-                return string.Format("CTxIn({0}, scriptSig={1:S})", Source, Script, SequenceNumber);
+                return string.Format("CTxIn({0}, scriptSig={1:S})", Source, Script);
             }
             return string.Format("CTxIn({0}, scriptSig={1:S}, nSequence={2})", Source, Script, SequenceNumber);
         }
