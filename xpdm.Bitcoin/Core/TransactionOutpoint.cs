@@ -23,8 +23,8 @@ namespace xpdm.Bitcoin.Core
                 InvalidateBitcoinHashes();
             }
         }
-        private uint _outputSequenceNumber;
-        public uint OutputSequenceNumber
+        private int _outputSequenceNumber;
+        public int OutputSequenceNumber
         {
             get
             {
@@ -56,7 +56,7 @@ namespace xpdm.Bitcoin.Core
         protected override void Deserialize(System.IO.Stream stream)
         {
             SourceTransactionHash = new Hash256(stream);
-            OutputSequenceNumber = ReadUInt32(stream);
+            OutputSequenceNumber = ReadInt32(stream);
 
             Freeze();
         }
@@ -102,7 +102,7 @@ namespace xpdm.Bitcoin.Core
             var coinbase = new TransactionOutpoint
                                {
                                    SourceTransactionHash = Hash256.Empty,
-                                   OutputSequenceNumber = uint.MaxValue,
+                                   OutputSequenceNumber = -1,
                                };
             coinbase.Freeze();
             _coinbase = coinbase;
