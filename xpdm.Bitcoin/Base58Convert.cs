@@ -16,41 +16,41 @@ namespace xpdm.Bitcoin
             Contract.Ensures(Contract.Result<string>() != null);
 
             var plaintextArr = new byte[plaintext.Length + 1];
-            Array.Copy(plaintext, plaintextArr, plaintext.Length);
+            Array.Copy(plaintext, 0, plaintextArr, 1, plaintext.Length);
+            Array.Reverse(plaintextArr);
             var workingValue = new BigInteger(plaintextArr);
-            StringBuilder sb = new StringBuilder();
-            while (workingValue.CompareTo(Base) >= 0)
+            StringBuilder sb = new StringBuilder(plaintext.Length * 138 / 100 + 1);
+            while (workingValue.CompareTo(BigInteger.Zero) > 0)
             {
                 BigInteger remainder;
                 workingValue = BigInteger.DivRem(workingValue, Base, out remainder);
-                sb.Insert(0, Alphabet[(int)remainder]);
+                sb.Append(Alphabet[(int)remainder]);
             }
-            sb.Insert(0, Alphabet[(int)workingValue]);
+            Contract.Assert(workingValue.Sign >= 0);
+            //sb.Insert(0, Alphabet[(int)workingValue]);
 
-            foreach (byte b in plaintext)
+            for (int i = 0; i < plaintext.Length && plaintext[i] == 0; ++i)
             {
-                if (b == 0)
-                {
-                    sb.Insert(0, Alphabet[0]);
-                }
-                else break;
+                sb.Append(Alphabet[0]);
             }
 
-            return sb.ToString();
+            var retVal = new char[sb.Length];
+            sb.CopyTo(0, retVal, 0, sb.Length);
+            Array.Reverse(retVal);
+            return new string(retVal);
         }
 
         public static string EncodeWithCheck(byte[] plaintext)
         {
             var plaintextArr = (byte[])plaintext.Clone();
-            Array.Reverse(plaintextArr);
             var hash = Cryptography.CryptoFunctionProviderFactory.Default.Hash256(plaintextArr);
             var plaintextExtended = new byte[plaintext.Length + 4];
             Array.Copy(plaintext, plaintextExtended, plaintext.Length);
-            plaintextExtended[3] = hash[0];
-            plaintextExtended[2] = hash[1];
-            plaintextExtended[1] = hash[2];
-            plaintextExtended[0] = hash[3];
             Array.Copy(hash.Bytes, 0, plaintextExtended, plaintext.Length, 4);
+            //plaintextExtended[3] = hash[hash.HashByteSize - 1];
+            //plaintextExtended[2] = hash[hash.HashByteSize - 2];
+            //plaintextExtended[1] = hash[hash.HashByteSize - 3];
+            //plaintextExtended[0] = hash[hash.HashByteSize - 4];
             return Encode(plaintextExtended);
         }
 
@@ -60,29 +60,21 @@ namespace xpdm.Bitcoin
             Contract.Requires(Contract.ForAll(0, enc.Length, i => Alphabet.IndexOf(enc[i]) != -1));
             Contract.Ensures(Contract.Result<byte[]>() != null);
 
-            return DecodeToBigInteger(enc).ToByteArray();
-        }
-
-        public static BigInteger DecodeToBigInteger(string enc)
-        {
-            Contract.Requires<ArgumentNullException>(enc != null);
-            Contract.Requires(Contract.ForAll(0, enc.Length, i => Alphabet.IndexOf(enc[i]) != -1));
-            //Contract.Ensures(Contract.Result<BigInteger>().ToByteArray()[Contract.Result<BigInteger>().ToByteArray().Length - 1] != 0);
-
             var workingValue = BigInteger.Zero;
             for (int i = 0; i < enc.Length; ++i)
             {
                 var index = new BigInteger(Alphabet.IndexOf(enc[i]));
                 workingValue = workingValue + index * BigInteger.Pow(Base, enc.Length - 1 - i);
             }
-            var bytes = workingValue.ToByteArray();
-            if (bytes[bytes.Length - 1] == 0 && workingValue > 0)
+            var retVal = workingValue.ToByteArray();
+            Array.Reverse(retVal);
+            if (retVal[0] == 0 && workingValue > 0)
             {
-                var newBytes = new byte[bytes.Length - 1];
-                Array.Copy(bytes, newBytes, newBytes.Length);
-                workingValue = new BigInteger(newBytes);
+                var newBytes = new byte[retVal.Length - 1];
+                Array.Copy(retVal, 1, newBytes, 0, newBytes.Length);
+                retVal = newBytes;
             }
-            return workingValue;
+            return retVal;
         }
 
         public static byte[] DecodeWithCheck(string enc)
