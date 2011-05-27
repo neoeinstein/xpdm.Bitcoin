@@ -19,7 +19,7 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                         new TransactionInput
                             {
                                 Source = TransactionOutpoint.Coinbase,
-                                Script = Script.Parse("1c00ba18 04f3"),
+                                Script = Script.Parse("18ba001c f304"),
                             },
                     },
                 TransactionOutputs =

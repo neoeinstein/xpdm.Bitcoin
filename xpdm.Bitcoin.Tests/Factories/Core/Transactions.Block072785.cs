@@ -19,7 +19,7 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                         new TransactionInput
                             {
                                 Source = TransactionOutpoint.Coinbase,
-                                Script = Script.Parse("1c00ba18 03ce"),
+                                Script = Script.Parse("18ba001c ce03"),
                             },
                     },
                 TransactionOutputs =
@@ -191,7 +191,7 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
                                 Source = new TransactionOutpoint
                                 {
                                     SourceTransactionHash = Hash256.Parse("b77e0fc6d275c951342a33473015937e62b25a68538d78a260f1225b2835a283"),
-                                    OutputSequenceNumber = 0,
+                                    OutputSequenceNumber = 1,
                                 },
                                 Script = Script.Parse("3045022100ade09f7f9c884906899d359dc66407723390382bc5582f70e78e4df8faea7edf02206528f1e2de03733d397beaf8dab9fc81df09400f09a5c3e05502186412af182e01 0499c0b4ce36a491bba7afa0b25408ca3814480feffa3266c9de323fa8f9d3eacd47f534ef2d61e482392825d9932d2d9f976933742cd9f52bc922c21e1d6d5a08"),
                             },

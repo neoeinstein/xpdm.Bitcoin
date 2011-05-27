@@ -71,8 +71,10 @@
     <Compile Include="BufferOperationsTest.cs" />
     <Compile Include="Converters\StringToByteArrayConverter.cs" />
     <Compile Include="Converters\Core\StringToScriptConverter.cs" />
+    <Compile Include="Core\BitcoinObjectTest.cs" />
     <Compile Include="Core\Hash256Test.cs" />
     <Compile Include="Core\TransactionSignatureOperationsTest.cs" />
+    <Compile Include="Core\TransactionTest.cs" />
     <Compile Include="Factories\Core\Blocks.cs" />
     <Compile Include="Factories\Core\Transactions.Block000000.cs" />
     <Compile Include="Factories\Core\Transactions.Block103640.cs" />
