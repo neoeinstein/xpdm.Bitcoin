@@ -72,6 +72,8 @@
     <Compile Include="Converters\StringToByteArrayConverter.cs" />
     <Compile Include="Converters\Core\StringToScriptConverter.cs" />
     <Compile Include="Core\BitcoinObjectTest.cs" />
+    <Compile Include="Core\BitcoinSerializableTest.cs" />
+    <Compile Include="Core\BlockTest.cs" />
     <Compile Include="Core\Hash256Test.cs" />
     <Compile Include="Core\TransactionSignatureOperationsTest.cs" />
     <Compile Include="Core\TransactionTest.cs" />
@@ -123,6 +125,10 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SerializedData\MsgBlock124009.bin" />
+    <EmbeddedResource Include="SerializedData\MsgBlock124010.bin" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
