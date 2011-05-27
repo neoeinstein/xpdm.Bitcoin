@@ -122,7 +122,10 @@ namespace xpdm.Bitcoin.Core
                 if (_merkleTree == null)
                 {
                     _merkleTree = CalculateMerkleTree(Transactions);
-                    InvalidateBitcoinHashes();
+                    if (!IsFrozen)
+                    {
+                        InvalidateBitcoinHashes();
+                    }
                 }
                 return _merkleTree;
             }
