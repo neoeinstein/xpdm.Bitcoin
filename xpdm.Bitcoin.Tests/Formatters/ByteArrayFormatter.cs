@@ -7,7 +7,12 @@ namespace xpdm.Bitcoin.Tests.Formatters
         [Formatter]
         public static string FormatByteArray(byte[] array)
         {
-            return BufferOperations.ToByteString(array, Endianness.BigEndian);
+            var byteStr = BufferOperations.ToByteString(array, Endianness.BigEndian);
+            if (byteStr.Length > 30)
+            {
+                byteStr = byteStr.Substring(0, 28) + "...";
+            }
+            return byteStr;
         }
     }
 }
