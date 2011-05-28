@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Gallio.Framework.Data;
-using MbUnit.Framework;
-using NHamcrest.Core;
+﻿using MbUnit.Framework;
 using xpdm.Bitcoin.Core;
 using xpdm.Bitcoin.Tests.Factories.Core;
 
@@ -11,42 +8,33 @@ namespace xpdm.Bitcoin.Tests.Core
     public class TransactionTest
     {
         [Test]
-        [Factory("TransactionData")]
+        [Factory(typeof(TransactionData), "TransactionsWithHash")]
         public void VerifyTransactionHash(
-            [Bind(0)] Transaction tx,
-            [Bind(1)] Hash256 txHash)
+            Hash256 txHash,
+            Transaction tx)
         {
             BitcoinObjectTest.AssertThatHashMatches(tx, txHash);
         }
 
         [Test]
-        [Factory("TransactionData")]
+        [Factory(typeof(TransactionData), "TransactionsWithCoinbase")]
         public void VerifyIsCoinbase(
-            [Bind(0)] Transaction tx,
-            [Bind(2)] bool expectedCoinbase)
+            bool expectedCoinbase,
+            Transaction tx)
         {
-            Assert.That(tx.TransactionInputs.All(txIn => txIn.IsCoinbase), Is.EqualTo(expectedCoinbase));
+            bool isCoinbase = tx.TransactionInputs.Count == 1 && tx.TransactionInputs[0].IsCoinbase;
+            Assert.AreEqual(expectedCoinbase, isCoinbase);
         }
 
-        public static IEnumerable<IDataItem> TransactionData
+        [Test]
+        [Factory(typeof(TransactionData), "SerializedTransactionsForRoundTripping")]
+        public void RoundTripBitcoinSerializedTransactions(
+            Transaction expectedTx,
+            byte[] expectedSerializedTx)
         {
-            get
-            {
-                yield return new DataRow(Transactions.Block000000.Tx0, Transactions.Block000000.Tx0_Hash, true);
-                yield return new DataRow(Transactions.Block072783.Tx0, Transactions.Block072783.Tx0_Hash, true);
-                yield return new DataRow(Transactions.Block072783.Tx1, Transactions.Block072783.Tx1_Hash, false);
-                yield return new DataRow(Transactions.Block072785.Tx0, Transactions.Block072785.Tx0_Hash, true);
-                yield return new DataRow(Transactions.Block072785.Tx1, Transactions.Block072785.Tx1_Hash, false);
-                yield return new DataRow(Transactions.Block072785.Tx2, Transactions.Block072785.Tx2_Hash, false);
-                yield return new DataRow(Transactions.Block072785.Tx3, Transactions.Block072785.Tx3_Hash, false);
-                yield return new DataRow(Transactions.Block072785.Tx4, Transactions.Block072785.Tx4_Hash, false);
-                yield return new DataRow(Transactions.Block072785.Tx5, Transactions.Block072785.Tx5_Hash, false);
-                yield return new DataRow(Transactions.Block103640.Tx0, Transactions.Block103640.Tx0_Hash, true);
-                yield return new DataRow(Transactions.Block103640.Tx1, Transactions.Block103640.Tx1_Hash, false);
-                yield return new DataRow(Transactions.Block103958.Tx0, Transactions.Block103958.Tx0_Hash, true);
-                yield return new DataRow(Transactions.Block103958.Tx1, Transactions.Block103958.Tx1_Hash, false);
-                yield return new DataRow(Transactions.Block103958.Tx2, Transactions.Block103958.Tx2_Hash, false);
-            }
+            var tx = new Transaction(expectedSerializedTx, 0);
+            Assert.AreEqual(expectedTx, tx);
+            BitcoinSerializableTest.AssertThatSerializedArrayMatches(expectedSerializedTx, expectedTx);
         }
     }
 }

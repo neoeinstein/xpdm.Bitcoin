@@ -4,7 +4,7 @@ using MbUnit.Framework;
 using NHamcrest.Core;
 using xpdm.Bitcoin.Core;
 using xpdm.Bitcoin.Scripting;
-using xpdm.Bitcoin.Tests.Factories.Core;
+using xpdm.Bitcoin.Tests.Factories.Core.Transactions;
 
 namespace xpdm.Bitcoin.Tests.Scripting
 {
@@ -34,13 +34,13 @@ namespace xpdm.Bitcoin.Tests.Scripting
         {
             get
             {
-                yield return new DataRow(Transactions.Block103958.Tx1.TransactionInputs[0].Script,
-                                         Transactions.Block103640.Tx1.TransactionOutputs[0].Script,
-                                         Transactions.Block103958.Tx1,
+                yield return new DataRow(B103958.Tx1.Transaction.TransactionInputs[0].Script,
+                                         B103640.Tx1.Transaction.TransactionOutputs[0].Script,
+                                         B103958.Tx1.Transaction,
                                          0);
-                yield return new DataRow(Transactions.Block072785.Tx2.TransactionInputs[0].Script,
-                                         Transactions.Block072783.Tx1.TransactionOutputs[0].Script,
-                                         Transactions.Block072785.Tx2,
+                yield return new DataRow(B072785.Tx2.Transaction.TransactionInputs[0].Script,
+                                         B072783.Tx1.Transaction.TransactionOutputs[0].Script,
+                                         B072785.Tx2.Transaction,
                                          0);
             }
         }

@@ -4,7 +4,7 @@ using Gallio.Framework.Data;
 using MbUnit.Framework;
 using xpdm.Bitcoin.Core;
 using xpdm.Bitcoin.Scripting.Atoms;
-using xpdm.Bitcoin.Tests.Factories.Core;
+using xpdm.Bitcoin.Tests.Factories.Core.Transactions;
 
 namespace xpdm.Bitcoin.Tests.Core
 {
@@ -29,17 +29,17 @@ namespace xpdm.Bitcoin.Tests.Core
                 var sig = "0x3046022100f5746b0b254f5a37e75251459c7a23b6dfcb868ac7467edd9a6fdd1d969871be02210088948aea29b69161ca341c49c02686a81d8cbb73940f917fa0ed7154686d3e5b01";
                 var s = "OP_DUP OP_HASH160 02bf4b2889c6ada8190c252e70bde1a1909f9617 OP_EQUALVERIFY OP_CHECKSIG";
 
-                yield return new DataRow(key, sig, s, new Transaction(Transactions.Block103958.Tx1_Serialized, 0), 0);
-                yield return new DataRow(key, sig, s, Transactions.Block103958.Tx1, 0);
-                yield return new DataRow(((ValueAtom)Transactions.Block103958.Tx1.TransactionInputs[0].Script.Atoms[1]).Value,
-                                         ((ValueAtom)Transactions.Block103958.Tx1.TransactionInputs[0].Script.Atoms[0]).Value,
-                                         Transactions.Block103640.Tx1.TransactionOutputs[0].Script,
-                                         Transactions.Block103958.Tx1,
+                yield return new DataRow(key, sig, s, new Transaction(B103958.Tx1.SerializedTransactionData, 0), 0);
+                yield return new DataRow(key, sig, s, B103958.Tx1.Transaction, 0);
+                yield return new DataRow(((ValueAtom)B103958.Tx1.Transaction.TransactionInputs[0].Script.Atoms[1]).Value,
+                                         ((ValueAtom)B103958.Tx1.Transaction.TransactionInputs[0].Script.Atoms[0]).Value,
+                                         B103640.Tx1.Transaction.TransactionOutputs[0].Script,
+                                         B103958.Tx1.Transaction,
                                          0);
-                yield return new DataRow(((ValueAtom)Transactions.Block072785.Tx2.TransactionInputs[0].Script.Atoms[1]).Value,
-                                         ((ValueAtom)Transactions.Block072785.Tx2.TransactionInputs[0].Script.Atoms[0]).Value,
-                                         Transactions.Block072783.Tx1.TransactionOutputs[0].Script,
-                                         Transactions.Block072785.Tx2,
+                yield return new DataRow(((ValueAtom)B072785.Tx2.Transaction.TransactionInputs[0].Script.Atoms[1]).Value,
+                                         ((ValueAtom)B072785.Tx2.Transaction.TransactionInputs[0].Script.Atoms[0]).Value,
+                                         B072783.Tx1.Transaction.TransactionOutputs[0].Script,
+                                         B072785.Tx2.Transaction,
                                          0);
             }
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MbUnit.Framework;
 using NHamcrest.Core;
 using xpdm.Bitcoin.Core;
@@ -11,7 +10,7 @@ namespace xpdm.Bitcoin.Tests.Core
     public class BlockTest
     {
         [Test]
-        [Factory(typeof(Blocks), "BlocksForSerialization")]
+        [Factory(typeof(BlockData), "BlocksForSerialization")]
         public void RoundTripBitcoinSerializedBlocks(
             byte[] serializedBlock,
             int offset,
@@ -23,13 +22,11 @@ namespace xpdm.Bitcoin.Tests.Core
             BlockTest.AssertThatMerkleTreeMatches(block.MerkleTree, expectedMerkleTree);
             BlockTest.AssertThatBlockHeaderMatches(block, expectedHeader);
             BitcoinObjectTest.AssertThatHashMatches(block, expectedHash);
-            var ser = new byte[serializedBlock.Length - 24];
-            Array.Copy(serializedBlock, 24, ser, 0, ser.Length);
-            BitcoinSerializableTest.AssertThatSerializedArrayMatches(block, ser);
+            BitcoinSerializableTest.AssertThatSerializedArrayMatches(serializedBlock, block);
         }
 
         [Test]
-        [Factory(typeof(Blocks), "BlockTuples")]
+        [Factory(typeof(BlockData), "BlockTuples")]
         public void ValidateBlockCalculations(
             Block actual,
             Block expectedHeader,
