@@ -1,5 +1,4 @@
 ﻿using MbUnit.Framework;
-using NHamcrest.Core;
 using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Tests.Core
@@ -9,10 +8,10 @@ namespace xpdm.Bitcoin.Tests.Core
     {
         #region Utility Asserts
 
-        public static void AssertThatSerializedArrayMatches(BitcoinSerializable serializable, byte[] expectedSerialized)
+        public static void AssertThatSerializedArrayMatches(byte[] expectedSerialized, BitcoinSerializable serializable)
         {
             var serialized = serializable.SerializeToByteArray();
-            Assert.Over.Pairs(serialized, expectedSerialized, (l, r) => Assert.That(l, Is.EqualTo(r)));
+            Assert.AreElementsEqual(expectedSerialized, serialized);
         }
 
         #endregion
