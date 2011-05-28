@@ -65,14 +65,31 @@ namespace xpdm.Bitcoin.Core
                 IScriptAtom newAtom = null;
                 if (valueStr != null)
                 {
-                    valueStr.Append(' ');
-                    if (atom.EndsWith("'") && !atom.EndsWith(@"\'"))
+                    valueStr.Append(" ");
+                    if (atom.EndsWith("'"))
                     {
-                        valueStr.Append(atom.Substring(0, atom.Length - 1));
-                        var valueBytes = Encoding.ASCII.GetBytes(valueStr.ToString());
-                        newAtom = new ValueAtom(valueBytes);
-                        script.Atoms.Add(newAtom);
-                        valueStr = null;
+                        if (atom.EndsWith(@"\''"))
+                        {
+                            valueStr.Append(atom.Substring(0, atom.Length - 3));
+                            valueStr.Append("'");
+                            var valueBytes = Encoding.ASCII.GetBytes(valueStr.ToString());
+                            newAtom = new ValueAtom(valueBytes);
+                            script.Atoms.Add(newAtom);
+                            valueStr = null;
+                        }
+                        else if (atom.EndsWith(@"\'"))
+                        {
+                            valueStr.Append(atom.Substring(0, atom.Length - 2));
+                            valueStr.Append("'");
+                        }
+                        else
+                        {
+                            valueStr.Append(atom.Substring(0, atom.Length - 1));
+                            var valueBytes = Encoding.ASCII.GetBytes(valueStr.ToString());
+                            newAtom = new ValueAtom(valueBytes);
+                            script.Atoms.Add(newAtom);
+                            valueStr = null;
+                        }
                     }
                     else
                     {
@@ -87,8 +104,37 @@ namespace xpdm.Bitcoin.Core
                 }
                 else if (atom.StartsWith("'"))
                 {
-                    valueStr = new StringBuilder();
-                    valueStr.Append(atom.Substring(1, atom.Length - 1));
+                    if (atom.EndsWith("'"))
+                    {
+                        if (atom.EndsWith(@"\''"))
+                        {
+                            var valueBytes = Encoding.ASCII.GetBytes(atom.Substring(1, atom.Length - 4) + "'");
+                            newAtom = new ValueAtom(valueBytes);
+                        }
+                        else if (atom.EndsWith(@"\'"))
+                        {
+                            valueStr = new StringBuilder();
+                            valueStr.Append(atom.Substring(1, atom.Length - 3));
+                            valueStr.Append("'");
+                        }
+                        else if (atom.Length > 1)
+                        {
+                            if (atom.Length > 2)
+                            {
+                                var valueBytes = Encoding.ASCII.GetBytes(atom.Substring(1, atom.Length - 2));
+                                newAtom = new ValueAtom(valueBytes);
+                            }
+                        }
+                        else
+                        {
+                            valueStr = new StringBuilder();
+                        }
+                    }
+                    else
+                    {
+                        valueStr = new StringBuilder();
+                        valueStr.Append(atom.Substring(1, atom.Length - 1));
+                    }
                 }
                 else if (atom.Length > 0)
                 {

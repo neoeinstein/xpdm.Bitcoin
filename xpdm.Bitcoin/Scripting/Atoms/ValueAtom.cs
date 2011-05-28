@@ -146,7 +146,13 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         {
             if (IsLikelyString)
             {
-                return "'" + System.Text.Encoding.ASCII.GetString(Value) + "'";
+                var atomStr = System.Text.Encoding.ASCII.GetString(Value);
+                atomStr = atomStr.Replace("' ", "\' ");
+                if (atomStr.EndsWith("'"))
+                {
+                    atomStr = atomStr.Substring(0, atomStr.Length - 1) + @"\'";
+                }
+                return "'" + atomStr + "'";
             }
             return _value.ToByteString(Endianness.BigEndian);
         }
