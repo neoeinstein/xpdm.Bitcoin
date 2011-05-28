@@ -20,6 +20,8 @@ namespace xpdm.Bitcoin.Tests.Core
             Assert.IsNotNull(script);
             var roundTrip = script.ToString();
             Assert.AreEqual(expectedRoundTrip, roundTrip, StringComparison.Ordinal);
+            var roundTripScript = Script.Parse(roundTrip);
+            Assert.AreElementsEqual(script.Atoms, roundTripScript.Atoms);
         }
 
         public static IEnumerable<IDataItem> ScriptStrings
