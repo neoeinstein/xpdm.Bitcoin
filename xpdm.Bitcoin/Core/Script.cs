@@ -3,6 +3,7 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using C5;
 using xpdm.Bitcoin.Scripting;
 using xpdm.Bitcoin.Scripting.Atoms;
@@ -56,22 +57,52 @@ namespace xpdm.Bitcoin.Core
 
         public static Script Parse(string scriptString)
         {
-            var atoms = scriptString.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var atoms = scriptString.Split(' ');
             var script = new Script();
+            StringBuilder valueStr = null;
             foreach (var atom in atoms)
             {
-                IScriptAtom newAtom;
+                IScriptAtom newAtom = null;
+                if (valueStr != null)
+                {
+                    valueStr.Append(' ');
+                    if (atom.EndsWith("'") && !atom.EndsWith(@"\'"))
+                    {
+                        valueStr.Append(atom.Substring(0, atom.Length - 1));
+                        var valueBytes = Encoding.ASCII.GetBytes(valueStr.ToString());
+                        newAtom = new ValueAtom(valueBytes);
+                        script.Atoms.Add(newAtom);
+                        valueStr = null;
+                    }
+                    else
+                    {
+                        valueStr.Append(atom);
+                    }
+                    continue;
+                }
                 if (atom.StartsWith("OP_"))
                 {
                     var opcode = (ScriptOpCode)Enum.Parse(typeof(ScriptOpCode), atom, false);
                     newAtom = ScriptAtomFactory.GetOpAtom(opcode);
                 }
-                else
+                else if (atom.StartsWith("'"))
+                {
+                    valueStr = new StringBuilder();
+                    valueStr.Append(atom.Substring(1, atom.Length - 1));
+                }
+                else if (atom.Length > 0)
                 {
                     var valueBytes = BufferOperations.FromByteString(atom, Endianness.BigEndian);
                     newAtom = new ValueAtom(valueBytes);
                 }
-                script.Atoms.Add(newAtom);
+                if (newAtom != null)
+                {
+                    script.Atoms.Add(newAtom);
+                }
+            }
+            if (valueStr != null)
+            {
+                throw new FormatException("Unclosed script string found");
             }
             script.Freeze();
             return script;
