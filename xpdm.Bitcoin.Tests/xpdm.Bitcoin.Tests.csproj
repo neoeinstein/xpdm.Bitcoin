@@ -75,6 +75,7 @@
     <Compile Include="Core\BitcoinSerializableTest.cs" />
     <Compile Include="Core\BlockTest.cs" />
     <Compile Include="Core\Hash256Test.cs" />
+    <Compile Include="Core\ScriptTest.cs" />
     <Compile Include="Core\TransactionSignatureOperationsTest.cs" />
     <Compile Include="Core\TransactionTest.cs" />
     <Compile Include="Factories\Core\BlockData.cs" />
