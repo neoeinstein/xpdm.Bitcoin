@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using MbUnit.Framework;
-using NHamcrest.Core;
 using xpdm.Bitcoin.Core;
 using xpdm.Bitcoin.Tests.Factories.Core;
 
@@ -42,7 +41,7 @@ namespace xpdm.Bitcoin.Tests.Core
 
         public static void AssertThatMerkleTreeMatches(IEnumerable<Hash> actuals, IEnumerable<Hash> expected)
         {
-            Assert.Over.Pairs(actuals, expected, (l, r) => Assert.That(l, Is.EqualTo(r)));
+            Assert.AreElementsEqual(expected, actuals);
         }
 
         public static void AssertThatBlockHeaderMatches(
@@ -70,12 +69,12 @@ namespace xpdm.Bitcoin.Tests.Core
         {
             Assert.Multiple(() =>
             {
-                Assert.That(actualBlock.Version, Is.EqualTo(expectedVersion));
-                Assert.That(actualBlock.PreviousBlockHash, Is.EqualTo(expectedPreviousBlockHash));
-                Assert.That(actualBlock.MerkleRoot, Is.EqualTo(expectedMerkleRoot));
-                Assert.That(actualBlock.Timestamp, Is.EqualTo(expectedTimestamp));
-                Assert.That(actualBlock.DifficultyBits, Is.EqualTo(expectedDifficultyBits));
-                Assert.That(actualBlock.Nonce, Is.EqualTo(expectedNonce));
+                Assert.AreEqual(expectedVersion, actualBlock.Version);
+                Assert.AreEqual(expectedPreviousBlockHash, actualBlock.PreviousBlockHash);
+                Assert.AreEqual(expectedMerkleRoot, actualBlock.MerkleRoot);
+                Assert.AreEqual(expectedTimestamp, actualBlock.Timestamp);
+                Assert.AreEqual(expectedDifficultyBits, actualBlock.DifficultyBits);
+                Assert.AreEqual(expectedNonce, actualBlock.Nonce);
             });
         }
 

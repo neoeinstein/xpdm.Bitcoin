@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Numerics;
 using MbUnit.Framework;
-using NHamcrest.Core;
 using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Tests.Core
@@ -16,28 +15,27 @@ namespace xpdm.Bitcoin.Tests.Core
         {
             var hash = Hash256.Parse(hashString);
             var roundTrip = hash.ToString();
-            Assert.That(roundTrip.ToLowerInvariant(), Is.EqualTo(hashString.ToLowerInvariant()));
             Assert.AreEqual(hashString, roundTrip, StringComparison.OrdinalIgnoreCase);
         }
 
         [Test]
         public void NullStringParseThrowsArgumentNullException()
         {
-            Assert.That(() => Hash256.Parse(null), Throws.An<ArgumentNullException>());
+            Assert.Throws<ArgumentNullException>(() => Hash256.Parse(null));
         }
 
         [Test]
         [Factory("InvalidHashStrings")]
         public void BadStringParseThrowsFormatException(string hashString)
         {
-            Assert.That(() => Hash256.Parse(hashString), Throws.An<FormatException>());
+            Assert.Throws<FormatException>(() => Hash256.Parse(hashString));
         }
 
         [Test]
         public void NullStringTryParseReturnsFalse()
         {
             Hash256 dummy;
-            Assert.That(Hash256.TryParse(null, out dummy), Is.False());
+            Assert.IsFalse(Hash256.TryParse(null, out dummy));
         }
 
         [Test]
@@ -51,11 +49,11 @@ namespace xpdm.Bitcoin.Tests.Core
             {
                 Hash256 hash = null;
                 Assert.DoesNotThrow(() => hash = Hash256.Parse(hashString));
-                Assert.That(hash, Is.EqualTo(tryHash));
+                Assert.AreEqual(tryHash, hash);
             }
             else
             {
-                Assert.That(() => Hash256.Parse(hashString), Throws.An<FormatException>());
+                Assert.Throws<FormatException>(() => Hash256.Parse(hashString));
             }
         }
 
@@ -63,7 +61,8 @@ namespace xpdm.Bitcoin.Tests.Core
         public void DefaultConstruction()
         {
             var hash = new Hash256();
-            Assert.That(hash.Bytes, Every.Item(Is.EqualTo((byte)0x00)));
+            Assert.AreEqual(Hash256.Empty, hash);
+            Assert.AreElementsEqual(Hash256.Empty.Bytes, hash.Bytes);
         }
 
         [Test]
@@ -72,7 +71,7 @@ namespace xpdm.Bitcoin.Tests.Core
         {
             var hash = new Hash256(hashBytes);
             var roundTrip = hash.Bytes;
-            Assert.Over.Pairs(roundTrip, hashBytes, (l, r) => Assert.That(l, Is.EqualTo(r)));
+            Assert.AreElementsEqual(hashBytes, roundTrip);
         }
 
         [Test]
@@ -82,15 +81,15 @@ namespace xpdm.Bitcoin.Tests.Core
             var biBytes = new byte[32];
             bi.ToByteArray().CopyTo(biBytes, 0);
             var hash = new Hash256(bi);
-            Assert.Over.Pairs(hash.Bytes, biBytes, (l, r) => Assert.That(l, Is.EqualTo(r)));
+            Assert.AreElementsEqual(biBytes, hash.Bytes);
         }
 
         [Test]
         public void ExpectedHashSize()
         {
             var hash = new Hash256();
-            Assert.That(hash.HashByteSize, Is.EqualTo(32));
-            Assert.That(hash.HashByteSize, Is.EqualTo(hash.SerializedByteSize));
+            Assert.AreEqual(32, hash.HashByteSize);
+            Assert.AreEqual(hash.HashByteSize, hash.SerializedByteSize);
         }
 
         public static IEnumerable<string> HashStrings

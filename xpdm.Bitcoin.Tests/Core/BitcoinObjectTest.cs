@@ -1,5 +1,4 @@
 ﻿using MbUnit.Framework;
-using NHamcrest.Core;
 using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Tests.Core
@@ -11,12 +10,12 @@ namespace xpdm.Bitcoin.Tests.Core
 
         public static void AssertThatHashMatches(BitcoinObject bitObj, Hash256 expectedHash)
         {
-            Assert.That(bitObj.Hash256, Is.EqualTo(expectedHash));
+            Assert.AreEqual(expectedHash, bitObj.Hash256);
         }
 
         public static void AssertThatHashMatches(BitcoinObject bitObj, Hash160 expectedHash)
         {
-            Assert.That(bitObj.Hash160, Is.EqualTo(expectedHash));
+            Assert.AreEqual(expectedHash, bitObj.Hash160);
         }
 
         #endregion

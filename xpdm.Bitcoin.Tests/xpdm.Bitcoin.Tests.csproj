@@ -49,7 +49,6 @@
   <ItemGroup>
     <Reference Include="Gallio" />
     <Reference Include="MbUnit" />
-    <Reference Include="NHamcrest, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31c3ea0b6fcf8c4a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Numerics" />

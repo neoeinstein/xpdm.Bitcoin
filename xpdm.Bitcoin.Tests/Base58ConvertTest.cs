@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Gallio.Framework.Data;
 using MbUnit.Framework;
-using NHamcrest.Core;
 
 namespace xpdm.Bitcoin.Tests
 {
@@ -13,7 +13,7 @@ namespace xpdm.Bitcoin.Tests
         public void EncodeWithCheck([Bind(2)] byte[] plaintext, [Bind(0)] string expected)
         {
             var enc = Base58Convert.EncodeWithCheck(plaintext);
-            Assert.That(enc, Is.EqualTo(expected));
+            Assert.AreEqual(expected, enc, StringComparison.Ordinal);
         }
 
         [Test]
@@ -21,7 +21,7 @@ namespace xpdm.Bitcoin.Tests
         public void DecodeWithCheck([Bind(2)] byte[] expected, [Bind(0)] string encoded)
         {
             var plaintext = Base58Convert.DecodeWithCheck(encoded);
-            Assert.Over.Pairs(plaintext, expected, (l, r) => Assert.That(l, Is.EqualTo(r)));
+            Assert.AreElementsEqual(expected, plaintext);
         }
 
         [Test, MultipleAsserts]
@@ -30,8 +30,8 @@ namespace xpdm.Bitcoin.Tests
         {
             byte[] plaintext;
             var success = Base58Convert.DecodeWithCheck(encoded, out plaintext);
-            Assert.That(success, Is.True());
-            Assert.Over.Pairs(plaintext, expected, (l, r) => Assert.That(l, Is.EqualTo(r)));
+            Assert.IsTrue(success);
+            Assert.AreElementsEqual(expected, plaintext);
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace xpdm.Bitcoin.Tests
         public void Encode([Bind(4)] byte[] plaintext, [Bind(0)] string expected)
         {
             var enc = Base58Convert.Encode(plaintext);
-            Assert.That(enc, Is.EqualTo(expected));
+            Assert.AreEqual(expected, enc, StringComparison.Ordinal);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace xpdm.Bitcoin.Tests
         public void Decode([Bind(4)] byte[] expected, [Bind(0)] string encoded)
         {
             var plaintext = Base58Convert.Decode(encoded);
-            Assert.Over.Pairs(plaintext, expected, (l, r) => Assert.That(l, Is.EqualTo(r)));
+            Assert.AreElementsEqual(expected, plaintext);
         }
 
         public static IEnumerable<IDataItem> ConversionTuples
