@@ -12,8 +12,8 @@ namespace xpdm.Bitcoin
 
         public static string Encode(byte[] plaintext)
         {
-            Contract.Requires<ArgumentNullException>(plaintext != null);
-            Contract.Ensures(Contract.Result<string>() != null);
+            ContractsCommon.NotNull(plaintext, "plaintext");
+            ContractsCommon.ResultIsNonNull<string>();
 
             var plaintextArr = new byte[plaintext.Length + 1];
             Array.Copy(plaintext, 0, plaintextArr, 1, plaintext.Length);
@@ -42,23 +42,37 @@ namespace xpdm.Bitcoin
 
         public static string EncodeWithCheck(byte[] plaintext)
         {
+            ContractsCommon.NotNull(plaintext, "plaintext");
+            ContractsCommon.ResultIsNonNull<string>();
+
+            return EncodeWithCheck(new byte[0], plaintext);
+        }
+
+        public static string EncodeWithCheck(byte[] prefix, byte[] plaintext)
+        {
+            ContractsCommon.NotNull(prefix, "prefix");
+            ContractsCommon.NotNull(plaintext, "plaintext");
+            ContractsCommon.ResultIsNonNull<string>();
+
             var plaintextArr = (byte[])plaintext.Clone();
-            var hash = Cryptography.CryptoFunctionProviderFactory.Default.Hash256(plaintextArr);
-            var plaintextExtended = new byte[plaintext.Length + 4];
-            Array.Copy(plaintext, plaintextExtended, plaintext.Length);
-            Array.Copy(hash.Bytes, 0, plaintextExtended, plaintext.Length, 4);
-            //plaintextExtended[3] = hash[hash.HashByteSize - 1];
-            //plaintextExtended[2] = hash[hash.HashByteSize - 2];
-            //plaintextExtended[1] = hash[hash.HashByteSize - 3];
-            //plaintextExtended[0] = hash[hash.HashByteSize - 4];
+            var hash = Cryptography.CryptoFunctionProviderFactory.Default.Hash256(plaintextArr, prefix);
+            var plaintextExtended = new byte[plaintext.Length + prefix.Length + 4];
+            Array.Copy(plaintext, 0, plaintextExtended, 0, plaintext.Length);
+            Array.Copy(prefix, 0, plaintextExtended, plaintext.Length, prefix.Length);
+            Array.Copy(hash.Bytes, 0, plaintextExtended, prefix.Length + plaintext.Length, 4);
             return Encode(plaintextExtended);
         }
 
         public static byte[] Decode(string enc)
         {
-            Contract.Requires<ArgumentNullException>(enc != null);
-            Contract.Requires(Contract.ForAll(0, enc.Length, i => Alphabet.IndexOf(enc[i]) != -1));
-            Contract.Ensures(Contract.Result<byte[]>() != null);
+            ContractsCommon.NotNull(enc, "enc");
+            Contract.Requires<FormatException>(Contract.ForAll(0, enc.Length, i => Alphabet.IndexOf(enc[i]) != -1));
+            ContractsCommon.ResultIsNonNull<byte[]>();
+
+            if (enc.Length == 0)
+            {
+                return new byte[0];
+            }
 
             var workingValue = BigInteger.Zero;
             for (int i = 0; i < enc.Length; ++i)
@@ -66,6 +80,7 @@ namespace xpdm.Bitcoin
                 var index = new BigInteger(Alphabet.IndexOf(enc[i]));
                 workingValue = workingValue + index * BigInteger.Pow(Base, enc.Length - 1 - i);
             }
+
             var retVal = workingValue.ToByteArray();
             Array.Reverse(retVal);
             if (retVal[0] == 0 && workingValue > 0)
@@ -74,37 +89,72 @@ namespace xpdm.Bitcoin
                 Array.Copy(retVal, 1, newBytes, 0, newBytes.Length);
                 retVal = newBytes;
             }
+
+            var count = 0;
+            while (enc[count] == Alphabet[0]) ++count;
+
+            if (count > 0)
+            {
+                var newBytes = new byte[retVal.Length + count];
+                Array.Copy(retVal, 0, newBytes, count, retVal.Length);
+                retVal = newBytes;
+            }
+
             return retVal;
         }
 
         public static byte[] DecodeWithCheck(string enc)
         {
+            ContractsCommon.NotNull(enc, "enc");
+            Contract.Requires<FormatException>(Contract.ForAll(0, enc.Length, i => Alphabet.IndexOf(enc[i]) != -1));
+
             byte[] plaintext;
             return DecodeWithCheck(enc, out plaintext) ? plaintext : null;
         }
 
         public static bool DecodeWithCheck(string enc, out byte[] plaintext)
         {
+            ContractsCommon.NotNull(enc, "enc");
+            Contract.Requires<FormatException>(Contract.ForAll(0, enc.Length, i => Alphabet.IndexOf(enc[i]) != -1));
+            Contract.Ensures(Contract.Result<bool>() == false || Contract.ValueAtReturn(out plaintext) != null);
+
+            byte[] prefix;
+            return DecodeWithCheck(enc, 0, out prefix, out plaintext);
+        }
+
+        public static bool DecodeWithCheck(string enc, int prefixLength, out byte[] prefix, out byte[] plaintext)
+        {
+            ContractsCommon.NotNull(enc, "enc");
+            // Approximate decoded byte size = enc.Length * 100 / 138 + 1
+            // Plaintext may be all prefix (-0)
+            // Prefix may not include bytes reserved for hash (-4)
+            ContractsCommon.ValidLength(0, (enc.Length) * 100 / 138 - 3, prefixLength, "prefixLength");
+            Contract.Requires<FormatException>(Contract.ForAll(0, enc.Length, i => Alphabet.IndexOf(enc[i]) != -1));
+            Contract.Ensures(Contract.Result<bool>() == false || Contract.ValueAtReturn(out prefix) != null && Contract.ValueAtReturn(out prefix).Length == prefixLength);
+            Contract.Ensures(Contract.Result<bool>() == false || Contract.ValueAtReturn(out plaintext) != null);
+
             var plaintextExtended = Decode(enc);
-            var hash = Cryptography.CryptoFunctionProviderFactory.Default.Hash256(plaintextExtended, 0, plaintextExtended.Length - 4).Bytes;
-            if (hash[0] == plaintextExtended[plaintextExtended.Length - 4]
-             && hash[1] == plaintextExtended[plaintextExtended.Length - 3]
-             && hash[2] == plaintextExtended[plaintextExtended.Length - 2]
-             && hash[3] == plaintextExtended[plaintextExtended.Length - 1])
+            if (plaintextExtended.Length < 4 + prefixLength)
             {
-                var pt = new byte[plaintextExtended.Length - 4];
-                Array.Copy(plaintextExtended, pt, pt.Length);
-                plaintext = pt;
-                return true;
-            }
-            else
-            {
-                var pt = new byte[plaintextExtended.Length - 4];
-                Array.Copy(plaintextExtended, pt, pt.Length);
-                plaintext = pt;
-                //plaintext = new byte[0];
+                prefix = new byte[0];
+                plaintext = plaintextExtended;
                 return false;
             }
+
+            var hash = Cryptography.CryptoFunctionProviderFactory.Default.Hash256(plaintextExtended, 0, plaintextExtended.Length - 4).Bytes;
+
+            var pre = new byte[prefixLength];
+            Array.Copy(plaintextExtended, pre, prefixLength);
+            prefix = pre;
+
+            var pt = new byte[plaintextExtended.Length - prefixLength - 4];
+            Array.Copy(plaintextExtended, prefixLength, pt, 0, pt.Length);
+            plaintext = pt;
+
+            return (hash[0] == plaintextExtended[plaintextExtended.Length - 4]
+                    && hash[1] == plaintextExtended[plaintextExtended.Length - 3]
+                    && hash[2] == plaintextExtended[plaintextExtended.Length - 2]
+                    && hash[3] == plaintextExtended[plaintextExtended.Length - 1]);
         }
     }
 }
