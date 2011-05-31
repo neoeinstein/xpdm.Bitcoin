@@ -53,7 +53,7 @@ namespace xpdm.Bitcoin
         [ContractAbbreviator]
         public static void ValidOffset(int minimumInclusive, int maximumExclusive, int offsetParam, string offsetParamName)
         {
-            Contract.Requires<ArgumentOutOfRangeException>(minimumInclusive <= offsetParam && offsetParam < maximumExclusive, offsetParamName);
+            Contract.Requires<ArgumentOutOfRangeException>(offsetParam == 0 || minimumInclusive <= offsetParam && offsetParam < maximumExclusive, offsetParamName);
         }
 
         [ContractAbbreviator]

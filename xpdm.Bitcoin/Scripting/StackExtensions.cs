@@ -1,9 +1,11 @@
-﻿using C5;
+﻿using System.Diagnostics.Contracts;
+using C5;
 
 namespace xpdm.Bitcoin.Scripting
 {
     static class StackExtensions
     {
+        [Pure]
         public static T Peek<T>(this IStack<T> stack)
         {
             ContractsCommon.NotNull(stack, "stack");
@@ -11,6 +13,7 @@ namespace xpdm.Bitcoin.Scripting
             return stack.Peek(0);
         }
 
+        [Pure]
         public static T Peek<T>(this IStack<T> stack, int depth)
         {
             ContractsCommon.NotNull(stack, "stack");
