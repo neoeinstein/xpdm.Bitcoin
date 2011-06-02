@@ -1,7 +1,9 @@
-﻿
+﻿using System.IO;
+using xpdm.Bitcoin.Core;
+
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
-    public abstract class PayloadBase : SerializableMessageBase, IMessagePayload
+    public abstract class PayloadBase : BitcoinSerializable, IMessagePayload
     {
         public abstract string Command { get; }
 
@@ -11,10 +13,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
         }
 
         protected PayloadBase() { }
-
-        protected PayloadBase(byte[] buffer, int offset)
-            : base(buffer, offset)
-        {
-        }
+        protected PayloadBase(Stream stream) : base(stream) { }
+        protected PayloadBase(byte[] buffer, int offset) : base(buffer, offset) { }
     }
 }
