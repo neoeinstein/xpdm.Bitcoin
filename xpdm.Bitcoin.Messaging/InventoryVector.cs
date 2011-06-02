@@ -1,49 +1,42 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.IO;
+using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Messaging
 {
-    public class InventoryVector : BitcoinSerializableBase
+    public class InventoryVector : BitcoinSerializable
     {
         public InventoryObjectType Type { get; private set; }
-        public Hash ObjectHash { get; private set; }
+        public Hash256 ObjectHash { get; private set; }
 
-        public InventoryVector(InventoryObjectType type, Hash objectHash)
+        public InventoryVector(InventoryObjectType type, Hash256 objectHash)
         {
             Contract.Requires<ArgumentNullException>(objectHash != null);
 
             Type = type;
             ObjectHash = objectHash;
-
-            ByteSize = (uint)InventoryVector.ConstantByteSize;
         }
 
-        public InventoryVector(byte[] buffer, int offset)
-            : base(buffer, offset)
+        public InventoryVector() { }
+        public InventoryVector(Stream stream) : base(stream) { }
+        public InventoryVector(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        protected override void Deserialize(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= InventoryVector.ConstantByteSize, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - InventoryVector.ConstantByteSize, "offset");
-
-            Type = (InventoryObjectType)buffer.ReadUInt32(offset);
-            ObjectHash = new Hash(buffer, offset + OBJECTHASH_OFFSET);
-
-            ByteSize = (uint)InventoryVector.ConstantByteSize;
+            Type = (InventoryObjectType)ReadUInt32(stream);
+            ObjectHash = new Hash256(stream);
         }
 
-        private const int OBJECTHASH_OFFSET = BufferOperations.UINT32_SIZE;
-
-        [Pure]
-        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
+        public override void Serialize(Stream stream)
         {
-            ((uint)Type).WriteBytes(buffer, offset);
-            ObjectHash.WriteToBitcoinBuffer(buffer, offset + OBJECTHASH_OFFSET);
+            Write(stream, (uint)Type);
+            Write(stream, ObjectHash);
         }
 
-        public static int ConstantByteSize
+        public override int SerializedByteSize
         {
-            get { return BufferOperations.UINT32_SIZE + Hash.ConstantByteSize; }
+            get { return BufferOperations.UINT32_SIZE + ObjectHash.HashByteSize; }
         }
 
         [ContractInvariantMethod]
