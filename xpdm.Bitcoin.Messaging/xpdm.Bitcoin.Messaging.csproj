@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{16381259-7CED-406A-8471-86217A95E62E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>xpdm.Bitcoin.Messaging</RootNamespace>
+    <AssemblyName>xpdm.Bitcoin.Messaging</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Hash.cs" />
+    <Compile Include="InventoryObjectType.cs" />
+    <Compile Include="Network.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Payloads\AddrPayload.cs" />
+    <Compile Include="Payloads\AlertPayload.cs" />
+    <Compile Include="BitcoinBufferOperations.cs" />
+    <Compile Include="SerializableMessageBase.cs" />
+    <Compile Include="Payloads\BlockPayload.cs" />
+    <Compile Include="Payloads\GetAddrPayload.cs" />
+    <Compile Include="Payloads\GetBlocksPayload.cs" />
+    <Compile Include="Payloads\GetDataPayload.cs" />
+    <Compile Include="Payloads\GetHeadersPayload.cs" />
+    <Compile Include="Payloads\HeadersPayload.cs" />
+    <Compile Include="ISerializableMessage.cs" />
+    <Compile Include="Payloads\IMessagePayload.cs" />
+    <Compile Include="InventoryVector.cs" />
+    <Compile Include="Payloads\InvPayload.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="Payloads\PayloadBase.cs" />
+    <Compile Include="Payloads\PayloadFactory.cs" />
+    <Compile Include="NetworkAddress.cs" />
+    <Compile Include="Payloads\PingPayload.cs" />
+    <Compile Include="Services.cs" />
+    <Compile Include="TimestampedNetworkAddress.cs" />
+    <Compile Include="Payloads\TxPayload.cs" />
+    <Compile Include="Payloads\UnknownPayload.cs" />
+    <Compile Include="VarArray.cs" />
+    <Compile Include="VarInt.cs" />
+    <Compile Include="VarString.cs" />
+    <Compile Include="Payloads\VerAckPayload.cs" />
+    <Compile Include="Payloads\VersionPayload.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xpdm.Bitcoin\xpdm.Bitcoin.csproj">
+      <Project>{77C66EA7-C2CE-4C55-A5E2-6ACCDBBF5A40}</Project>
+      <Name>xpdm.Bitcoin</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

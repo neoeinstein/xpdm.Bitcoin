@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "crypto", "lib\bouncycastle\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xpdm.Bitcoin.Tests", "xpdm.Bitcoin.Tests\xpdm.Bitcoin.Tests.csproj", "{9669C213-3097-40DC-8DD7-C876EDBC83EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xpdm.Bitcoin.Messaging", "xpdm.Bitcoin.Messaging\xpdm.Bitcoin.Messaging.csproj", "{16381259-7CED-406A-8471-86217A95E62E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,14 @@ Global
 		{9669C213-3097-40DC-8DD7-C876EDBC83EC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9669C213-3097-40DC-8DD7-C876EDBC83EC}.ReleaseSnk|Any CPU.ActiveCfg = Release|Any CPU
 		{9669C213-3097-40DC-8DD7-C876EDBC83EC}.ReleaseSnk|Any CPU.Build.0 = Release|Any CPU
+		{16381259-7CED-406A-8471-86217A95E62E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16381259-7CED-406A-8471-86217A95E62E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16381259-7CED-406A-8471-86217A95E62E}.DebugSnk|Any CPU.ActiveCfg = Debug|Any CPU
+		{16381259-7CED-406A-8471-86217A95E62E}.DebugSnk|Any CPU.Build.0 = Debug|Any CPU
+		{16381259-7CED-406A-8471-86217A95E62E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16381259-7CED-406A-8471-86217A95E62E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16381259-7CED-406A-8471-86217A95E62E}.ReleaseSnk|Any CPU.ActiveCfg = Release|Any CPU
+		{16381259-7CED-406A-8471-86217A95E62E}.ReleaseSnk|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

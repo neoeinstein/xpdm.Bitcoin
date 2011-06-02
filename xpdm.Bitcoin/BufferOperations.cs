@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace xpdm.Bitcoin
 {
-    internal static class BufferOperations
+    public static class BufferOperations
     {
         public static void WriteBytes(this ulong val, byte[] buffer, int offset)
         {
