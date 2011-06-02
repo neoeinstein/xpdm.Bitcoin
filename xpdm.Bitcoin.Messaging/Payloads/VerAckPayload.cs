@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.IO;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
@@ -15,20 +14,20 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             get { return false; }
         }
 
-        public VerAckPayload()
+        public VerAckPayload(Stream stream) : base(stream) { }
+        public VerAckPayload(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        protected override void Deserialize(Stream stream)
         {
-            ByteSize = (uint)VerAckPayload.ConstantByteSize;
         }
 
-        public VerAckPayload(byte[] buffer, int offset)
-            : base(buffer, offset)
+        public override void Serialize(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= VerAckPayload.ConstantByteSize, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - VerAckPayload.ConstantByteSize, "offset");
+        }
 
-            ByteSize = (uint)VerAckPayload.ConstantByteSize;
+        public override int SerializedByteSize
+        {
+            get { return 0; }
         }
 
         public static string CommandText
@@ -37,19 +36,6 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             {
                 return "verack";
             }
-        }
-
-        public static int ConstantByteSize
-        {
-            get
-            {
-                return 0;
-            }
-        }
-
-        [Pure]
-        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
-        {
         }
     }
 }

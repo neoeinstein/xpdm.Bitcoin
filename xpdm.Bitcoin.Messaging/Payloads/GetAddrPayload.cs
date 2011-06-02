@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.IO;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
@@ -10,20 +9,20 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             get { return GetAddrPayload.CommandText; }
         }
 
-        public GetAddrPayload()
+        public GetAddrPayload(Stream stream) : base(stream) { }
+        public GetAddrPayload(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        protected override void Deserialize(Stream stream)
         {
-            ByteSize = 0;
         }
 
-        public GetAddrPayload(byte[] buffer, int offset)
-            : base(buffer, offset)
+        public override void Serialize(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= GetAddrPayload.ConstantByteSize, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - GetAddrPayload.ConstantByteSize, "offset");
+        }
 
-            ByteSize = 0;
+        public override int SerializedByteSize
+        {
+            get { return 0; }
         }
 
         public static string CommandText
@@ -32,19 +31,6 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             {
                 return "getaddr";
             }
-        }
-
-        public static int ConstantByteSize
-        {
-            get
-            {
-                return 0;
-            }
-        }
-
-        [Pure]
-        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
-        {
         }
     }
 }
