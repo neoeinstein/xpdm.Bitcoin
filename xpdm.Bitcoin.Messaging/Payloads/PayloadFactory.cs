@@ -1,88 +1,86 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.IO;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
     public static class PayloadFactory
     {
-        public static PayloadBase ConstructPayload(string command, byte[] buffer, int offset)
+        public static IPayload ConstructPayload(string command, Stream stream)
         {
             Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(command), "command");
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
+            Contract.Requires<ArgumentNullException>(stream != null, "stream");
 
             command = command.TrimEnd('\0');
 
             if (command.Equals(InvPayload.CommandText, StringComparison.Ordinal))
             {
-                return new InvPayload(buffer, offset);
+                return new InvPayload(stream);
             }
             if (command.Equals(TxPayload.CommandText, StringComparison.Ordinal))
             {
-                return new TxPayload(buffer, offset);
+                return new TxPayload(stream);
             }
             if (command.Equals(BlockPayload.CommandText, StringComparison.Ordinal))
             {
-                return new BlockPayload(buffer, offset);
+                return new BlockPayload(stream);
             }
             if (command.Equals(VersionPayload.CommandText, StringComparison.Ordinal))
             {
-                return new VersionPayload(buffer, offset);
+                return new VersionPayload(stream);
             }
             if (command.Equals(VerAckPayload.CommandText, StringComparison.Ordinal))
             {
-                return new VerAckPayload(buffer, offset);
+                return new VerAckPayload(stream);
             }
             if (command.Equals(HeadersPayload.CommandText, StringComparison.Ordinal))
             {
-                return new HeadersPayload(buffer, offset);
+                return new HeadersPayload(stream);
             }
             if (command.Equals(AddrPayload.CommandText, StringComparison.Ordinal))
             {
-                return new AddrPayload(buffer, offset);
+                return new AddrPayload(stream);
             }
             if (command.Equals(GetDataPayload.CommandText, StringComparison.Ordinal))
             {
-                return new GetDataPayload(buffer, offset);
+                return new GetDataPayload(stream);
             }
             if (command.Equals(GetBlocksPayload.CommandText, StringComparison.Ordinal))
             {
-                return new GetBlocksPayload(buffer, offset);
+                return new GetBlocksPayload(stream);
             }
             if (command.Equals(GetHeadersPayload.CommandText, StringComparison.Ordinal))
             {
-                return new GetHeadersPayload(buffer, offset);
+                return new GetHeadersPayload(stream);
             }
             if (command.Equals(GetAddrPayload.CommandText, StringComparison.Ordinal))
             {
-                return new GetAddrPayload(buffer, offset);
+                return new GetAddrPayload(stream);
             }
             if (command.Equals(PingPayload.CommandText, StringComparison.Ordinal))
             {
-                return new PingPayload(buffer, offset);
+                return new PingPayload(stream);
             }
             if (command.Equals(AlertPayload.CommandText, StringComparison.Ordinal))
             {
-                return new AlertPayload(buffer, offset);
+                return new AlertPayload(stream);
             }
 
             return null;
         }
 
-        public static PayloadBase ConstructPayload(string command, byte[] buffer, int offset, int length)
+        public static IPayload ConstructPayload(string command, Stream stream, int length)
         {
             Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(command), "command");
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= length, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - length, "offset");
-            Contract.Ensures(Contract.Result<PayloadBase>() != null);
+            Contract.Requires<ArgumentNullException>(stream != null, "stream");
+            Contract.Ensures(stream.Position == Contract.OldValue(stream.Position) + length);
+            Contract.Ensures(Contract.Result<IPayload>() != null);
 
-            var payload = ConstructPayload(command, buffer, offset);
+            var payload = ConstructPayload(command, stream);
 
             if (payload == null)
             {
-                payload = new UnknownPayload(command, buffer, offset, length);
+                payload = new UnknownPayload(command, stream, length);
             }
 
             return payload;
