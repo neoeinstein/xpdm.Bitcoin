@@ -55,6 +55,20 @@ namespace xpdm.Bitcoin.Messaging
             private set;
         }
 
+        public Message(Network network, IPayload payload)
+        {
+            Network = network;
+            Payload = payload;
+            PayloadLength = (uint)payload.SerializedByteSize;
+            if (payload.IncludeChecksum)
+            {
+                var bytesMs = new MemoryStream(payload.SerializedByteSize);
+                payload.Serialize(bytesMs);
+                var hash = Cryptography.CryptoFunctionProviderFactory.Default.Hash256(bytesMs.ToArray());
+                Checksum = (uint)(hash[0] << 24 & hash[1] << 16 & hash[2] << 8 & hash[3]);
+            }
+            Command = payload.Command;
+        }
         public Message(Stream stream) : base(stream) { }
         public Message(byte[] buffer, int offset) : base(buffer, offset) { }
 
