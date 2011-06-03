@@ -82,7 +82,7 @@
     <Compile Include="Payloads\GetHeadersPayload.cs" />
     <Compile Include="Payloads\HeadersPayload.cs" />
     <Compile Include="ISerializableMessage.cs" />
-    <Compile Include="Payloads\IMessagePayload.cs" />
+    <Compile Include="Payloads\IPayload.cs" />
     <Compile Include="InventoryVector.cs" />
     <Compile Include="Payloads\InvPayload.cs" />
     <Compile Include="Message.cs" />

@@ -3,7 +3,7 @@ using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
-    public abstract class PayloadBase : BitcoinSerializable, IMessagePayload
+    public abstract class PayloadBase : BitcoinSerializable, IPayload
     {
         public abstract string Command { get; }
 

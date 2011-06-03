@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics.Contracts;
+using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
-    [ContractClass(typeof(Contracts.IMessagePayloadContract))]
-    public interface IMessagePayload
+    [ContractClass(typeof(Contracts.IPayloadContract))]
+    public interface IPayload : IBitcoinSerializable
     {
         string Command { get; }
         bool IncludeChecksum { get; }
@@ -11,8 +12,8 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
     namespace Contracts
     {
-        [ContractClassFor(typeof(IMessagePayload))]
-        abstract class IMessagePayloadContract : IMessagePayload
+        [ContractClassFor(typeof(IPayload))]
+        abstract class IPayloadContract : IPayload
         {
             public string Command
             {

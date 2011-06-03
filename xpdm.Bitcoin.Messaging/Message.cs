@@ -47,7 +47,7 @@ namespace xpdm.Bitcoin.Messaging
             private set;
         }
 
-        public PayloadBase Payload
+        public IPayload Payload
         {
             get;
             private set;
