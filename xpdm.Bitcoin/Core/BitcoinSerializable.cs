@@ -74,8 +74,7 @@ namespace xpdm.Bitcoin.Core
             var retArr = new T[count];
             for (ulong i = 0; i < count; ++i)
             {
-                retArr[i] = new T();
-                retArr[i].Deserialize(stream);
+                retArr[i] = Read<T>(stream);
             }
             return retArr;
         }
@@ -189,7 +188,7 @@ namespace xpdm.Bitcoin.Core
             WriteVarInt(stream, objs.Length);
             foreach (var obj in objs)
             {
-                obj.Serialize(stream);
+                Write(stream, obj);
             }
         }
 
@@ -201,7 +200,7 @@ namespace xpdm.Bitcoin.Core
             WriteVarInt(stream, objs.Count);
             foreach (var obj in objs)
             {
-                obj.Serialize(stream);
+                Write(stream, obj);
             }
         }
 

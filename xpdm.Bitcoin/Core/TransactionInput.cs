@@ -93,8 +93,8 @@ namespace xpdm.Bitcoin.Core
 
         protected override void Deserialize(Stream stream)
         {
-            Source = new TransactionOutpoint(stream);
-            Script = new Script(stream);
+            Source = Read<TransactionOutpoint>(stream);
+            Script = Read<Script>(stream);
             SequenceNumber = ReadUInt32(stream);
 
             Freeze();
@@ -102,8 +102,8 @@ namespace xpdm.Bitcoin.Core
 
         public override void Serialize(Stream stream)
         {
-            Source.Serialize(stream);
-            Script.Serialize(stream);
+            Write(stream, Source);
+            Write(stream, Script);
             Write(stream, SequenceNumber);
         }
 
