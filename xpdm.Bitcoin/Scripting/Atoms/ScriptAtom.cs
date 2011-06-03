@@ -9,21 +9,21 @@ namespace xpdm.Bitcoin.Scripting.Atoms
     {
         public static readonly int MaximumAtomSize = 520;
 
-        public virtual int OperandCount(ExecutionContext context)
+        public virtual int OperandCount(IExecutionContext context)
         {
             return 0;
         }
-        public virtual int ResultCount(ExecutionContext context)
+        public virtual int ResultCount(IExecutionContext context)
         {
             return 0;
         }
-        public virtual int AltStackChange(ExecutionContext context)
+        public virtual int AltStackChange(IExecutionContext context)
         {
             return 0;
         }
 
         [Pure]
-        public bool CanExecute(ExecutionContext context)
+        public bool CanExecute(IExecutionContext context)
         {
             return
                 context.ValueStack.Count >= OperandCount(context)
@@ -32,7 +32,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         }
 
         [Pure]
-        protected virtual bool CanExecuteImpl(ExecutionContext context)
+        protected virtual bool CanExecuteImpl(IExecutionContext context)
         {
             ContractsCommon.NotNull(context, "context");
 
@@ -40,7 +40,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         }
 
         [Pure]
-        public void Execute(ExecutionContext context)
+        public void Execute(IExecutionContext context)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         }
 
         [Pure]
-        protected abstract void ExecuteImpl(ExecutionContext context);
+        protected abstract void ExecuteImpl(IExecutionContext context);
 
         protected ScriptAtom() { }
         protected ScriptAtom(Stream stream) : base(stream) { }
@@ -73,7 +73,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         [ContractClassFor(typeof(ScriptAtom))]
         internal abstract class ScriptAtomContract : ScriptAtom
         {
-            protected override void ExecuteImpl(ExecutionContext context)
+            protected override void ExecuteImpl(IExecutionContext context)
             {
                 ContractsCommon.NotNull(context, "context");
             }

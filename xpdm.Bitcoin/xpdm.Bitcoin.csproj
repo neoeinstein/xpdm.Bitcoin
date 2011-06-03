@@ -115,7 +115,6 @@
     <Compile Include="Core\TransactionInput.cs" />
     <Compile Include="Core\TransactionOutput.cs" />
     <Compile Include="Core\TransactionOutpoint.cs" />
-    <Compile Include="Core\TransactionSignatureOperations.cs" />
     <Compile Include="Cryptography\BouncyCastleCryptoFunctionProvider.cs" />
     <Compile Include="Cryptography\CryptoFunctionProviderBase.cs" />
     <Compile Include="Cryptography\CryptoFunctionProviderFactory.cs" />
@@ -161,28 +160,30 @@
     <Compile Include="Protocol\VarString.cs" />
     <Compile Include="Protocol\VersionPayload.cs" />
     <Compile Include="Protocol\VerAckPayload.cs" />
+    <Compile Include="Scripting\Atoms\IOpAtom.cs" />
+    <Compile Include="Scripting\Atoms\IScriptValueAtom.cs" />
     <Compile Include="Scripting\Atoms\IVerifyAtom.cs" />
     <Compile Include="Scripting\Atoms\OpAtom.cs" />
     <Compile Include="Scripting\Atoms\OpCheckSigAtom.cs" />
     <Compile Include="Scripting\Atoms\OpDupAtom.cs" />
-    <Compile Include="Scripting\Atoms\OpHashAtom.cs" />
     <Compile Include="Scripting\Atoms\OpEqualAtom.cs" />
+    <Compile Include="Scripting\Atoms\OpHashAtom.cs" />
     <Compile Include="Scripting\Atoms\OpInvalidAtom.cs" />
     <Compile Include="Scripting\Atoms\OpVerifyAtom.cs" />
-    <Compile Include="Scripting\StackExtensions.cs" />
+    <Compile Include="Scripting\Atoms\ScriptAtom.cs" />
     <Compile Include="Scripting\Atoms\ValueAtom.cs" />
     <Compile Include="Scripting\ExecutionContext.cs" />
-    <Compile Include="Scripting\Atoms\IOpAtom.cs" />
+    <Compile Include="Scripting\IExecutionContext.cs" />
     <Compile Include="Scripting\IScriptAtom.cs" />
-    <Compile Include="Scripting\Atoms\IScriptValueAtom.cs" />
-    <Compile Include="Scripting\Atoms\ScriptAtom.cs" />
-    <Compile Include="Scripting\ScriptAtomFactory.cs" />
-    <Compile Include="Scripting\ScriptOpCode.cs" />
     <Compile Include="Base58Convert.cs" />
     <Compile Include="InventoryObjectType.cs" />
     <Compile Include="MessageNetwork.cs" />
+    <Compile Include="Scripting\ScriptAtomFactory.cs" />
+    <Compile Include="Scripting\ScriptOpCode.cs" />
+    <Compile Include="Scripting\SignatureHashType.cs" />
+    <Compile Include="Scripting\StackExtensions.cs" />
+    <Compile Include="Scripting\TransactionSignatureOperations.cs" />
     <Compile Include="Services.cs" />
-    <Compile Include="SignatureHashType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\lib\bouncycastle\crypto\crypto.csproj">

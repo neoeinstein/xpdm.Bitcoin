@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace xpdm.Bitcoin
+namespace xpdm.Bitcoin.Scripting
 {
     [Flags]
     public enum SignatureHashType : byte

@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics.Contracts;
 using C5;
+using xpdm.Bitcoin.Core;
+using xpdm.Bitcoin.Scripting.Atoms;
 
 namespace xpdm.Bitcoin.Scripting
 {
-    public class ExecutionContext
+    public class ExecutionContext : IExecutionContext
     {
         public static readonly int MaximumCombinedStackSize = 1000;
         public static readonly int MaximumOpAtomsPerScript = 200;
@@ -14,7 +16,7 @@ namespace xpdm.Bitcoin.Scripting
 
         public int OpAtomsExecuted { get; private set; }
 
-        public bool Execute(Core.Script script, Core.Transaction transaction, int transactionInputIndex)
+        public bool Execute(Script script, Transaction transaction, int transactionInputIndex)
         {
             try
             {
@@ -34,12 +36,12 @@ namespace xpdm.Bitcoin.Scripting
                     }
                     atom.Execute(this);
 
-                    if (atom is Atoms.IVerifyAtom && (atom as Atoms.IVerifyAtom).MustVerify)
+                    if (atom is IVerifyAtom && (atom as IVerifyAtom).MustVerify)
                     {
                         ExecuteVerify();
                     }
 
-                    if (atom is Atoms.OpAtom)
+                    if (atom is OpAtom)
                     {
                         ++OpAtomsExecuted;
                     }
@@ -80,9 +82,6 @@ namespace xpdm.Bitcoin.Scripting
 
         public bool ExecuteFinal(Core.Script script, Core.Transaction transaction, int transactionInputIndex)
         {
-            Contract.Ensures(InFinalState);
-            Contract.Ensures(ExecutionResult != null);
-
             Execute(script, transaction, transactionInputIndex);
 
             Finish();
@@ -92,10 +91,7 @@ namespace xpdm.Bitcoin.Scripting
 
         public void Finish()
         {
-            Contract.Ensures(InFinalState);
-            Contract.Ensures(ExecutionResult != null);
-
-            this.InFinalState = true;
+            this.IsInFinalState = true;
         }
 
         private bool _hardFailure = false;
@@ -104,22 +100,17 @@ namespace xpdm.Bitcoin.Scripting
             get { return _hardFailure; }
             set
             {
-                Contract.Ensures(Contract.OldValue<bool>(HardFailure) == true || HardFailure == value);
-
                 _hardFailure |= value;
             }
         }
 
-        private bool _inFinalState = false;
-        public bool InFinalState
+        private bool _isInFinalState = false;
+        public bool IsInFinalState
         {
-            get { return _inFinalState; }
-            set
+            get { return _isInFinalState; }
+            private set
             {
-                Contract.Ensures(Contract.OldValue<bool>(InFinalState) == true || InFinalState == value);
-                Contract.Ensures(!value || ExecutionResult != null);
-
-                _inFinalState |= value;
+                _isInFinalState |= value;
             }
         }
 
@@ -134,13 +125,11 @@ namespace xpdm.Bitcoin.Scripting
         {
             get
             {
-                Contract.Ensures(!InFinalState || Contract.Result<bool?>() != null);
-
                 if (HardFailure || !IsValid)
                 {
                     return false;
                 }
-                if (!InFinalState)
+                if (!IsInFinalState)
                 {
                     return null;
                 }
@@ -169,10 +158,10 @@ namespace xpdm.Bitcoin.Scripting
             }
         }
 
-        public Core.Script CurrentScript { get; private set; }
-        public Core.Transaction CurrentTransaction { get; private set; }
+        public Script CurrentScript { get; private set; }
+        public Transaction CurrentTransaction { get; private set; }
         public int CurrentTransactionInputIndex { get; private set; }
-        public int CurrentAtomIndex { get; set; }
+        public int CurrentAtomIndex { get; private set; }
         public int LastSeparatorAtomIndex { get; set; }
 
         [Pure]
@@ -213,20 +202,6 @@ namespace xpdm.Bitcoin.Scripting
             {
                 return new byte[] { 0x00 };
             }
-        }
-
-        [ContractInvariantMethod]
-        private void __Invariant()
-        {
-            Contract.Invariant(ValueStack != null);
-            Contract.Invariant(ControlStack != null);
-            Contract.Invariant(AltStack != null);
-            Contract.Invariant(CurrentScript == null);
-            Contract.Invariant(CurrentTransaction == null);
-            Contract.Invariant(CurrentTransactionInputIndex == 0);
-            Contract.Invariant(CurrentAtomIndex == 0);
-            Contract.Invariant(LastSeparatorAtomIndex == 0);
-            Contract.Invariant(!InFinalState || ExecutionResult.HasValue);
         }
     }
 }

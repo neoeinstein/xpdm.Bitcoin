@@ -11,7 +11,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
             get { return true; }
         }
 
-        protected override void ExecuteImpl(ExecutionContext context)
+        protected override void ExecuteImpl(IExecutionContext context)
         {
         }
 

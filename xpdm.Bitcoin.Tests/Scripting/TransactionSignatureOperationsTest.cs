@@ -3,10 +3,11 @@ using Gallio.Framework;
 using Gallio.Framework.Data;
 using MbUnit.Framework;
 using xpdm.Bitcoin.Core;
+using xpdm.Bitcoin.Scripting;
 using xpdm.Bitcoin.Scripting.Atoms;
 using xpdm.Bitcoin.Tests.Factories.Core.Transactions;
 
-namespace xpdm.Bitcoin.Tests.Core
+namespace xpdm.Bitcoin.Tests.Scripting
 {
     [TestFixture]
     public class TransactionSignatureOperationsTest

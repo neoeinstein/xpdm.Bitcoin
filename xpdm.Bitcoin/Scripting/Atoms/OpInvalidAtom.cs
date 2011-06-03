@@ -4,7 +4,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 {
     class OpInvalidAtom : OpAtom
     {
-        protected override void ExecuteImpl(ExecutionContext context)
+        protected override void ExecuteImpl(IExecutionContext context)
         {
             Contract.Ensures(context.HardFailure == true);
 

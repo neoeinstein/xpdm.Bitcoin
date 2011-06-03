@@ -3,10 +3,11 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using C5;
+using xpdm.Bitcoin.Core;
 using xpdm.Bitcoin.Cryptography;
 using SCG = System.Collections.Generic;
 
-namespace xpdm.Bitcoin.Core
+namespace xpdm.Bitcoin.Scripting
 {
     public class TransactionSignatureOperations
     {

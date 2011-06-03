@@ -6,17 +6,17 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 {
     public sealed class OpHashAtom : OpAtom
     {
-        public override int OperandCount(ExecutionContext context)
+        public override int OperandCount(IExecutionContext context)
         {
             return 1;
         }
 
-        public override int ResultCount(ExecutionContext context)
+        public override int ResultCount(IExecutionContext context)
         {
             return 1;
         }
 
-        protected override void ExecuteImpl(ExecutionContext context)
+        protected override void ExecuteImpl(IExecutionContext context)
         {
             byte[] result;
             switch (OpCode)

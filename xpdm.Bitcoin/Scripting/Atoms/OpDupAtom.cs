@@ -4,17 +4,17 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 {
     public sealed class OpDupAtom : OpAtom
     {
-        public override int OperandCount(ExecutionContext context)
+        public override int OperandCount(IExecutionContext context)
         {
             return (OpCode == ScriptOpCode.OP_3DUP ? 3 : OpCode == ScriptOpCode.OP_2DUP ? 2 : 1);
         }
 
-        public override int ResultCount(ExecutionContext context)
+        public override int ResultCount(IExecutionContext context)
         {
             return OperandCount(context) * 2;
         }
 
-        protected override void ExecuteImpl(ExecutionContext context)
+        protected override void ExecuteImpl(IExecutionContext context)
         {
             var index = OperandCount(context) - 1;
             switch (OpCode)

@@ -5,19 +5,19 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 {
     public sealed class OpEqualAtom : OpAtom, IVerifyAtom
     {
-        public override int OperandCount(ExecutionContext context)
+        public override int OperandCount(IExecutionContext context)
         {
             return 2;
         }
 
-        public override int ResultCount(ExecutionContext context)
+        public override int ResultCount(IExecutionContext context)
         {
             return 1;
         }
 
         public bool MustVerify { get; private set; }
 
-        protected override void ExecuteImpl(ExecutionContext context)
+        protected override void ExecuteImpl(IExecutionContext context)
         {
             bool equal = context.ValueStack.Peek(0).Length == context.ValueStack.Peek(1).Length
                          && context.ValueStack.Peek(0).SequenceEqual(context.ValueStack.Peek(1));

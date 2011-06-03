@@ -9,7 +9,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
 {
     public sealed class ValueAtom : ScriptAtom, IScriptValueAtom, IEquatable<ValueAtom>
     {
-        public override int ResultCount(ExecutionContext context)
+        public override int ResultCount(IExecutionContext context)
         {
             return 1;
         }
@@ -47,7 +47,7 @@ namespace xpdm.Bitcoin.Scripting.Atoms
         {
         }
 
-        protected override void ExecuteImpl(ExecutionContext context)
+        protected override void ExecuteImpl(IExecutionContext context)
         {
             context.ValueStack.Push(this.Value);
         }

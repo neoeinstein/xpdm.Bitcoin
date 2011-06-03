@@ -7,15 +7,15 @@ namespace xpdm.Bitcoin.Scripting
     public interface IScriptAtom : Core.IBitcoinSerializable, IEquatable<IScriptAtom>
     {
         [Pure]
-        int OperandCount(ExecutionContext context);
+        int OperandCount(IExecutionContext context);
         [Pure]
-        int ResultCount(ExecutionContext context);
+        int ResultCount(IExecutionContext context);
         [Pure]
-        int AltStackChange(ExecutionContext context);
+        int AltStackChange(IExecutionContext context);
         [Pure]
-        bool CanExecute(ExecutionContext context);
+        bool CanExecute(IExecutionContext context);
         [Pure]
-        void Execute(ExecutionContext context);
+        void Execute(IExecutionContext context);
     }
 
     namespace Contracts
@@ -23,7 +23,7 @@ namespace xpdm.Bitcoin.Scripting
         [ContractClassFor(typeof(IScriptAtom))]
         abstract class IScriptAtomContract : IScriptAtom
         {
-            public int OperandCount(ExecutionContext context)
+            public int OperandCount(IExecutionContext context)
             {
                 ContractsCommon.NotNull(context, "context");
                 Contract.Ensures(Contract.Result<int>() >= 0);
@@ -31,7 +31,7 @@ namespace xpdm.Bitcoin.Scripting
                 return default(int);
             }
 
-            public int ResultCount(ExecutionContext context)
+            public int ResultCount(IExecutionContext context)
             {
                 ContractsCommon.NotNull(context, "context");
                 Contract.Ensures(Contract.Result<int>() >= 0);
@@ -39,7 +39,7 @@ namespace xpdm.Bitcoin.Scripting
                 return default(int);
             }
 
-            public int AltStackChange(ExecutionContext context)
+            public int AltStackChange(IExecutionContext context)
             {
                 ContractsCommon.NotNull(context, "context");
 
@@ -47,7 +47,7 @@ namespace xpdm.Bitcoin.Scripting
             }
 
             [Pure]
-            public bool CanExecute(ExecutionContext context)
+            public bool CanExecute(IExecutionContext context)
             {
                 ContractsCommon.NotNull(context, "context");
 
@@ -55,7 +55,7 @@ namespace xpdm.Bitcoin.Scripting
             }
 
             [Pure]
-            public void Execute(ExecutionContext context)
+            public void Execute(IExecutionContext context)
             {
                 ContractsCommon.NotNull(context, "context");
                 Contract.Requires(this.CanExecute(context));
