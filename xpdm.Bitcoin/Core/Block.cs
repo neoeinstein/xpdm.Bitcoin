@@ -228,8 +228,8 @@ namespace xpdm.Bitcoin.Core
         protected override void Deserialize(Stream stream)
         {
             Version = ReadUInt32(stream);
-            PreviousBlockHash = new Hash256(stream);
-            new Hash256(stream); // Throw away the Merkle Root
+            PreviousBlockHash = Read<Hash256>(stream);
+            Read<Hash256>(stream); // Throw away the Merkle Root
             Timestamp = ReadUInt32(stream);
             DifficultyBits = ReadUInt32(stream);
             Nonce = ReadUInt32(stream);
@@ -255,8 +255,8 @@ namespace xpdm.Bitcoin.Core
             ContractsCommon.NotNull(stream, "stream");
 
             Write(stream, Version);
-            PreviousBlockHash.Serialize(stream);
-            MerkleRoot.Serialize(stream);
+            Write(stream, PreviousBlockHash);
+            Write(stream, MerkleRoot);
             Write(stream, Timestamp);
             Write(stream, DifficultyBits);
             Write(stream, Nonce);
