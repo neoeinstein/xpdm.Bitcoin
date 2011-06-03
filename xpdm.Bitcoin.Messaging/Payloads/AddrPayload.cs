@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.IO;
+using System.Linq;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
@@ -10,39 +12,38 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             get { return AddrPayload.CommandText; }
         }
 
-        public VarArray<TimestampedNetworkAddress> AddressList { get; private set; }
+        public TimestampedNetworkAddress[] AddressList { get; private set; }
 
         public AddrPayload(TimestampedNetworkAddress[] addressList)
         {
             Contract.Requires<ArgumentNullException>(addressList != null);
 
-            AddressList = new VarArray<TimestampedNetworkAddress>(addressList);
-
-            ByteSize = AddressList.ByteSize;
+            AddressList = addressList;
         }
 
-        public AddrPayload(byte[] buffer, int offset)
-        {
-            AddressList = new VarArray<TimestampedNetworkAddress>(buffer, offset);
+        public AddrPayload(Stream stream) : base(stream) { }
+        public AddrPayload(byte[] buffer, int offset) : base(buffer, offset) { }
 
-            ByteSize = AddressList.ByteSize;
+        protected override void Deserialize(Stream stream)
+        {
+            AddressList = ReadVarArray<TimestampedNetworkAddress>(stream);
+        }
+
+        public override void Serialize(Stream stream)
+        {
+            WriteVarArray(stream, AddressList);
+        }
+
+        public override int SerializedByteSize
+        {
+            get { return VarIntByteSize(AddressList.Length) + AddressList.Sum(a => a.SerializedByteSize); }
         }
 
         private const uint INCLUDE_TIMESTAMP_VERSION = 31402;
 
-        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
-        {
-            AddressList.WriteToBitcoinBuffer(buffer, offset);
-        }
-
         public static string CommandText
         {
             get { return "addr"; }
-        }
-
-        public static int MinimumByteSize
-        {
-            get { return VarInt.MinimumByteSize; }
         }
 
         [ContractInvariantMethod]
