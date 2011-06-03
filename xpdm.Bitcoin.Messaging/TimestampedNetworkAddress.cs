@@ -17,7 +17,7 @@ namespace xpdm.Bitcoin.Messaging
             Address = address;
         }
 
-        public TimestampedNetworkAddress() { }
+        public TimestampedNetworkAddress() { Address = NetworkAddress.IPv6Any; }
         public TimestampedNetworkAddress(Stream stream) : base(stream) { }
         public TimestampedNetworkAddress(byte[] buffer, int offset) : base(buffer, offset) { }
 

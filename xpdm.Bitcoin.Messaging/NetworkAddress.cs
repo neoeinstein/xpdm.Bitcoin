@@ -21,7 +21,7 @@ namespace xpdm.Bitcoin.Messaging
             Endpoint = endpoint;
         }
 
-        public NetworkAddress() { }
+        public NetworkAddress() { Endpoint = new IPEndPoint(IPAddress.IPv6Any, 0); }
         public NetworkAddress(Stream stream) : base(stream) { }
         public NetworkAddress(byte[] buffer, int offset) : base(buffer, offset) { }
 
