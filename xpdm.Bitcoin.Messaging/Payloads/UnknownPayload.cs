@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.IO;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
@@ -8,71 +9,49 @@ namespace xpdm.Bitcoin.Messaging.Payloads
         private readonly string _command;
         public override string Command
         {
-            get { return _command; }
-        }
-
-        [ContractPublicPropertyName("Bytes")]
-        private readonly byte[] _bytes;
-        public byte[] Bytes
-        {
             get
             {
-                Contract.Ensures(Contract.Result<byte[]>() != null);
-                Contract.Ensures(Contract.Result<byte[]>().Length == ByteSize);
+                Contract.Ensures(Contract.Result<string>() != null);
 
-                // Use a copy of the byte array to ensure that the original array is
-                // not altered, and subsequent calls will return the original payload.
-                var retVal = new byte[ByteSize];
-                Array.Copy(_bytes, retVal, ByteSize);
-                return retVal;
-
+                return _command;
             }
         }
 
-        public UnknownPayload()
+        public byte[] Bytes { get; private set; }
+
+        public UnknownPayload(string command, Stream stream, int length)
         {
-            _command = string.Empty;
-            _bytes = new byte[0];
-
-            ByteSize = 0;
-        }
-
-        public UnknownPayload(string command, byte[] buffer, int offset, uint length)
-            : base(buffer, offset)
-        {
-            Contract.Requires<ArgumentNullException>(command != null, "command");
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= length, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - length, "length");
-
             _command = command;
-            _bytes = new byte[length];
-            Array.Copy(buffer, offset, _bytes, 0, length);
-
-            ByteSize = length;
+            Bytes = ReadBytes(stream, length);
         }
 
-        [Pure]
-        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
+        public UnknownPayload(string command, byte[] buffer, int offset, int length)
         {
-            Array.Copy(_bytes, 0, buffer, offset, ByteSize);
+            _command = command;
+            Bytes = new byte[length];
+            Array.Copy(buffer, offset, Bytes, 0, length);
         }
 
-        public static int MinimumByteSize
+        protected override void Deserialize(Stream stream)
         {
-            get
-            {
-                return 0;
-            }
+            throw new NotSupportedException();
+        }
+
+        public override void Serialize(Stream stream)
+        {
+            WriteBytes(stream, Bytes);
+        }
+
+        public override int SerializedByteSize
+        {
+            get { return Bytes.Length; }
         }
 
         [ContractInvariantMethod]
         private void __Invariant()
         {
-            Contract.Invariant(ByteSize == _bytes.Length);
             Contract.Invariant(Command != null);
-            Contract.Invariant(_bytes != null);
+            Contract.Invariant(Bytes != null);
         }
     }
 }
