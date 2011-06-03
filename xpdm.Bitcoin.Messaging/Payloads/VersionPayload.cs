@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using System.IO;
 using xpdm.Bitcoin.Core;
 
@@ -29,8 +28,8 @@ namespace xpdm.Bitcoin.Messaging.Payloads
         public VersionPayload(uint version, Services services, Timestamp timestamp, NetworkAddress emittingAddress,
             NetworkAddress receivingAddress, ulong nonce, byte[] subVersionNum, uint startHeight)
         {
-            Contract.Requires<ArgumentNullException>(emittingAddress != null);
-            Contract.Requires<ArgumentNullException>(receivingAddress != null);
+            ContractsCommon.NotNull(emittingAddress, "emittingAddress");
+            ContractsCommon.NotNull(receivingAddress, "receivingAddress");
 
             Version = version;
             Services = services;

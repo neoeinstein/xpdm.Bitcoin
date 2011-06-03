@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using xpdm.Bitcoin.Core;
 
@@ -19,8 +17,8 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
         public GetBlocksPayload(uint version, Hash256[] hashStart, Hash256 hashStop)
         {
-            Contract.Requires<ArgumentNullException>(hashStart != null, "hashStart");
-            Contract.Requires<ArgumentNullException>(hashStop != null, "hashStop");
+            ContractsCommon.NotNull(hashStart, "hashStart");
+            ContractsCommon.NotNull(hashStop, "hashStop");
 
             Version = version;
             HashStart = hashStart;

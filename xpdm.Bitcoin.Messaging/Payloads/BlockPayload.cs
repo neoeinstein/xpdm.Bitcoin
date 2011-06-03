@@ -16,7 +16,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
         public BlockPayload(Block block)
         {
-            Contract.Requires<ArgumentNullException>(block != null, "block");
+            ContractsCommon.NotNull(block, "block");
 
             Block = block;
         }

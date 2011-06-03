@@ -19,8 +19,8 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
         public GetHeadersPayload(uint version, Hash256[] hashStart, Hash256 hashStop)
         {
-            Contract.Requires<ArgumentNullException>(hashStart != null, "hashStart");
-            Contract.Requires<ArgumentNullException>(hashStop != null, "hashStop");
+            ContractsCommon.NotNull(hashStart, "hashStart");
+            ContractsCommon.NotNull(hashStop, "hashStop");
 
             Version = version;
             HashStart = hashStart;

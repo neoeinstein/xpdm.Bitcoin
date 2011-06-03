@@ -16,7 +16,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
         public InvPayload(InventoryVector[] inventory)
         {
-            Contract.Requires<ArgumentNullException>(inventory != null, "inventory");
+            ContractsCommon.NotNull(inventory, "inventory");
 
             Inventory = inventory;
         }

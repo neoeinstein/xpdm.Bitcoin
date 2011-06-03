@@ -8,8 +8,8 @@ namespace xpdm.Bitcoin.Messaging.Payloads
     {
         public static IPayload ConstructPayload(string command, Stream stream)
         {
+            ContractsCommon.NotNull(stream, "stream");
             Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(command), "command");
-            Contract.Requires<ArgumentNullException>(stream != null, "stream");
 
             command = command.TrimEnd('\0');
 
@@ -71,10 +71,10 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
         public static IPayload ConstructPayload(string command, Stream stream, int length)
         {
+            ContractsCommon.NotNull(stream, "stream");
             Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(command), "command");
-            Contract.Requires<ArgumentNullException>(stream != null, "stream");
             Contract.Ensures(stream.Position == Contract.OldValue(stream.Position) + length);
-            Contract.Ensures(Contract.Result<IPayload>() != null);
+            ContractsCommon.ResultIsNonNull<IPayload>();
 
             var payload = ConstructPayload(command, stream);
 

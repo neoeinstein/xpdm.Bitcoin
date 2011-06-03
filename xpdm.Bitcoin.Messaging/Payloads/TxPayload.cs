@@ -16,7 +16,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
         public TxPayload(Transaction transaction)
         {
-            Contract.Requires<ArgumentNullException>(transaction != null, "transaction");
+            ContractsCommon.NotNull(transaction, "transaction");
 
             Transaction = transaction;
         }

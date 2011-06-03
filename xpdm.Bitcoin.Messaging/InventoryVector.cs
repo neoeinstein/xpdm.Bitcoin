@@ -12,7 +12,7 @@ namespace xpdm.Bitcoin.Messaging
 
         public InventoryVector(InventoryObjectType type, Hash256 objectHash)
         {
-            Contract.Requires<ArgumentNullException>(objectHash != null);
+            ContractsCommon.NotNull(objectHash, "objectHash");
 
             Type = type;
             ObjectHash = objectHash;

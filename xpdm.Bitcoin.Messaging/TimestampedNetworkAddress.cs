@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using System.IO;
 using xpdm.Bitcoin.Core;
 
@@ -12,7 +11,7 @@ namespace xpdm.Bitcoin.Messaging
 
         public TimestampedNetworkAddress(NetworkAddress address, uint timestamp)
         {
-            Contract.Requires<ArgumentNullException>(address != null, "address");
+            ContractsCommon.NotNull(address, "address");
 
             Timestamp = timestamp;
             Address = address;

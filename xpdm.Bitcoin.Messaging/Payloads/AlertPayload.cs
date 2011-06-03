@@ -16,8 +16,8 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
         public AlertPayload(byte[] message, byte[] signature)
         {
-            Contract.Requires<ArgumentNullException>(message != null, "message");
-            Contract.Requires<ArgumentNullException>(signature != null, "signature");
+            ContractsCommon.NotNull(message, "message");
+            ContractsCommon.NotNull(signature, "signature");
 
             Message = message;
             Signature = signature;

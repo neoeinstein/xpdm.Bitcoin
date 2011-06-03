@@ -14,7 +14,7 @@ namespace xpdm.Bitcoin.Messaging
 
         public NetworkAddress(Services services, IPEndPoint endpoint)
         {
-            Contract.Requires<ArgumentNullException>(endpoint != null, "endpoint");
+            ContractsCommon.NotNull(endpoint, "endpoint");
             Contract.Requires<ArgumentException>(endpoint.AddressFamily == AddressFamily.InterNetwork || endpoint.AddressFamily == AddressFamily.InterNetworkV6, "Non-IP Addresses are not supported");
 
             Services = services;

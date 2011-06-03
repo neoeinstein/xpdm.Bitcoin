@@ -11,7 +11,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
         {
             get
             {
-                Contract.Ensures(Contract.Result<string>() != null);
+                ContractsCommon.ResultIsNonNull<string>();
 
                 return _command;
             }

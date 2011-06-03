@@ -16,7 +16,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
         public AddrPayload(TimestampedNetworkAddress[] addressList)
         {
-            Contract.Requires<ArgumentNullException>(addressList != null);
+            ContractsCommon.NotNull(addressList, "addressList");
 
             AddressList = addressList;
         }
