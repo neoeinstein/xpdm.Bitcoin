@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.IO;
 using System.Text;
+using xpdm.Bitcoin.Core;
 using xpdm.Bitcoin.Messaging.Payloads;
 
 namespace xpdm.Bitcoin.Messaging
 {
-    public class Message : SerializableMessageBase
+    public class Message : BitcoinSerializable
     {
         /// <summary>
         /// Indicates the network from which this message originated.
@@ -53,56 +55,41 @@ namespace xpdm.Bitcoin.Messaging
             private set;
         }
 
-        public Message(byte[] buffer, int offset)
-            : base(buffer, offset)
+        public Message(Stream stream) : base(stream) { }
+        public Message(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        protected override void Deserialize(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= Message.MinimumByteSize, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - Message.MinimumByteSize, "offset");
-
-            Network = (Network)buffer.ReadUInt32(offset);
-            Command = Encoding.ASCII.GetString(buffer, Command_Offset(ref offset), MAX_COMMAND_LENGTH).TrimEnd('\0');
-            PayloadLength = buffer.ReadUInt32(PayloadLength_Offset(ref offset));
-
-            ByteSize = ((uint)Network).ByteSize() + MAX_COMMAND_LENGTH * BufferOperations.UINT8_SIZE + PayloadLength.ByteSize();
+            Network = (Network)ReadUInt32(stream);
+            var commandBytes = ReadBytes(stream, MAX_COMMAND_LENGTH);
+            Command = Encoding.ASCII.GetString(commandBytes).TrimEnd('\0');
+            PayloadLength = ReadUInt32(stream);
 
             if (PayloadFactory.PayloadRequiresChecksum(Command))
             {
-                Checksum = buffer.ReadUInt32(Checksum_Offset(ref offset));
-
-                ByteSize += Checksum.ByteSize();
+                Checksum = ReadUInt32(stream);
             }
 
-            Payload = PayloadFactory.ConstructPayload(Command, buffer, Payload_Offset(ref offset), PayloadLength);
-
-            ByteSize += Payload.ByteSize;
+            Payload = PayloadFactory.ConstructPayload(Command, stream, (int)PayloadLength);
         }
 
-        private int Command_Offset(ref int offset) { return offset += (int)((uint)Network).ByteSize(); }
-        private int PayloadLength_Offset(ref int offset) { return offset += BufferOperations.UINT8_SIZE * MAX_COMMAND_LENGTH; }
-        private int Checksum_Offset(ref int offset) { return offset += (int)PayloadLength.ByteSize(); }
-        private int Payload_Offset(ref int offset) { return offset += (int)(PayloadFactory.PayloadRequiresChecksum(Command) ? Checksum.ByteSize() : 0); }
-
-        [Pure]
-        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
+        public override void Serialize(Stream stream)
         {
-            ((uint)Network).WriteBytes(buffer, offset);
-            Encoding.ASCII.GetBytes(Command, 0, Command.Length < MAX_COMMAND_LENGTH ? Command.Length : MAX_COMMAND_LENGTH, buffer, Command_Offset(ref offset));
-            PayloadLength.WriteBytes(buffer, PayloadLength_Offset(ref offset));
+            Write(stream, (uint)Network);
+            var commandBytes = new byte[MAX_COMMAND_LENGTH];
+            Encoding.ASCII.GetBytes(Command, 0, Math.Min(Command.Length, MAX_COMMAND_LENGTH), commandBytes, 0);
+            WriteBytes(stream, commandBytes);
+            Write(stream, PayloadLength);
             if (Payload.IncludeChecksum)
             {
-                Checksum.WriteBytes(buffer, Checksum_Offset(ref offset));
+                Write(stream, Checksum);
             }
-            Payload.WriteToBitcoinBuffer(buffer, Payload_Offset(ref offset));
+            Write(stream, Payload);
         }
 
-        public static int MinimumByteSize
+        public override int SerializedByteSize
         {
-            get
-            {
-                return BufferOperations.UINT32_SIZE * 2 + BufferOperations.UINT8_SIZE * MAX_COMMAND_LENGTH;
-            }
+            get { return BufferOperations.UINT32_SIZE + MAX_COMMAND_LENGTH + BufferOperations.UINT32_SIZE + (Payload.IncludeChecksum ? BufferOperations.UINT32_SIZE : 0) + Payload.SerializedByteSize; }
         }
 
         [ContractInvariantMethod]
