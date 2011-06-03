@@ -60,6 +60,11 @@ namespace xpdm.Bitcoin.Messaging
             get { return BufferOperations.UINT64_SIZE * 3 + BufferOperations.UINT16_SIZE; }
         }
 
+        public override string ToString()
+        {
+            return string.Format("({0:x}){1}", Services, Endpoint);
+        }
+
         private readonly static NetworkAddress s_IPv6Any = new NetworkAddress(0, new IPEndPoint(IPAddress.IPv6Any, 0));
         public static NetworkAddress IPv6Any
         {

@@ -38,6 +38,12 @@ namespace xpdm.Bitcoin.Messaging
             get { return BufferOperations.UINT32_SIZE + Address.SerializedByteSize; }
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}@{1:}", Address, Timestamp);
+        }
+
+
         [ContractInvariantMethod]
         private void __Invariant()
         {

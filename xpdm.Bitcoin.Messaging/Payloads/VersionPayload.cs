@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.Contracts;
 using System.IO;
+using System.Text;
 using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
@@ -109,6 +110,20 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             }
         }
 
+        public override string ToString()
+        {
+            var verStr = string.Format("(ver={0}, services={1:x}, timestamp={2:}, addr={3}", Version, Services, Timestamp, EmittingAddress);
+            if (Version >= 106)
+            {
+                verStr += string.Format(", recv={0}, nonce={1}, subver='{2}'", ReceivingAddress, Nonce, Encoding.ASCII.GetString(SubVersionNum));
+                if (Version >= 209)
+                {
+                    verStr += string.Format(", start={0}", StartHeight);
+                }
+            }
+            verStr += ")";
+            return verStr;
+        }
 
         public static string CommandText
         {
