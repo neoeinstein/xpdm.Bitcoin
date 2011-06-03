@@ -100,6 +100,17 @@ namespace xpdm.Bitcoin.Core
             return val;
         }
 
+        protected static T Read<T>(Stream stream) where T : BitcoinSerializable, new()
+        {
+            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.ResultIsNonNull<T>();
+
+            var retVal = new T();
+            retVal.Deserialize(stream);
+
+            return retVal;
+        }
+
         protected static ulong ReadUInt64(Stream stream)
         {
             ContractsCommon.NotNull(stream, "stream");
