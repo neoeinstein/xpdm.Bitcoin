@@ -50,11 +50,11 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             Version = ReadUInt32(stream);
             Services = (Services)ReadUInt64(stream);
             Timestamp = (Timestamp)ReadUInt64(stream);
-            EmittingAddress = new NetworkAddress(stream);
+            EmittingAddress = Read<NetworkAddress>(stream);
 
             if (Version >= 106)
             {
-                ReceivingAddress = new NetworkAddress(stream);
+                ReceivingAddress = Read<NetworkAddress>(stream);
                 Nonce = ReadUInt64(stream);
                 var subVersionLen = (int)ReadVarInt(stream);
                 SubVersionNum = ReadBytes(stream, subVersionLen);

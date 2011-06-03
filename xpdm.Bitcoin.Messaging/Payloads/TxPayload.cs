@@ -26,7 +26,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
         protected override void Deserialize(Stream stream)
         {
-            Transaction = new Transaction(stream);
+            Transaction = Read<Transaction>(stream);
         }
 
         public override void Serialize(Stream stream)

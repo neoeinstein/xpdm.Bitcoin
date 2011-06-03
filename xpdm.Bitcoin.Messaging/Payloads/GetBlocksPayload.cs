@@ -34,7 +34,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
         {
             Version = ReadUInt32(stream);
             HashStart = ReadVarArray<Hash256>(stream);
-            HashStop = new Hash256(stream);
+            HashStop = Read<Hash256>(stream);
         }
 
         public override void Serialize(Stream stream)
