@@ -60,7 +60,7 @@ namespace xpdm.Bitcoin.Core
         protected override void Deserialize(System.IO.Stream stream)
         {
             Value = ReadUInt64(stream);
-            Script = new Script(stream);
+            Script = Read<Script>(stream);
 
             Freeze();
         }
@@ -68,7 +68,7 @@ namespace xpdm.Bitcoin.Core
         public override void Serialize(System.IO.Stream stream)
         {
             Write(stream, (ulong)Value);
-            Script.Serialize(stream);
+            Write(stream, Script);
         }
 
         public override int SerializedByteSize

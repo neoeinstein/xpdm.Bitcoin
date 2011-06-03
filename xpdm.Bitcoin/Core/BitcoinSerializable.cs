@@ -74,8 +74,7 @@ namespace xpdm.Bitcoin.Core
             var retArr = new T[count];
             for (ulong i = 0; i < count; ++i)
             {
-                retArr[i] = new T();
-                retArr[i].Deserialize(stream);
+                retArr[i] = Read<T>(stream);
             }
             return retArr;
         }
@@ -98,6 +97,17 @@ namespace xpdm.Bitcoin.Core
                     break;
             }
             return val;
+        }
+
+        protected static T Read<T>(Stream stream) where T : BitcoinSerializable, new()
+        {
+            ContractsCommon.NotNull(stream, "stream");
+            ContractsCommon.ResultIsNonNull<T>();
+
+            var retVal = new T();
+            retVal.Deserialize(stream);
+
+            return retVal;
         }
 
         protected static ulong ReadUInt64(Stream stream)
@@ -178,7 +188,7 @@ namespace xpdm.Bitcoin.Core
             WriteVarInt(stream, objs.Length);
             foreach (var obj in objs)
             {
-                obj.Serialize(stream);
+                Write(stream, obj);
             }
         }
 
@@ -190,7 +200,7 @@ namespace xpdm.Bitcoin.Core
             WriteVarInt(stream, objs.Count);
             foreach (var obj in objs)
             {
-                obj.Serialize(stream);
+                Write(stream, obj);
             }
         }
 
@@ -243,6 +253,12 @@ namespace xpdm.Bitcoin.Core
             ContractsCommon.CanWriteToStream(stream, VarIntByteSize(value));
             // Prevent sign extension when upconverting to long
             WriteVarInt(stream, (ulong)value);
+        }
+
+        protected static void Write(Stream stream, IBitcoinSerializable serializable)
+        {
+            ContractsCommon.CanWriteToStream(stream, serializable.SerializedByteSize);
+            serializable.Serialize(stream);
         }
 
         protected static void Write(Stream stream, ulong value)

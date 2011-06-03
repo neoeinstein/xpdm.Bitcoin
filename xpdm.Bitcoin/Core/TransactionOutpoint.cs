@@ -64,7 +64,7 @@ namespace xpdm.Bitcoin.Core
 
         protected override void Deserialize(System.IO.Stream stream)
         {
-            SourceTransactionHash = new Hash256(stream);
+            SourceTransactionHash = Read<Hash256>(stream);
             OutputSequenceNumber = ReadInt32(stream);
 
             Freeze();
@@ -72,7 +72,7 @@ namespace xpdm.Bitcoin.Core
 
         public override void Serialize(System.IO.Stream stream)
         {
-            SourceTransactionHash.Serialize(stream);
+            Write(stream, SourceTransactionHash);
             Write(stream, OutputSequenceNumber);
         }
 
