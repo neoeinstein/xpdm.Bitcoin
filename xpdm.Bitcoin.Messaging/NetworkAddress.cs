@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Messaging
 {
-    public class NetworkAddress : SerializableMessageBase
+    public class NetworkAddress : BitcoinSerializable
     {
         public Services Services { get; private set; }
         public IPEndPoint Endpoint { get; private set; }
@@ -17,52 +19,42 @@ namespace xpdm.Bitcoin.Messaging
 
             Services = services;
             Endpoint = endpoint;
-
-            ByteSize = (uint)NetworkAddress.ConstantByteSize;
         }
 
-        public NetworkAddress(byte[] buffer, int offset)
-            : base(buffer, offset)
+        public NetworkAddress(Stream stream) : base(stream) { }
+        public NetworkAddress(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        protected override void Deserialize(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= NetworkAddress.ConstantByteSize, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - NetworkAddress.ConstantByteSize, "offset");
-
-            Services = (Services)buffer.ReadUInt64(offset);
-            var address = new byte[16];
-            Array.Copy(buffer, AddressIPv6_Offset(ref offset), address, 0, 16);
-            Endpoint = new IPEndPoint(
-                          new IPAddress(address),
-                          buffer.ReadUInt16BE(Port_Offset(ref offset)));
-
-            ByteSize = (uint)NetworkAddress.ConstantByteSize;
+            Services = (Services)ReadUInt64(stream);
+            var address = ReadBytes(stream, 16);
+            var port = ReadUInt16(stream);
+            port = (ushort)(port >> 8 & port << 8);
+            Endpoint = new IPEndPoint(new IPAddress(address), port);
         }
 
-        private int AddressIPv6_Offset(ref int offset) { return offset += (int)((ulong)Services).ByteSize(); }
-        private int AddressIPv4Marker_Offset(ref int offset) { return offset += BufferOperations.UINT64_SIZE; }
-        private int AddressIPv4_Offset(ref int offset) { return offset += BufferOperations.UINT32_SIZE; }
-        private int Port_Offset(ref int offset) { return offset += BufferOperations.UINT64_SIZE * 2; }
-
-        [Pure]
-        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
+        public override void Serialize(Stream stream)
         {
-            ((ulong)Services).WriteBytes(buffer, offset);
-            var subOffset = offset;
-            switch (Endpoint.AddressFamily)
+            Write(stream, (ulong)Services);
+            if (Endpoint.AddressFamily == AddressFamily.InterNetwork)
             {
-                case AddressFamily.InterNetwork:
-                    ((ushort)0xFFFF).WriteBytes(buffer, AddressIPv4Marker_Offset(ref subOffset));
-                    Endpoint.Address.GetAddressBytes().CopyTo(buffer, AddressIPv4_Offset(ref subOffset));
-                    break;
-                case AddressFamily.InterNetworkV6:
-                    Endpoint.Address.GetAddressBytes().CopyTo(buffer, AddressIPv6_Offset(ref subOffset));
-                    break;
+                WriteBytes(stream, new byte[10]);
+                Write(stream, (ushort)0xFFFFU);
+                WriteBytes(stream, Endpoint.Address.GetAddressBytes());
             }
-            ((ushort)Endpoint.Port).WriteBytesBE(buffer, Port_Offset(ref offset));
+            else if (Endpoint.AddressFamily == AddressFamily.InterNetworkV6)
+            {
+                WriteBytes(stream, Endpoint.Address.GetAddressBytes());
+            }
+            else
+            {
+                throw new InvalidOperationException("Unexpected AddressFamily");
+            }
+            var port = (ushort)(Endpoint.Port >> 8 & Endpoint.Port << 8);
+            Write(stream, port);
         }
 
-        public static int ConstantByteSize
+        public override int SerializedByteSize
         {
             get { return BufferOperations.UINT64_SIZE * 3 + BufferOperations.UINT16_SIZE; }
         }
