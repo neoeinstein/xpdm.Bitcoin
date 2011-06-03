@@ -6,10 +6,10 @@ namespace xpdm.Bitcoin.Messaging
 {
     public class TimestampedNetworkAddress : BitcoinSerializable
     {
-        public uint Timestamp { get; private set; }
+        public Timestamp Timestamp { get; private set; }
         public NetworkAddress Address { get; private set; }
 
-        public TimestampedNetworkAddress(NetworkAddress address, uint timestamp)
+        public TimestampedNetworkAddress(NetworkAddress address, Timestamp timestamp)
         {
             ContractsCommon.NotNull(address, "address");
 
