@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.IO;
+using System.Linq;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
@@ -10,44 +12,36 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             get { return GetDataPayload.CommandText; }
         }
 
-        public VarArray<InventoryVector> Inventory { get; private set; }
+        public InventoryVector[] Inventory { get; private set; }
 
         public GetDataPayload(InventoryVector[] inventory)
         {
             Contract.Requires<ArgumentNullException>(inventory != null, "inventory");
 
-            Inventory = new VarArray<InventoryVector>(inventory);
-
-            ByteSize = Inventory.ByteSize;
+            Inventory = inventory;
         }
 
-        public GetDataPayload(byte[] buffer, int offset)
-            : base(buffer, offset)
+        public GetDataPayload(Stream stream) : base(stream) { }
+        public GetDataPayload(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        protected override void Deserialize(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= GetDataPayload.MinimumByteSize, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - GetDataPayload.MinimumByteSize, "offset");
-
-            Inventory = new VarArray<InventoryVector>(buffer, offset);
-
-            ByteSize = Inventory.ByteSize;
+            Inventory = ReadVarArray<InventoryVector>(stream);
         }
 
-        [Pure]
-        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
+        public override void Serialize(Stream stream)
         {
-            Inventory.WriteToBitcoinBuffer(buffer, offset);
+            WriteVarArray(stream, Inventory);
+        }
+
+        public override int SerializedByteSize
+        {
+            get { return VarIntByteSize(Inventory.Length) + Inventory.Sum(iv => iv.SerializedByteSize); }
         }
 
         public static string CommandText
         {
             get { return "getdata"; }
-        }
-
-        public static int MinimumByteSize
-        {
-            get { return VarArray<InventoryVector>.MinimumByteSize; }
         }
     }
 }
