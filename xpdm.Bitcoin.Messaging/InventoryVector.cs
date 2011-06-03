@@ -18,7 +18,7 @@ namespace xpdm.Bitcoin.Messaging
             ObjectHash = objectHash;
         }
 
-        public InventoryVector() { }
+        public InventoryVector() { ObjectHash = Hash256.Empty; }
         public InventoryVector(Stream stream) : base(stream) { }
         public InventoryVector(byte[] buffer, int offset) : base(buffer, offset) { }
 
