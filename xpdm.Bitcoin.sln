@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xpdm.Bitcoin.Tests", "xpdm.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xpdm.Bitcoin.Messaging", "xpdm.Bitcoin.Messaging\xpdm.Bitcoin.Messaging.csproj", "{16381259-7CED-406A-8471-86217A95E62E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xpdm.Bitcoin.Messaging.Tests", "xpdm.Bitcoin.Messaging.Tests\xpdm.Bitcoin.Messaging.Tests.csproj", "{499D92AA-ED7F-4B6F-B478-07F4FCDBF7A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,14 @@ Global
 		{16381259-7CED-406A-8471-86217A95E62E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{16381259-7CED-406A-8471-86217A95E62E}.ReleaseSnk|Any CPU.ActiveCfg = Release|Any CPU
 		{16381259-7CED-406A-8471-86217A95E62E}.ReleaseSnk|Any CPU.Build.0 = Release|Any CPU
+		{499D92AA-ED7F-4B6F-B478-07F4FCDBF7A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{499D92AA-ED7F-4B6F-B478-07F4FCDBF7A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{499D92AA-ED7F-4B6F-B478-07F4FCDBF7A0}.DebugSnk|Any CPU.ActiveCfg = Debug|Any CPU
+		{499D92AA-ED7F-4B6F-B478-07F4FCDBF7A0}.DebugSnk|Any CPU.Build.0 = Debug|Any CPU
+		{499D92AA-ED7F-4B6F-B478-07F4FCDBF7A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{499D92AA-ED7F-4B6F-B478-07F4FCDBF7A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{499D92AA-ED7F-4B6F-B478-07F4FCDBF7A0}.ReleaseSnk|Any CPU.ActiveCfg = Release|Any CPU
+		{499D92AA-ED7F-4B6F-B478-07F4FCDBF7A0}.ReleaseSnk|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
