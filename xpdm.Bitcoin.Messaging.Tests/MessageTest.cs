@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Gallio.Framework;
 using MbUnit.Framework;
 using xpdm.Bitcoin.Messaging.Tests.SerializedData;
@@ -19,10 +18,7 @@ namespace xpdm.Bitcoin.Messaging.Tests
             TestLog.WriteLine("Command: {0}", msg.Command);
             TestLog.WriteLine("PayloadLength: {0}", msg.PayloadLength);
             TestLog.WriteLine("PayloadPayload: {0}", msg.Payload);
-            var ms = new MemoryStream(msg.SerializedByteSize);
-            msg.Serialize(ms);
-            var bytes = ms.ToArray();
-            Assert.AreElementsEqual(message, bytes);
+            Assert.AreElementsEqual(message, msg.SerializeToByteArray());
         }
 
         public static IEnumerable<byte[]> SerializedMessages
