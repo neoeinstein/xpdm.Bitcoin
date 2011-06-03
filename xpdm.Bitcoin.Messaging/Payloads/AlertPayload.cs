@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.IO;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
@@ -10,52 +11,45 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             get { return AlertPayload.CommandText; }
         }
 
-        public VarString Message { get; private set; }
-        public VarString Signature { get; private set; }
+        public byte[] Message { get; private set; }
+        public byte[] Signature { get; private set; }
 
-        public AlertPayload(VarString message, VarString signature)
+        public AlertPayload(byte[] message, byte[] signature)
         {
             Contract.Requires<ArgumentNullException>(message != null, "message");
             Contract.Requires<ArgumentNullException>(signature != null, "signature");
 
             Message = message;
             Signature = signature;
-
-            ByteSize = Message.ByteSize + Signature.ByteSize;
         }
 
-        public AlertPayload(byte[] buffer, int offset)
-            : base(buffer, offset)
+        public AlertPayload(Stream stream) : base(stream) { }
+        public AlertPayload(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        protected override void Deserialize(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= AlertPayload.MinimumByteSize, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - AlertPayload.MinimumByteSize, "offset");
-
-            Message = new VarString(buffer, offset);
-            Signature = new VarString(buffer, offset + (int)Message.ByteSize);
-
-            ByteSize = Message.ByteSize + Signature.ByteSize;
+            var messageLen = ReadVarInt(stream);
+            Message = ReadBytes(stream, (int)messageLen);
+            var sigLen = ReadVarInt(stream);
+            Signature = ReadBytes(stream, (int)sigLen);
         }
 
-        [Pure]
-        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
+        public override void Serialize(Stream stream)
         {
-            Message.WriteToBitcoinBuffer(buffer, offset);
-            Signature.WriteToBitcoinBuffer(buffer, offset + (int)Message.ByteSize);
+            WriteVarInt(stream, Message.LongLength);
+            WriteBytes(stream, Message);
+            WriteVarInt(stream, Signature.LongLength);
+            WriteBytes(stream, Signature);
+        }
+
+        public override int SerializedByteSize
+        {
+            get { return VarIntByteSize(Message.Length) + Message.Length + VarIntByteSize(Signature.Length) + Signature.Length; }
         }
 
         public static string CommandText
         {
             get { return "alert"; }
-        }
-
-        public static int MinimumByteSize
-        {
-            get
-            {
-                return VarString.MinimumByteSize * 2;
-            }
         }
     }
 }
