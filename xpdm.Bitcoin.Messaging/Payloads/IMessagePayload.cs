@@ -32,6 +32,9 @@ namespace xpdm.Bitcoin.Messaging.Payloads
                     return default(bool);
                 }
             }
+
+            public abstract void Serialize(System.IO.Stream stream);
+            public abstract int SerializedByteSize { get; }
         }
 
     }
