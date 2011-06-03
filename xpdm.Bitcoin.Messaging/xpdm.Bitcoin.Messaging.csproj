@@ -67,6 +67,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\ContractExtensions.cs" />
+    <Compile Include="Contracts\ContractsCommon.cs" />
     <Compile Include="InventoryObjectType.cs" />
     <Compile Include="Network.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
