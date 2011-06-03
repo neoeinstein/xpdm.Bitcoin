@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
-using Gallio.Framework;
 using Gallio.Framework.Data;
 using xpdm.Bitcoin.Core;
 using xpdm.Bitcoin.Tests.Factories.Core.Blocks;
@@ -51,24 +49,6 @@ namespace xpdm.Bitcoin.Tests.Factories.Core
         }
 
         #endregion
-
-        public static byte[] GetSerializedData(string dataResourceName)
-        {
-            dataResourceName = Assembly.GetExecutingAssembly().GetName().Name + ".SerializedData." + dataResourceName;
-            using (var resStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(dataResourceName))
-            {
-                if (resStream == null)
-                {
-                    DiagnosticLog.WriteLine("Unable to find for: {0} among:", dataResourceName);
-                    DiagnosticLog.WriteLine(string.Join("\n", System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames()));
-                    return null;
-                }
-                using (var reader = new System.IO.BinaryReader(resStream))
-                {
-                    return reader.ReadBytes((int)reader.BaseStream.Length);
-                }
-            }
-        }
 
         private C5.IDictionary<BitcoinObject, ITestBlock> _blocksHash = new C5.HashDictionary<BitcoinObject, ITestBlock>
         {

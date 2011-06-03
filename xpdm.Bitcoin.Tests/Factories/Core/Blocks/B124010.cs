@@ -1,5 +1,6 @@
 ﻿using System;
 using xpdm.Bitcoin.Core;
+using xpdm.Bitcoin.Messaging.Tests.SerializedData;
 
 namespace xpdm.Bitcoin.Tests.Factories.Core.Blocks
 {
@@ -63,7 +64,7 @@ namespace xpdm.Bitcoin.Tests.Factories.Core.Blocks
         {
             get
             {
-                return BlockData.GetSerializedData("MsgBlock124010.bin");
+                return Access.GetSerializedData("MsgBlock124010.bin");
             }
         }
     }
