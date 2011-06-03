@@ -9,12 +9,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
         private readonly string _command;
         public override string Command
         {
-            get
-            {
-                ContractsCommon.ResultIsNonNull<string>();
-
-                return _command;
-            }
+            get { return _command; }
         }
 
         public byte[] Bytes { get; private set; }
