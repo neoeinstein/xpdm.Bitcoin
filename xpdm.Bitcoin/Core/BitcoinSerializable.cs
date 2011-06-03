@@ -245,6 +245,12 @@ namespace xpdm.Bitcoin.Core
             WriteVarInt(stream, (ulong)value);
         }
 
+        protected static void Write(Stream stream, IBitcoinSerializable serializable)
+        {
+            ContractsCommon.CanWriteToStream(stream, serializable.SerializedByteSize);
+            serializable.Serialize(stream);
+        }
+
         protected static void Write(Stream stream, ulong value)
         {
             ContractsCommon.CanWriteToStream(stream, BufferOperations.UINT64_SIZE);
