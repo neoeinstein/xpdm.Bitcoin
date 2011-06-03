@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using System.IO;
 using xpdm.Bitcoin.Core;
 
@@ -37,6 +36,15 @@ namespace xpdm.Bitcoin.Messaging
         public override int SerializedByteSize
         {
             get { return BufferOperations.UINT32_SIZE + ObjectHash.HashByteSize; }
+        }
+
+        public override string ToString()
+        {
+            if (Type == InventoryObjectType.Msg_Block)
+            {
+                string.Format("{0}:{1:S30}", Type, ObjectHash);
+            }
+            return string.Format("{0}:{1:S}", Type, ObjectHash);
         }
 
         [ContractInvariantMethod]

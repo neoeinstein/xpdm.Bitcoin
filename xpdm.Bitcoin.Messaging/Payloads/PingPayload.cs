@@ -25,6 +25,11 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             get { return 0; }
         }
 
+        public override string ToString()
+        {
+            return "{ ping }";
+        }
+
         public static string CommandText
         {
             get

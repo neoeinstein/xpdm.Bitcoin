@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using xpdm.Bitcoin.Core;
 
@@ -47,6 +45,11 @@ namespace xpdm.Bitcoin.Messaging.Payloads
         public override int SerializedByteSize
         {
             get { return BufferOperations.UINT32_SIZE + VarIntByteSize(HashStart.Length) + HashStart.Sum(h => h.SerializedByteSize) + HashStop.SerializedByteSize; }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("(ver={0} {{{1}}} => {2})", Version, string.Join<Hash256>(",", HashStart), HashStop);
         }
 
         public static string CommandText

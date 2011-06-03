@@ -45,6 +45,11 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             get { return VarIntByteSize(Headers.Length) + Headers.Sum(a => a.SerializedByteSize); }
         }
 
+        public override string ToString()
+        {
+            return "{" + string.Join<Block>("," + System.Environment.NewLine, Headers) + "}";
+        }
+
         public static string CommandText
         {
             get { return "headers"; }

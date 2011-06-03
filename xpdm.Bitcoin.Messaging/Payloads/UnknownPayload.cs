@@ -51,6 +51,16 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             get { return Bytes.Length; }
         }
 
+        public override string ToString()
+        {
+            var byteStr = "{" + BufferOperations.ToByteString(Bytes, Endianness.BigEndian);
+            if (byteStr.Length > 30)
+            {
+                byteStr = byteStr.Substring(0, 28) + "...";
+            }
+            return byteStr + "}";
+        }
+
         [ContractInvariantMethod]
         private void __Invariant()
         {

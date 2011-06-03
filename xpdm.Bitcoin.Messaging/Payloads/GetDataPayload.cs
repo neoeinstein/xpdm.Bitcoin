@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
@@ -37,6 +35,11 @@ namespace xpdm.Bitcoin.Messaging.Payloads
         public override int SerializedByteSize
         {
             get { return VarIntByteSize(Inventory.Length) + Inventory.Sum(iv => iv.SerializedByteSize); }
+        }
+
+        public override string ToString()
+        {
+            return "{" + string.Join<InventoryVector>(",", Inventory) + "}";
         }
 
         public static string CommandText

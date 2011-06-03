@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.IO;
+﻿using System.IO;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
@@ -45,6 +43,11 @@ namespace xpdm.Bitcoin.Messaging.Payloads
         public override int SerializedByteSize
         {
             get { return VarIntByteSize(Message.Length) + Message.Length + VarIntByteSize(Signature.Length) + Signature.Length; }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("message='{0}' sig={1}", System.Text.Encoding.ASCII.GetString(Message), BufferOperations.ToByteString(Signature, Endianness.BigEndian));
         }
 
         public static string CommandText

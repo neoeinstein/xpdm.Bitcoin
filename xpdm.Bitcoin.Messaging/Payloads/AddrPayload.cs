@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 
@@ -37,6 +36,11 @@ namespace xpdm.Bitcoin.Messaging.Payloads
         public override int SerializedByteSize
         {
             get { return VarIntByteSize(AddressList.Length) + AddressList.Sum(a => a.SerializedByteSize); }
+        }
+
+        public override string ToString()
+        {
+            return "{" + string.Join<TimestampedNetworkAddress>(",", AddressList) + "}";
         }
 
         private const uint INCLUDE_TIMESTAMP_VERSION = 31402;

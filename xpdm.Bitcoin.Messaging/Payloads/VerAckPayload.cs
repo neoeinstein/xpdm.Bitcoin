@@ -30,6 +30,11 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             get { return 0; }
         }
 
+        public override string ToString()
+        {
+            return "{ verack }";
+        }
+
         public static string CommandText
         {
             get
