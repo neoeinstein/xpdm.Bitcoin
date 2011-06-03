@@ -21,12 +21,21 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
         public UnknownPayload(string command, Stream stream, int length)
         {
+            ContractsCommon.NotNull(command, "command");
+            ContractsCommon.NotNull(stream, "stream");
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(command), "command");
+
             _command = command;
             Bytes = ReadBytes(stream, length);
         }
 
         public UnknownPayload(string command, byte[] buffer, int offset, int length)
         {
+            ContractsCommon.NotNull(command, "command");
+            ContractsCommon.NotNull(buffer, "buffer");
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(command), "command");
+            ContractsCommon.ValidOffsetLength(0, buffer.Length, offset, length);
+
             _command = command;
             Bytes = new byte[length];
             Array.Copy(buffer, offset, Bytes, 0, length);

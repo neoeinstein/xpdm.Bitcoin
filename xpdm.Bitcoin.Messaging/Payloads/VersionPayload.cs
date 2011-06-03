@@ -30,6 +30,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
         {
             ContractsCommon.NotNull(emittingAddress, "emittingAddress");
             ContractsCommon.NotNull(receivingAddress, "receivingAddress");
+            ContractsCommon.NotNull(subVersionNum, "subVersionNum");
 
             Version = version;
             Services = services;

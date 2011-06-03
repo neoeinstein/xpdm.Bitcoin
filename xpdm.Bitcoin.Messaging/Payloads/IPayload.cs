@@ -19,6 +19,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             {
                 get
                 {
+                    ContractsCommon.ResultIsNonNull<string>();
                     Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
                     Contract.Ensures(Contract.Result<string>().Length <= 12);
 
