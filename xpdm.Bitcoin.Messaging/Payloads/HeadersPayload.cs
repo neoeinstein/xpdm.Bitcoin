@@ -1,5 +1,6 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.IO;
+using System.Linq;
+using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
@@ -10,7 +11,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             get { return HeadersPayload.CommandText; }
         }
 
-        public VarArray<Block> Headers { get; private set; }
+        public Block[] Headers { get; private set; }
 
         public HeadersPayload(Block[] headers)
             : this(headers, true)
@@ -21,43 +22,32 @@ namespace xpdm.Bitcoin.Messaging.Payloads
         {
             if (autoConvertBlocksToHeaders)
             {
-                headers = (from b in headers select b.ConvertToBlockHeader()).ToArray();
+                headers = (from b in headers select b.ToBlockHeader()).ToArray();
             }
-            Headers = new VarArray<Block>(headers);
-
-            ByteSize = Headers.ByteSize;
+            Headers = headers;
         }
 
-        public HeadersPayload(byte[] buffer, int offset)
-            : base(buffer, offset)
+        public HeadersPayload(Stream stream) : base(stream) { }
+        public HeadersPayload(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        protected override void Deserialize(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= HeadersPayload.MinimumByteSize, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - HeadersPayload.MinimumByteSize, "offset");
-
-            Headers = new VarArray<Block>(buffer, offset);
-
-            ByteSize = Headers.ByteSize;
+            Headers = ReadVarArray<Block>(stream);
         }
 
-        [Pure]
-        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
+        public override void Serialize(Stream stream)
         {
-            Headers.WriteToBitcoinBuffer(buffer, offset);
+            WriteVarArray(stream, Headers);
+        }
+
+        public override int SerializedByteSize
+        {
+            get { return VarIntByteSize(Headers.Length) + Headers.Sum(a => a.SerializedByteSize); }
         }
 
         public static string CommandText
         {
             get { return "headers"; }
-        }
-
-        public static int MinimumByteSize
-        {
-            get
-            {
-                return VarArray<Block>.MinimumByteSize;
-            }
         }
     }
 }

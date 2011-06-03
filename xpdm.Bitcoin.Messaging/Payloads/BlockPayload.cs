@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.IO;
+using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
@@ -14,41 +16,32 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
         public BlockPayload(Block block)
         {
+            Contract.Requires<ArgumentNullException>(block != null, "block");
+
             Block = block;
-
-            ByteSize = Block.ByteSize;
         }
 
-        public BlockPayload(byte[] buffer, int offset)
-            : base(buffer, offset)
+        public BlockPayload(Stream stream) : base(stream) { }
+        public BlockPayload(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        protected override void Deserialize(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= BlockPayload.MinimumByteSize, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - BlockPayload.MinimumByteSize, "offset");
-
-            Block = new Block(buffer, offset);
-
-            ByteSize = Block.ByteSize;
+            Block = new Block(stream);
         }
 
-        [Pure]
-        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
+        public override void Serialize(Stream stream)
         {
-            Block.WriteToBitcoinBuffer(buffer, offset);
+            Write(stream, Block);
+        }
+
+        public override int SerializedByteSize
+        {
+            get { return Block.SerializedByteSize; }
         }
 
         public static string CommandText
         {
             get { return "block"; }
-        }
-
-        public static int MinimumByteSize
-        {
-            get
-            {
-                return Block.MinimumByteSize;
-            }
         }
     }
 }

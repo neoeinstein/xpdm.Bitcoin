@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.IO;
+using xpdm.Bitcoin.Core;
 
 namespace xpdm.Bitcoin.Messaging.Payloads
 {
@@ -10,47 +12,36 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             get { return TxPayload.CommandText; }
         }
 
-        public Tx Transaction { get; private set; }
+        public Transaction Transaction { get; private set; }
 
-        public TxPayload(Tx transaction)
+        public TxPayload(Transaction transaction)
         {
             Contract.Requires<ArgumentNullException>(transaction != null, "transaction");
 
             Transaction = transaction;
-
-            ByteSize = Transaction.ByteSize;
         }
 
-        public TxPayload(byte[] buffer, int offset)
-            : base(buffer, offset)
+        public TxPayload(Stream stream) : base(stream) { }
+        public TxPayload(byte[] buffer, int offset) : base(buffer, offset) { }
+
+        protected override void Deserialize(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null, "buffer");
-            Contract.Requires<ArgumentException>(buffer.Length >= TxPayload.MinimumByteSize, "buffer");
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0, "offset");
-            Contract.Requires<ArgumentOutOfRangeException>(offset <= buffer.Length - TxPayload.MinimumByteSize, "offset");
-
-            Transaction = new Tx(buffer, offset);
-
-            ByteSize = Transaction.ByteSize;
+            Transaction = new Transaction(stream);
         }
 
-        [Pure]
-        public override void WriteToBitcoinBuffer(byte[] buffer, int offset)
+        public override void Serialize(Stream stream)
         {
-            Transaction.WriteToBitcoinBuffer(buffer, offset);
+            Write(stream, Transaction);
+        }
+
+        public override int SerializedByteSize
+        {
+            get { return Transaction.SerializedByteSize; }
         }
 
         public static string CommandText
         {
             get { return "tx"; }
-        }
-
-        public static int MinimumByteSize
-        {
-            get
-            {
-                return Tx.MinimumByteSize;
-            }
         }
     }
 }
