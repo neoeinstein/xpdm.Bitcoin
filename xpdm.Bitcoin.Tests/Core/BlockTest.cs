@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Gallio.Framework;
 using MbUnit.Framework;
 using xpdm.Bitcoin.Core;
 using xpdm.Bitcoin.Tests.Factories.Core;
@@ -6,6 +7,7 @@ using xpdm.Bitcoin.Tests.Factories.Core;
 namespace xpdm.Bitcoin.Tests.Core
 {
     [TestFixture]
+    [TestsOn(typeof(Block))]
     public class BlockTest
     {
         [Test]
@@ -22,6 +24,36 @@ namespace xpdm.Bitcoin.Tests.Core
             BlockTest.AssertThatBlockHeaderMatches(block, expectedHeader);
             BitcoinObjectTest.AssertThatHashMatches(block, expectedHash);
             BitcoinSerializableTest.AssertThatSerializedArrayMatches(serializedBlock, block);
+        }
+
+        [Test]
+        [Factory(typeof(BlockData), "BlocksForSerialization")]
+        public void SerializedBlockToBlockHeaderTest(
+            byte[] serializedBlock,
+            int offset,
+            Block expectedHeader,
+            Hash256 expectedHash,
+            IEnumerable<Hash256> expectedMerkleTree)
+        {
+            var actual = new Block(serializedBlock, offset);
+            var blockHeader = actual.ToBlockHeader();
+            TestLog.WriteLine(blockHeader);
+            BlockTest.AssertThatBlockHeaderMatches(blockHeader, expectedHeader);
+            BitcoinObjectTest.AssertThatHashMatches(blockHeader, expectedHash);
+        }
+
+        [Test]
+        [Factory(typeof(BlockData), "BlockTuples")]
+        public void ToBlockHeaderTest(
+            Block actual,
+            Block expectedHeader,
+            Hash256 expectedHash,
+            IEnumerable<Hash256> expectedMerkleTree)
+        {
+            var blockHeader = actual.ToBlockHeader();
+            TestLog.WriteLine(blockHeader);
+            BlockTest.AssertThatBlockHeaderMatches(blockHeader, expectedHeader);
+            BitcoinObjectTest.AssertThatHashMatches(blockHeader, expectedHash);
         }
 
         [Test]
