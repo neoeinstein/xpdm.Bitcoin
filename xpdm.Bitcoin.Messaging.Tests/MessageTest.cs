@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Gallio.Framework;
 using MbUnit.Framework;
-using xpdm.Bitcoin.Messaging.Tests.SerializedData;
+using xpdm.Bitcoin.Tests.SerializedData;
 
 namespace xpdm.Bitcoin.Messaging.Tests
 {

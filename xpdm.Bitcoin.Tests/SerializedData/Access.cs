@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Gallio.Framework;
 
-namespace xpdm.Bitcoin.Messaging.Tests.SerializedData
+namespace xpdm.Bitcoin.Tests.SerializedData
 {
     public static class Access
     {

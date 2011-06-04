@@ -1,6 +1,6 @@
 ﻿using System;
 using xpdm.Bitcoin.Core;
-using xpdm.Bitcoin.Messaging.Tests.SerializedData;
+using xpdm.Bitcoin.Tests.SerializedData;
 
 namespace xpdm.Bitcoin.Tests.Factories.Core.Blocks
 {
