@@ -11,19 +11,16 @@ namespace xpdm.Bitcoin.Messaging.Payloads
             get { return HeadersPayload.CommandText; }
         }
 
-        public Block[] Headers { get; private set; }
+        public BlockHeader[] Headers { get; private set; }
 
-        public HeadersPayload(Block[] headers)
-            : this(headers, true)
+        public HeadersPayload(BlockHeader[] headers)
         {
+            Headers = headers;
         }
 
-        public HeadersPayload(Block[] headers, bool autoConvertBlocksToHeaders)
+        public HeadersPayload(Block[] blocks)
         {
-            if (autoConvertBlocksToHeaders)
-            {
-                headers = (from b in headers select b.ToBlockHeader()).ToArray();
-            }
+            var headers = (from b in blocks select b.Header).ToArray();
             Headers = headers;
         }
 
@@ -32,7 +29,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
         protected override void Deserialize(Stream stream)
         {
-            Headers = ReadVarArray<Block>(stream);
+            Headers = ReadVarArray<BlockHeader>(stream);
         }
 
         public override void Serialize(Stream stream)
@@ -47,7 +44,7 @@ namespace xpdm.Bitcoin.Messaging.Payloads
 
         public override string ToString()
         {
-            return "{" + string.Join<Block>("," + System.Environment.NewLine, Headers) + "}";
+            return "{" + string.Join<BlockHeader>("," + System.Environment.NewLine, Headers) + "}";
         }
 
         public static string CommandText
