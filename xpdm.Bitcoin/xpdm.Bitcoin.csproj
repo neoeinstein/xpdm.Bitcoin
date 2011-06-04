@@ -96,6 +96,7 @@
     <Compile Include="ByteArrayComparer.cs" />
     <Compile Include="Contracts\ContractExtensions.cs" />
     <Compile Include="Contracts\ContractsCommon.cs" />
+    <Compile Include="Core\BlockHeader.cs" />
     <Compile Include="Core\DateTimeExtensions.cs" />
     <Compile Include="Core\BitcoinObject.cs" />
     <Compile Include="Core\BitcoinSerializable.cs" />

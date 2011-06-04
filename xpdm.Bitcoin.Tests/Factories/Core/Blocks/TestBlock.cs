@@ -8,7 +8,7 @@ namespace xpdm.Bitcoin.Tests.Factories.Core.Blocks
         #region ITestBlock Members
 
         public Hash256 ExpectedHash { get; protected set; }
-        public Block Header { get; protected set; }
+        public BlockHeader Header { get; protected set; }
         public Block Block { get; protected set; }
         public IEnumerable<Hash256> ExpectedMerkleTree { get; protected set; }
         public byte[] SerializedBlockData { get; protected set; }
