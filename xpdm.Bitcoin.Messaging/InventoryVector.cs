@@ -42,7 +42,7 @@ namespace xpdm.Bitcoin.Messaging
         {
             if (Type == InventoryObjectType.Msg_Block)
             {
-                string.Format("{0}:{1:S30}", Type, ObjectHash);
+                return string.Format("{0}:{1:S20}", Type, ObjectHash);
             }
             return string.Format("{0}:{1:S}", Type, ObjectHash);
         }
