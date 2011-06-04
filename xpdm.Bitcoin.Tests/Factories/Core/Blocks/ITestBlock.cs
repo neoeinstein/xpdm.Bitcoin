@@ -6,7 +6,7 @@ namespace xpdm.Bitcoin.Tests.Factories.Core.Blocks
     interface ITestBlock
     {
         Hash256 ExpectedHash { get; }
-        Block Header { get; }
+        BlockHeader Header { get; }
         Block Block { get; }
         IEnumerable<Hash256> ExpectedMerkleTree { get; }
         byte[] SerializedBlockData { get; }

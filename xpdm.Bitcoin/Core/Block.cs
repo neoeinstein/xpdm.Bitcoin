@@ -11,97 +11,24 @@ namespace xpdm.Bitcoin.Core
 {
     public sealed class Block : BitcoinObject, IFreezable, IThawable<Block>
     {
-        private uint _version;
-        public uint Version
-        {
-            get { return _version; }
-            set
-            {
-                ContractsCommon.NotFrozen(this);
-
-                _version = value;
-                InvalidateBitcoinHashes();
-            }
-        }
-
-        private Hash256 _previousBlockHash = Hash256.Empty;
-        public Hash256 PreviousBlockHash
+        private BlockHeader _header = BlockHeader.Empty;
+        public BlockHeader Header
         {
             get
             {
-                ContractsCommon.ResultIsNonNull<Hash256>();
+                ContractsCommon.ResultIsNonNull<BlockHeader>();
 
-                return _previousBlockHash;
+                return _header;
             }
             set
             {
                 ContractsCommon.NotFrozen(this);
                 ContractsCommon.NotNull(value, "value");
 
-                _previousBlockHash = value;
+                _header.HashesInvalidated -= InvalidateBitcoinHashes;
+                _header = value;
+                _header.HashesInvalidated += InvalidateBitcoinHashes;
                 InvalidateBitcoinHashes();
-            }
-        }
-
-        private Timestamp _timestamp;
-        public Timestamp Timestamp
-        {
-            get { return _timestamp; }
-            set
-            {
-                ContractsCommon.NotFrozen(this);
-
-                _timestamp = value;
-                InvalidateBitcoinHashes();
-            }
-        }
-
-        private uint _difficultyBits;
-        public uint DifficultyBits
-        {
-            get { return _difficultyBits; }
-            set
-            {
-                ContractsCommon.NotFrozen(this);
-
-                _difficultyBits = value;
-                InvalidateBitcoinHashes();
-            }
-        }
-
-        private uint _nonce;
-        public uint Nonce
-        {
-            get { return _nonce; }
-            set
-            {
-                ContractsCommon.NotFrozen(this);
-
-                _nonce = value;
-                InvalidateBitcoinHashes();
-            }
-        }
-
-        private IList<Hash256> _merkleTree;
-        public Hash256 MerkleRoot
-        {
-            get
-            {
-                ContractsCommon.ResultIsNonNull<Hash256>();
-
-                if (MerkleTree == null || MerkleTree.IsEmpty)
-                {
-                    return new Hash256();
-                }
-                return MerkleTree.Last;
-            }
-            set
-            {
-                ContractsCommon.NotFrozen(this);
-                ContractsCommon.NotNull(value, "value");
-                Contract.Requires<InvalidOperationException>(Transactions.Count == 0);
-
-                _merkleTree = new GuardedList<Hash256>(new WrappedArray<Hash256>(new[] { value }));
             }
         }
 
@@ -113,6 +40,7 @@ namespace xpdm.Bitcoin.Core
             Transactions.CollectionChanged += InvalidateMerkleTree;
         }
 
+        private IList<Hash256> _merkleTree;
         public IList<Hash256> MerkleTree
         {
             get
@@ -160,34 +88,8 @@ namespace xpdm.Bitcoin.Core
             ContractsCommon.NotFrozen(this);
 
             _merkleTree = null;
+            Header.MerkleRoot = MerkleTree.Last;
             InvalidateBitcoinHashes();
-        }
-
-        public Block ToBlockHeader()
-        {
-            ContractsCommon.ResultIsNonNull<Block>();
-
-            if (IsBlockHeader)
-            {
-                return this;
-            }
-            return new Block
-            {
-                Version = this.Version,
-                PreviousBlockHash = this.PreviousBlockHash,
-                MerkleRoot = this.MerkleRoot,
-                Timestamp = this.Timestamp,
-                DifficultyBits = this.DifficultyBits,
-                Nonce = this.Nonce,
-            };
-        }
-
-        public bool IsBlockHeader
-        {
-            get
-            {
-                return Transactions.IsEmpty;
-            }
         }
 
         public Block(Block block) : this(block, false) { }
@@ -195,20 +97,12 @@ namespace xpdm.Bitcoin.Core
         public Block(Block block, bool thawChildren)
         {
             ContractsCommon.NotNull(block, "block");
-            Contract.Ensures(this.Version == block.Version);
-            Contract.Ensures(this.PreviousBlockHash == block.PreviousBlockHash);
-            Contract.Ensures(this.Timestamp == block.Timestamp);
-            Contract.Ensures(this.DifficultyBits == block.DifficultyBits);
-            Contract.Ensures(this.Nonce == block.Nonce);
+            Contract.Ensures(this.Header == block.Header);
             Contract.Ensures(this.Transactions.SequencedEquals(block.Transactions));
-            Contract.Ensures(this.MerkleRoot == block.MerkleRoot);
+            ContractsCommon.ChildThawed(Header, thawChildren);
             ContractsCommon.ChildrenThawed(Transactions, thawChildren);
 
-            this._version = block._version;
-            this._previousBlockHash = block._previousBlockHash;
-            this._timestamp = block._timestamp;
-            this._difficultyBits = block._difficultyBits;
-            this._nonce = block._nonce;
+            this._header = FreezableExtensions.ThawChild(block.Header, thawChildren);
             if (block._merkleTree != null)
             {
                 var tree = new ArrayList<Hash256>(block._merkleTree.Count);
@@ -227,12 +121,7 @@ namespace xpdm.Bitcoin.Core
 
         protected override void Deserialize(Stream stream)
         {
-            Version = ReadUInt32(stream);
-            PreviousBlockHash = Read<Hash256>(stream);
-            Read<Hash256>(stream); // Throw away the Merkle Root
-            Timestamp = ReadUInt32(stream);
-            DifficultyBits = ReadUInt32(stream);
-            Nonce = ReadUInt32(stream);
+            Header = Read<BlockHeader>(stream);
 
             var transactionsArr = ReadVarArray<Transaction>(stream);
             var transactions = new HashedArrayList<Transaction>(transactionsArr.Length);
@@ -245,52 +134,29 @@ namespace xpdm.Bitcoin.Core
 
         public override void Serialize(Stream stream)
         {
-            SerializeHeader(stream);
+            Write(stream, Header);
             WriteCollection(stream, Transactions);
         }
 
-        [Pure]
-        public void SerializeHeader(Stream stream)
+        protected override byte[] BuildBitcoinHashByteArray()
         {
-            ContractsCommon.NotNull(stream, "stream");
-
-            Write(stream, Version);
-            Write(stream, PreviousBlockHash);
-            Write(stream, MerkleRoot);
-            Write(stream, Timestamp);
-            Write(stream, DifficultyBits);
-            Write(stream, Nonce);
+            return Header.SerializeToByteArray();
         }
 
         public override int SerializedByteSize
         {
             get
             {
-                return 4 * BufferOperations.UINT32_SIZE + PreviousBlockHash.SerializedByteSize +
-                       MerkleRoot.SerializedByteSize + VarIntByteSize(Transactions.Count) +
+                return Header.SerializedByteSize + VarIntByteSize(Transactions.Count) +
                        Transactions.Sum(t => t.SerializedByteSize);
             }
-        }
-
-        protected override byte[] BuildBitcoinHashByteArray()
-        {
-            ContractsCommon.ResultIsNonNull<byte[]>();
-
-            var ms = new MemoryStream();
-            this.SerializeHeader(ms);
-            return ms.ToArray();
         }
 
         public override string ToString()
         {
             var blockStr = new StringBuilder();
-            blockStr.AppendFormat("CBlock{7}(hash={0:S20}, ver={1}, hashPrevBlock={2:S20}, hashMerkleRoot={3:S}, nTime={4}, nBits={5:x8}, nNonce={6}",
-                Hash256, Version, PreviousBlockHash, MerkleRoot, Timestamp.SecondsSinceEpoch, DifficultyBits, Nonce, (IsBlockHeader ? "Header" : ""));
-            if (!IsBlockHeader)
-            {
-                blockStr.AppendFormat(", vtx={0}", Transactions.Count);
-            }
-            blockStr.Append(")");
+            blockStr.AppendFormat("CBlock(hash={0:S20}, ver={1}, hashPrevBlock={2:S20}, hashMerkleRoot={3:S}, nTime={4}, nBits={5:x8}, nNonce={6}, vtx={7})",
+                Hash256, Header.Version, Header.PreviousBlockHash, Header.MerkleRoot, Header.Timestamp.SecondsSinceEpoch, Header.DifficultyBits, Header.Nonce, Transactions.Count);
             foreach (var tx in Transactions)
             {
                 foreach (var line in tx.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
@@ -299,11 +165,6 @@ namespace xpdm.Bitcoin.Core
                     blockStr.AppendFormat("\t{0}", line);
                 }
             }
-            if (!IsBlockHeader)
-            {
-                blockStr.AppendLine();
-                blockStr.AppendFormat("\tvMerkleTree: {0}", string.Join(" ", MerkleTree.Select(h => h.ToString("S6"))));
-            }
             return blockStr.ToString();
         }
 
@@ -311,6 +172,7 @@ namespace xpdm.Bitcoin.Core
 
         public void Freeze()
         {
+            Header.Freeze();
             if (!Transactions.IsReadOnly)
             {
                 Transactions = new GuardedList<Transaction>(Transactions);
@@ -348,10 +210,11 @@ namespace xpdm.Bitcoin.Core
         [ContractInvariantMethod]
         private void __Invariant()
         {
-            Contract.Invariant(_previousBlockHash != null);
+            Contract.Invariant(Header != null);
             Contract.Invariant(_merkleTree == null || _merkleTree is GuardedList<Hash256>);
             Contract.Invariant(Transactions != null);
             Contract.Invariant(!IsFrozen || Transactions.IsReadOnly);
+            Contract.Invariant(!IsFrozen || Header.IsFrozen);
         }
     }
 }

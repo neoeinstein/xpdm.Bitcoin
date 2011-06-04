@@ -10,7 +10,7 @@ namespace xpdm.Bitcoin.Tests.Factories.Core.Blocks
         private B000000()
         {
             base.ExpectedHash = Hash256.Parse("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            base.Header = new Block
+            base.Header = new BlockHeader
             {
                 Version = 1,
                 PreviousBlockHash = Hash256.Empty,
@@ -22,11 +22,14 @@ namespace xpdm.Bitcoin.Tests.Factories.Core.Blocks
             base.Header.Freeze();
             base.Block = new Block
             {
-                Version = 1,
-                PreviousBlockHash = Hash256.Empty,
-                Timestamp = 1231006505,
-                DifficultyBits = 486604799, //0x1d00ffff
-                Nonce = 2083236893,
+                Header = new BlockHeader
+                    {
+                        Version = 1,
+                        PreviousBlockHash = Hash256.Empty,
+                        Timestamp = 1231006505,
+                        DifficultyBits = 486604799, //0x1d00ffff
+                        Nonce = 2083236893,
+                    },
                 Transactions =
                     {
                         B000000.Coinbase,

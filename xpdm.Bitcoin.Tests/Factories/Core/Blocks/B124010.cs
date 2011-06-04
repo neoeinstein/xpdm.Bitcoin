@@ -11,7 +11,7 @@ namespace xpdm.Bitcoin.Tests.Factories.Core.Blocks
         private B124010()
         {
             base.ExpectedHash = Hash256.Parse("0000000000003a8b34e22c6e7b4934993d91261fe0f7e0f2940c6abd8bfae156");
-            base.Header = new Block
+            base.Header = new BlockHeader
             {
                 Version = 1,
                 PreviousBlockHash = Hash256.Parse("0000000000003a2bf9728419cd10d1c68493c99f275242db8e7df2ee9079e0ed"),
