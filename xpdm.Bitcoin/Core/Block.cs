@@ -89,7 +89,7 @@ namespace xpdm.Bitcoin.Core
             {
                 ContractsCommon.ResultIsNonNull<Hash256>();
 
-                if (MerkleTree == null)
+                if (MerkleTree == null || MerkleTree.IsEmpty)
                 {
                     return new Hash256();
                 }
@@ -284,8 +284,13 @@ namespace xpdm.Bitcoin.Core
         public override string ToString()
         {
             var blockStr = new StringBuilder();
-            blockStr.AppendFormat("CBlock(hash={0:S20}, ver={1}, hashPrevBlock={2:S20}, hashMerkleRoot={3:S}, nTime={4}, nBits={5:x8}, nNonce={6}, vtx={7})",
-                Hash256, Version, PreviousBlockHash, MerkleRoot, Timestamp.SecondsSinceEpoch, DifficultyBits, Nonce, Transactions.Count);
+            blockStr.AppendFormat("CBlock{7}(hash={0:S20}, ver={1}, hashPrevBlock={2:S20}, hashMerkleRoot={3:S}, nTime={4}, nBits={5:x8}, nNonce={6}",
+                Hash256, Version, PreviousBlockHash, MerkleRoot, Timestamp.SecondsSinceEpoch, DifficultyBits, Nonce, (IsBlockHeader ? "Header" : ""));
+            if (!IsBlockHeader)
+            {
+                blockStr.AppendFormat(", vtx={0}", Transactions.Count);
+            }
+            blockStr.Append(")");
             foreach (var tx in Transactions)
             {
                 foreach (var line in tx.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
@@ -294,8 +299,11 @@ namespace xpdm.Bitcoin.Core
                     blockStr.AppendFormat("\t{0}", line);
                 }
             }
-            blockStr.AppendLine();
-            blockStr.AppendFormat("\tvMerkleTree: {0}", string.Join(" ", MerkleTree.Select(h => h.ToString("S6"))));
+            if (!IsBlockHeader)
+            {
+                blockStr.AppendLine();
+                blockStr.AppendFormat("\tvMerkleTree: {0}", string.Join(" ", MerkleTree.Select(h => h.ToString("S6"))));
+            }
             return blockStr.ToString();
         }
 
