@@ -165,6 +165,8 @@ namespace xpdm.Bitcoin.Core
                     blockStr.AppendFormat("\t{0}", line);
                 }
             }
+            blockStr.AppendLine();
+            blockStr.AppendFormat("\tvMerkleTree: {0}", string.Join(" ", MerkleTree.Select(h => h.ToString("S6"))));
             return blockStr.ToString();
         }
 
